@@ -10,6 +10,7 @@ import os
 import re
 from Bio import SeqIO
 from tqdm import tqdm
+import zstandard as zstd
 
 
 def sanitize_filename(name):
@@ -87,33 +88,51 @@ def get_path_to_root(tip, parent_of):
     return path
 
 
-def write_trajectory(path, sequences, hamming_of, output_path):
+def write_trajectory(path, sequences, hamming_of, output_path, compress=False):
     """
     Write trajectory FASTA file for a single tip.
 
     Path should be in root-to-tip order.
     Each header includes cumulative Hamming distance from root.
+    Skips intermediate nodes with zero branch distance.
     """
     cumulative_distance = 0
+    last_node = path[-1] if path else None  # tip node
 
-    with open(output_path, 'w') as f:
-        for i, node in enumerate(path):
-            # Calculate cumulative distance
-            if i > 0:
-                parent = path[i - 1]
-                branch_dist = hamming_of.get((parent, node), 0)
-                cumulative_distance += branch_dist
+    # Build content
+    lines = []
+    for i, node in enumerate(path):
+        # Calculate cumulative distance
+        if i > 0:
+            parent = path[i - 1]
+            branch_dist = hamming_of.get((parent, node), 0)
+            cumulative_distance += branch_dist
 
-            # Get sequence
-            seq = sequences.get(node, '')
-            if not seq:
+            # Skip if no distance increase (except for tip)
+            if branch_dist == 0 and node != last_node:
                 continue
 
-            # Write FASTA entry
-            f.write(f">{node}|{cumulative_distance}\n")
-            # Write sequence in 60-char lines
-            for j in range(0, len(seq), 60):
-                f.write(seq[j:j+60] + '\n')
+        # Get sequence
+        seq = sequences.get(node, '')
+        if not seq:
+            continue
+
+        # Add FASTA entry
+        lines.append(f">{node}|{cumulative_distance}\n")
+        # Add sequence in 60-char lines
+        for j in range(0, len(seq), 60):
+            lines.append(seq[j:j+60] + '\n')
+
+    content = ''.join(lines)
+
+    # Write to file (compressed or plain)
+    if compress:
+        cctx = zstd.ZstdCompressor()
+        with open(output_path, 'wb') as f:
+            f.write(cctx.compress(content.encode('utf-8')))
+    else:
+        with open(output_path, 'w') as f:
+            f.write(content)
 
 
 def main():
@@ -132,6 +151,10 @@ def main():
         "--output-dir", required=True,
         help="Output directory for trajectory files"
     )
+    parser.add_argument(
+        "--compress", action="store_true",
+        help="Compress output files with zstd (.fasta.zst)"
+    )
     args = parser.parse_args()
 
     # Create output directory
@@ -149,7 +172,8 @@ def main():
     print(f"Found {len(tips)} tips")
 
     # Process each tip
-    print("Writing trajectory files...")
+    ext = ".fasta.zst" if args.compress else ".fasta"
+    print(f"Writing trajectory files{' (compressed)' if args.compress else ''}...")
     for tip in tqdm(tips, desc="Processing tips"):
         # Get path from tip to root, then reverse to root-to-tip
         path = get_path_to_root(tip, parent_of)
@@ -157,10 +181,10 @@ def main():
 
         # Sanitize filename
         safe_name = sanitize_filename(tip)
-        output_path = os.path.join(args.output_dir, f"{safe_name}.fasta")
+        output_path = os.path.join(args.output_dir, f"{safe_name}{ext}")
 
         # Write trajectory
-        write_trajectory(path, sequences, hamming_of, output_path)
+        write_trajectory(path, sequences, hamming_of, output_path, compress=args.compress)
 
     print(f"Done! Wrote {len(tips)} trajectory files to {args.output_dir}")
 

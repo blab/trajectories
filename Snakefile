@@ -115,5 +115,6 @@ rule trajectories:
         python scripts/trajectory.py \
             --branches {input.branches:q} \
             --alignment {input.alignment:q} \
-            --output-dir {output.outdir:q}
+            --output-dir {output.outdir:q} \
+            --compress
         """
