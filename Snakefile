@@ -7,6 +7,7 @@ rule all:
     input:
         expand("data/{analysis}/metadata.tsv", analysis=ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
+        expand("results/{analysis}", analysis=ANALYSES),
 
 rule download_auspice_json:
     output:
@@ -101,4 +102,18 @@ rule sample:
             --input {input.alignment:q} \
             --output {output.sampled:q} \
             --fraction 0.2
+        """
+
+rule trajectories:
+    input:
+        branches = "data/{analysis}/branches.tsv",
+        alignment = "data/{analysis}/alignment.fasta"
+    output:
+        outdir = directory("results/{analysis}")
+    shell:
+        """
+        python scripts/trajectory.py \
+            --branches {input.branches:q} \
+            --alignment {input.alignment:q} \
+            --output-dir {output.outdir:q}
         """
