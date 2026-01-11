@@ -18,6 +18,18 @@ def count_files(directory):
     return total
 
 
+def delete_s3_prefix(s3, bucket, prefix):
+    """Delete all objects under an S3 prefix."""
+    paginator = s3.get_paginator('list_objects_v2')
+    deleted_count = 0
+    for page in paginator.paginate(Bucket=bucket, Prefix=prefix):
+        if 'Contents' in page:
+            objects = [{'Key': obj['Key']} for obj in page['Contents']]
+            s3.delete_objects(Bucket=bucket, Delete={'Objects': objects})
+            deleted_count += len(objects)
+    return deleted_count
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Upload results directory to S3 bucket."
@@ -42,6 +54,17 @@ def main():
 
     # Initialize S3 client (uses AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY from env)
     s3 = boto3.client('s3')
+
+    # Delete existing S3 objects for each dataset directory before uploading
+    # This prevents stale files from accumulating when dataset tips change
+    for item in os.listdir(args.results_dir):
+        item_path = os.path.join(args.results_dir, item)
+        if os.path.isdir(item_path):
+            s3_prefix = f"{args.prefix}/{item}/"
+            print(f"Deleting existing files at s3://{bucket}/{s3_prefix}")
+            deleted = delete_s3_prefix(s3, bucket, s3_prefix)
+            if deleted:
+                print(f"  Deleted {deleted} existing files")
 
     # Count files for progress bar
     total_files = count_files(args.results_dir)
