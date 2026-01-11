@@ -37,6 +37,16 @@ The following datasets are pre-configured and can be used with the above command
 - `cytb`: [Mammalian cytochrome B sequences](https://nextstrain.org/groups/blab/cytb) (5059 sequences x 1140 nucleotides)
 - `n450`: [Measles N450 sequences](https://nextstrain.org/measles/N450@2025-10-01) (2429 sequences x 450 nucleotides)
 
+## S3 upload
+
+Results can be uploaded to an S3 bucket using the `upload` target:
+
+```
+snakemake --cores 1 -p upload
+```
+
+This uploads `results/` to `s3://{bucket}/trajectories/`. Requires `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` environment variables to be set.
+
 # Outputs
 
 ## Intermediate data files

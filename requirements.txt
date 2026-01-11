@@ -1,3 +1,4 @@
 biopython
+boto3
 nextstrain-augur
 zstandard

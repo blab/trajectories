@@ -122,3 +122,13 @@ rule trajectories:
             --dataset {wildcards.analysis} \
             --compress
         """
+
+rule upload:
+    input:
+        expand("results/{analysis}", analysis=ANALYSES)
+    shell:
+        """
+        python scripts/upload-to-s3.py \
+            --results-dir results \
+            --prefix trajectories
+        """
