@@ -37,6 +37,69 @@ The following datasets are pre-configured and can be used with the above command
 - `cytb`: [Mammalian cytochrome B sequences](https://nextstrain.org/groups/blab/cytb) (5059 sequences x 1140 nucleotides)
 - `n450`: [Measles N450 sequences](https://nextstrain.org/measles/N450@2025-10-01) (2429 sequences x 450 nucleotides)
 
+# Outputs
+
+## Intermediate data files
+
+For each dataset, the workflow generates intermediate files in `data/{dataset}/`:
+
+- `auspice.json` - Original Nextstrain tree data
+- `alignment.fasta` - Sequences for all nodes (tips and internal)
+- `metadata.tsv` - Phylogenetic metadata with parent relationships
+- `branches.tsv` - Parent-child relationships with Hamming distances
+
+## Trajectory files
+
+The main output is one trajectory file per tip in `results/{dataset}/`:
+
+```
+results/
+├── spike/
+│   ├── USACA-CDC-STM-A1234562021.fasta.zst
+│   ├── NigeriaISTH-E02312020.fasta.zst
+│   └── ...
+├── cytb/
+│   └── ...
+└── n450/
+    └── ...
+```
+
+Each trajectory is a zstd-compressed FASTA file containing the evolutionary path from root to tip:
+
+```
+>NODE_0000000|0
+ATGTTCGTTTTT...
+>NODE_0001234|15
+ATGTTCGTTTTT...
+>TipName|42
+ATGTTCGTTTTT...
+```
+
+Where each header contains `>{node_name}|{cumulative_hamming_distance}`. Intermediate nodes with zero mutations are skipped (root and tip are always included).
+
+## Summary statistics
+
+A consolidated `results/summary.json` file contains statistics for all processed datasets:
+
+```json
+{
+  "cytb": {
+    "num_tips": 5059,
+    "num_nodes": 10117,
+    "sequence_length": 1140,
+    "hamming_from_root": { "min": 154, "max": 602, "mean": 377.81 },
+    "path_depth": { "min": 6, "max": 43, "mean": 22.28 },
+    "total_branches": 10116,
+    "zero_distance_branches": 373,
+    "per_branch_hamming": { "min": 0, "max": 253, "mean": 29.24 }
+  },
+  "spike": { ... },
+  "n450": { ... }
+}
+```
+
+Each dataset entry is added or updated when its trajectories are generated.
+
 # License
 
 This repository is licensed under the MIT License. See the LICENSE file for

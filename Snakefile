@@ -110,11 +110,15 @@ rule trajectories:
         alignment = "data/{analysis}/alignment.fasta"
     output:
         outdir = directory("results/{analysis}")
+    params:
+        summary = "results/summary.json"
     shell:
         """
         python scripts/trajectory.py \
             --branches {input.branches:q} \
             --alignment {input.alignment:q} \
             --output-dir {output.outdir:q} \
+            --summary {params.summary:q} \
+            --dataset {wildcards.analysis} \
             --compress
         """

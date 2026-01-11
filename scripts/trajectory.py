@@ -6,8 +6,10 @@ Each trajectory contains sequences from root to tip with cumulative Hamming dist
 
 import argparse
 import csv
+import json
 import os
 import re
+import statistics
 from Bio import SeqIO
 from tqdm import tqdm
 import zstandard as zstd
@@ -95,9 +97,14 @@ def write_trajectory(path, sequences, hamming_of, output_path, compress=False):
     Path should be in root-to-tip order.
     Each header includes cumulative Hamming distance from root.
     Skips intermediate nodes with zero branch distance.
+
+    Returns:
+        tuple: (tip_distance, path_depth) where tip_distance is cumulative
+               Hamming distance and path_depth is number of frames written.
     """
     cumulative_distance = 0
     last_node = path[-1] if path else None  # tip node
+    frames_written = 0
 
     # Build content
     lines = []
@@ -122,6 +129,7 @@ def write_trajectory(path, sequences, hamming_of, output_path, compress=False):
         # Add sequence in 60-char lines
         for j in range(0, len(seq), 60):
             lines.append(seq[j:j+60] + '\n')
+        frames_written += 1
 
     content = ''.join(lines)
 
@@ -133,6 +141,8 @@ def write_trajectory(path, sequences, hamming_of, output_path, compress=False):
     else:
         with open(output_path, 'w') as f:
             f.write(content)
+
+    return cumulative_distance, frames_written
 
 
 def main():
@@ -155,6 +165,14 @@ def main():
         "--compress", action="store_true",
         help="Compress output files with zstd (.fasta.zst)"
     )
+    parser.add_argument(
+        "--summary",
+        help="Path to write summary statistics JSON file"
+    )
+    parser.add_argument(
+        "--dataset",
+        help="Dataset name (used as key in summary JSON)"
+    )
     args = parser.parse_args()
 
     # Create output directory
@@ -171,7 +189,16 @@ def main():
     tips = find_tips(parent_of)
     print(f"Found {len(tips)} tips")
 
-    # Process each tip
+    # Get sequence length from first sequence
+    seq_length = len(next(iter(sequences.values()))) if sequences else 0
+
+    # Compute branch statistics
+    branch_distances = list(hamming_of.values())
+    zero_distance_branches = sum(1 for d in branch_distances if d == 0)
+
+    # Process each tip and collect statistics
+    tip_distances = []
+    path_depths = []
     ext = ".fasta.zst" if args.compress else ".fasta"
     print(f"Writing trajectory files{' (compressed)' if args.compress else ''}...")
     for tip in tqdm(tips, desc="Processing tips"):
@@ -183,10 +210,55 @@ def main():
         safe_name = sanitize_filename(tip)
         output_path = os.path.join(args.output_dir, f"{safe_name}{ext}")
 
-        # Write trajectory
-        write_trajectory(path, sequences, hamming_of, output_path, compress=args.compress)
+        # Write trajectory and collect stats
+        tip_dist, path_depth = write_trajectory(
+            path, sequences, hamming_of, output_path, compress=args.compress
+        )
+        tip_distances.append(tip_dist)
+        path_depths.append(path_depth)
 
     print(f"Done! Wrote {len(tips)} trajectory files to {args.output_dir}")
+
+    # Write summary statistics if requested
+    if args.summary and args.dataset:
+        # Build stats for this dataset
+        dataset_summary = {
+            "num_tips": len(tips),
+            "num_nodes": len(sequences),
+            "sequence_length": seq_length,
+            "hamming_from_root": {
+                "min": min(tip_distances),
+                "max": max(tip_distances),
+                "mean": round(statistics.mean(tip_distances), 2)
+            },
+            "path_depth": {
+                "min": min(path_depths),
+                "max": max(path_depths),
+                "mean": round(statistics.mean(path_depths), 2)
+            },
+            "total_branches": len(branch_distances),
+            "zero_distance_branches": zero_distance_branches,
+            "per_branch_hamming": {
+                "min": min(branch_distances) if branch_distances else 0,
+                "max": max(branch_distances) if branch_distances else 0,
+                "mean": round(statistics.mean(branch_distances), 2) if branch_distances else 0
+            }
+        }
+
+        # Load existing summary or start fresh
+        if os.path.exists(args.summary):
+            with open(args.summary, 'r') as f:
+                all_summaries = json.load(f)
+        else:
+            all_summaries = {}
+
+        # Update this dataset's entry
+        all_summaries[args.dataset] = dataset_summary
+
+        # Write back
+        with open(args.summary, 'w') as f:
+            json.dump(all_summaries, f, indent=2)
+        print(f"Wrote summary for '{args.dataset}' to {args.summary}")
 
 
 if __name__ == "__main__":
