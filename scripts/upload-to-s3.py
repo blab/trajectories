@@ -1,4 +1,4 @@
-"""Upload results directory to S3 bucket."""
+"""Upload export directory to S3 bucket."""
 
 import argparse
 import os
@@ -32,11 +32,11 @@ def delete_s3_prefix(s3, bucket, prefix):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Upload results directory to S3 bucket."
+        description="Upload export directory to S3 bucket."
     )
     parser.add_argument(
-        "--results-dir", default="results",
-        help="Local results directory to upload"
+        "--export-dir", default="export",
+        help="Local export directory to upload"
     )
     parser.add_argument(
         "--prefix", default="trajectories",
@@ -57,8 +57,8 @@ def main():
 
     # Delete existing S3 objects for each dataset directory before uploading
     # This prevents stale files from accumulating when dataset tips change
-    for item in os.listdir(args.results_dir):
-        item_path = os.path.join(args.results_dir, item)
+    for item in os.listdir(args.export_dir):
+        item_path = os.path.join(args.export_dir, item)
         if os.path.isdir(item_path):
             s3_prefix = f"{args.prefix}/{item}/"
             print(f"Deleting existing files at s3://{bucket}/{s3_prefix}")
@@ -67,18 +67,18 @@ def main():
                 print(f"  Deleted {deleted} existing files")
 
     # Count files for progress bar
-    total_files = count_files(args.results_dir)
+    total_files = count_files(args.export_dir)
     print(f"Uploading {total_files} files to s3://{bucket}/{args.prefix}/")
 
     # Walk results directory and upload all files
     with tqdm(total=total_files, desc="Uploading") as pbar:
-        for root, dirs, files in os.walk(args.results_dir):
+        for root, dirs, files in os.walk(args.export_dir):
             for filename in files:
                 if filename in EXCLUDED_FILES:
                     continue
                 local_path = os.path.join(root, filename)
                 # Convert local path to S3 key
-                relative_path = os.path.relpath(local_path, args.results_dir)
+                relative_path = os.path.relpath(local_path, args.export_dir)
                 s3_key = f"{args.prefix}/{relative_path}"
                 s3.upload_file(local_path, bucket, s3_key)
                 pbar.update(1)

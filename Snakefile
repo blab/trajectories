@@ -3,7 +3,17 @@ configfile: "defaults/config.yaml"
 # Get all analyses from config, or use target_analyses if specified on command line
 ANALYSES = config.get("target_analyses", list(config["analysis"].keys()))
 
+# Constrain {analysis} wildcard to valid analysis names only
+wildcard_constraints:
+    analysis = "|".join(config["analysis"].keys())
+
 rule all:
+    input:
+        expand("data/{analysis}/metadata.tsv", analysis=ANALYSES),
+        expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
+        expand("results/{analysis}", analysis=ANALYSES),
+
+rule results:
     input:
         expand("data/{analysis}/metadata.tsv", analysis=ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
@@ -121,16 +131,42 @@ rule trajectories:
             --output-dir {output.outdir:q} \
             --summary {params.summary:q} \
             --dataset {wildcards.analysis} \
-            --url {params.url:q} \
-            --compress
+            --url {params.url:q}
         """
+
+rule package:
+    input:
+        trajdir = "results/{analysis}"
+    output:
+        sharddir = directory("export/{analysis}")
+    shell:
+        """
+        python scripts/package.py \
+            --input-dir {input.trajdir:q} \
+            --output-dir {output.sharddir:q} \
+            --shuffle
+        """
+
+rule copy_summary:
+    input:
+        "results/summary.json"
+    output:
+        "export/summary.json"
+    shell:
+        "cp {input} {output}"
+
+rule export:
+    input:
+        expand("export/{analysis}", analysis=ANALYSES),
+        "export/summary.json"
 
 rule upload:
     input:
-        expand("results/{analysis}", analysis=ANALYSES)
+        expand("export/{analysis}", analysis=ANALYSES),
+        "export/summary.json"
     shell:
         """
         python scripts/upload-to-s3.py \
-            --results-dir results \
+            --export-dir export \
             --prefix trajectories
         """

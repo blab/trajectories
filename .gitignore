@@ -1,12 +1,14 @@
 # Files created by the pipeline, which we want to keep out of git
 data/
 results/
+export/
 
 # Errors from tests
 *.err
 
 # From Snakemake
 .snakemake/
+.snakemake_timestamp
 
 # Sensitive environment variables
 environment*

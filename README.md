@@ -12,21 +12,25 @@ pip install -r requirements.txt
 
 # Workflow
 
-The workflow is managed through Snakemake. To run the entire workflow:
+The workflow is managed through Snakemake with three main targets:
 
 ```
-snakemake --cores 1 -p
+snakemake --cores 1 -p results   # Generate trajectory FASTA files
+snakemake --cores 1 -p export    # Package into tar.zst shards
+snakemake --cores 1 -p upload    # Upload to S3
 ```
+
+Running `snakemake` with no target defaults to `results`.
 
 ## Dataset-specific outputs
 
 To provision specific datasets, use the `target_analyses` config:
 ```
 # Provision spike dataset only
-snakemake --cores 1 -p --config target_analyses='["spike-xs"]'
+snakemake --cores 1 -p results --config target_analyses='["spike-xs"]'
 
 # Provision multiple datasets
-snakemake --cores 1 -p --config target_analyses='["spike-xs","cytb-xs"]'
+snakemake --cores 1 -p results --config target_analyses='["spike-xs","cytb-xs"]'
 ```
 
 ## Available datasets
@@ -45,13 +49,13 @@ Dataset names include a size suffix indicating the number of tips:
 
 ## S3 upload
 
-Results can be uploaded to an S3 bucket using the `upload` target:
+The `upload` target packages trajectories and uploads to S3:
 
 ```
 snakemake --cores 1 -p upload
 ```
 
-This uploads `results/` to `s3://{bucket}/trajectories/`. Requires `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` environment variables to be set.
+This uploads `export/` to `s3://{bucket}/trajectories/`. Requires `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` environment variables to be set.
 
 # Outputs
 
@@ -71,8 +75,8 @@ The main output is one trajectory file per tip in `results/{dataset}/`:
 ```
 results/
 ├── spike-xs/
-│   ├── USACA-CDC-STM-A1234562021.fasta.zst
-│   ├── NigeriaISTH-E02312020.fasta.zst
+│   ├── USACA-CDC-STM-A1234562021.fasta
+│   ├── NigeriaISTH-E02312020.fasta
 │   └── ...
 ├── cytb-xs/
 │   └── ...
@@ -80,7 +84,7 @@ results/
     └── ...
 ```
 
-Each trajectory is a zstd-compressed FASTA file containing the evolutionary path from root to tip:
+Each trajectory is a FASTA file containing the evolutionary path from root to tip:
 
 ```
 >NODE_0000000|0
@@ -92,6 +96,23 @@ ATGTTCGTTTTT...
 ```
 
 Where each header contains `>{node_name}|{cumulative_hamming_distance}`. Intermediate nodes with zero mutations are skipped (root and tip are always included).
+
+## Export shards
+
+For distribution and efficient data loading, trajectories are packaged into sharded tar.zst archives in `export/`:
+
+```
+export/
+├── spike-xs/
+│   └── trajectories-000.tar.zst
+├── cytb-xs/
+│   └── trajectories-000.tar.zst
+├── n450-xs/
+│   └── trajectories-000.tar.zst
+└── summary.json
+```
+
+Each shard contains up to 10,000 trajectories. Files are shuffled before sharding. Larger datasets will have multiple shards (e.g., `trajectories-000.tar.zst`, `trajectories-001.tar.zst`, etc.).
 
 ## Summary statistics
 
