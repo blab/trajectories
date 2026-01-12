@@ -173,6 +173,10 @@ def main():
         "--dataset",
         help="Dataset name (used as key in summary JSON)"
     )
+    parser.add_argument(
+        "--url",
+        help="Dataset source URL (included in summary JSON)"
+    )
     args = parser.parse_args()
 
     # Create output directory
@@ -223,6 +227,7 @@ def main():
     if args.summary and args.dataset:
         # Build stats for this dataset
         dataset_summary = {
+            "url": args.url,
             "num_tips": len(tips),
             "num_nodes": len(sequences),
             "sequence_length": seq_length,

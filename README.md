@@ -23,19 +23,25 @@ snakemake --cores 1 -p
 To provision specific datasets, use the `target_analyses` config:
 ```
 # Provision spike dataset only
-snakemake --cores 1 -p --config target_analyses='["spike"]'
+snakemake --cores 1 -p --config target_analyses='["spike-xs"]'
 
 # Provision multiple datasets
-snakemake --cores 1 -p --config target_analyses='["spike","cytb"]'
+snakemake --cores 1 -p --config target_analyses='["spike-xs","cytb-xs"]'
 ```
 
 ## Available datasets
 
 The following datasets are pre-configured and can be used with the above commands:
 
-- `spike`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/blab/ncov/cov-diffusion/10k/2025-09-15) (10,195 sequences x 2055 nucleotides)
-- `cytb`: [Mammalian cytochrome B sequences](https://nextstrain.org/groups/blab/cytb) (5059 sequences x 1140 nucleotides)
-- `n450`: [Measles N450 sequences](https://nextstrain.org/measles/N450@2025-10-01) (2429 sequences x 450 nucleotides)
+- `spike-xs`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/blab/ncov/cov-diffusion/10k/2025-09-15) (10,195 sequences x 2055 nucleotides)
+- `cytb-xs`: [Mammalian cytochrome B sequences](https://nextstrain.org/groups/blab/cytb) (5059 sequences x 1140 nucleotides)
+- `n450-xs`: [Measles N450 sequences](https://nextstrain.org/measles/N450@2025-10-01) (2429 sequences x 450 nucleotides)
+
+Dataset names include a size suffix indicating the number of tips:
+- `xs`: 1k - 10k tips
+- `sm`: 10k - 100k tips
+- `md`: 100k - 1M tips
+- `lg`: 1M - 10M tips
 
 ## S3 upload
 
@@ -64,13 +70,13 @@ The main output is one trajectory file per tip in `results/{dataset}/`:
 
 ```
 results/
-├── spike/
+├── spike-xs/
 │   ├── USACA-CDC-STM-A1234562021.fasta.zst
 │   ├── NigeriaISTH-E02312020.fasta.zst
 │   └── ...
-├── cytb/
+├── cytb-xs/
 │   └── ...
-└── n450/
+└── n450-xs/
     └── ...
 ```
 
@@ -93,7 +99,8 @@ A consolidated `results/summary.json` file contains statistics for all processed
 
 ```json
 {
-  "cytb": {
+  "cytb-xs": {
+    "url": "nextstrain.org/groups/blab/cytb",
     "num_tips": 5059,
     "num_nodes": 10117,
     "sequence_length": 1140,
@@ -103,8 +110,8 @@ A consolidated `results/summary.json` file contains statistics for all processed
     "zero_distance_branches": 373,
     "per_branch_hamming": { "min": 0, "max": 253, "mean": 29.24 }
   },
-  "spike": { ... },
-  "n450": { ... }
+  "spike-xs": { ... },
+  "n450-xs": { ... }
 }
 ```
 

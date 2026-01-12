@@ -1,17 +1,17 @@
 analysis:
-  spike:
+  spike-xs:
     dataset: https://nextstrain.org/groups/blab/ncov/trajectories/10k/2025-09-15
     gene: nuc
     trim_begin: 21563
     trim_end: 23617
     seq_length: 2055 # spike s1
-  cytb:
+  cytb-xs:
     dataset: https://nextstrain.org/groups/blab/cytb
     gene: nuc
     trim_begin: 1
     trim_end: 1140
     seq_length: 1140
-  n450:
+  n450-xs:
     dataset: https://nextstrain.org/measles/N450@2026-01-01
     gene: nuc
     seq_length: 450

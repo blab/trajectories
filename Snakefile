@@ -111,7 +111,8 @@ rule trajectories:
     output:
         outdir = directory("results/{analysis}")
     params:
-        summary = "results/summary.json"
+        summary = "results/summary.json",
+        url = lambda wildcards: config["analysis"][wildcards.analysis]["dataset"]
     shell:
         """
         python scripts/trajectory.py \
@@ -120,6 +121,7 @@ rule trajectories:
             --output-dir {output.outdir:q} \
             --summary {params.summary:q} \
             --dataset {wildcards.analysis} \
+            --url {params.url:q} \
             --compress
         """
 
