@@ -26,7 +26,7 @@ Running `snakemake` with no target defaults to `results`.
 
 To provision specific datasets, use the `target_analyses` config:
 ```
-# Provision spike dataset only
+# Provision spike-xs dataset only
 snakemake --cores 1 -p results --config target_analyses='["spike-xs"]'
 
 # Provision multiple datasets
@@ -37,7 +37,8 @@ snakemake --cores 1 -p results --config target_analyses='["spike-xs","cytb-xs"]'
 
 The following datasets are pre-configured and can be used with the above commands:
 
-- `spike-xs`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/blab/ncov/cov-diffusion/10k/2025-09-15) (10,195 sequences x 2055 nucleotides)
+- `spike-xs`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/blab/ncov/trajectories/10k/2025-09-15) (10,195 sequences x 2055 nucleotides)
+- `spike-sm`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/blab/ncov/trajectories/30k/2026-01-01) (34,707 sequences x 2055 nucleotides)
 - `cytb-xs`: [Mammalian cytochrome B sequences](https://nextstrain.org/groups/blab/cytb) (5059 sequences x 1140 nucleotides)
 - `n450-xs`: [Measles N450 sequences](https://nextstrain.org/measles/N450@2025-10-01) (2429 sequences x 450 nucleotides)
 
@@ -132,6 +133,7 @@ A consolidated `results/summary.json` file contains statistics for all processed
     "per_branch_hamming": { "min": 0, "max": 253, "mean": 29.24 }
   },
   "spike-xs": { ... },
+  "spike-sm": { ... },  
   "n450-xs": { ... }
 }
 ```

@@ -5,6 +5,12 @@ analysis:
     trim_begin: 21563
     trim_end: 23617
     seq_length: 2055 # spike s1
+  spike-sm:
+    dataset: https://nextstrain.org/groups/blab/ncov/trajectories/30k/2026-01-01
+    gene: nuc
+    trim_begin: 21563
+    trim_end: 23617
+    seq_length: 2055 # spike s1
   cytb-xs:
     dataset: https://nextstrain.org/groups/blab/cytb
     gene: nuc
