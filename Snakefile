@@ -26,6 +26,7 @@ rule download_auspice_json:
         dataset = lambda wildcards: config["analysis"][wildcards.analysis]["dataset"]
     shell:
         """
+        mkdir -p data/{wildcards.analysis}
         nextstrain remote download {params.dataset:q} {output.tree:q}
         """
 
