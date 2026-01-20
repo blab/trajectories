@@ -1,7 +1,6 @@
 biopython
 boto3
 nextstrain-augur
-nextstrain-cli
 pulp<3.0
 snakemake
 tqdm

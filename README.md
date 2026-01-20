@@ -10,6 +10,15 @@ Install various dependencies with pip:
 pip install -r requirements.txt
 ```
 
+Nextstrain CLI should be installed [following its docs](https://docs.nextstrain.org/en/latest/install.html#install-nextstrain-cli) and looks like
+
+```
+# Mac
+curl -fsSL --proto '=https' https://nextstrain.org/cli/installer/mac | bash
+# Linux
+curl -fsSL --proto '=https' https://nextstrain.org/cli/installer/linux | bash
+```
+
 # Workflow
 
 The workflow is managed through Snakemake with three main targets:
