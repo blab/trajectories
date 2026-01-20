@@ -21,13 +21,36 @@ rule results:
 
 rule download_auspice_json:
     output:
-        tree = "data/{analysis}/auspice.json"
+        tree = "data/{analysis}/auspice_raw.json"
     params:
         dataset = lambda wildcards: config["analysis"][wildcards.analysis]["dataset"]
     shell:
         """
         mkdir -p data/{wildcards.analysis}
         nextstrain remote download {params.dataset:q} {output.tree:q}
+        """
+
+rule train_test_split:
+    input:
+        auspice = "data/{analysis}/auspice_raw.json"
+    output:
+        auspice = "data/{analysis}/auspice.json"
+    params:
+        gene = lambda wildcards: config["analysis"][wildcards.analysis]["gene"],
+        test_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("test_proportion", 0.1),
+        mutations_back = lambda wildcards: config["analysis"][wildcards.analysis].get("mutations_back", 5),
+        max_clade_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("max_clade_proportion", 0.01),
+        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42)
+    shell:
+        """
+        python scripts/train_test_split.py \
+            --json {input.auspice:q} \
+            --output {output.auspice:q} \
+            --gene {params.gene:q} \
+            --test-proportion {params.test_proportion} \
+            --mutations-back {params.mutations_back} \
+            --max-clade-proportion {params.max_clade_proportion} \
+            --seed {params.seed}
         """
 
 rule provision_alignment:
