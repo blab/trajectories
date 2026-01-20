@@ -66,6 +66,11 @@ rule provision_alignment:
         gene = lambda wildcards: config["analysis"][wildcards.analysis]["gene"]
     shell:
         """
+        # Copy root-sequence sidecar file if it exists (some datasets have inline root sequence instead)
+        if [ -f "data/{wildcards.analysis}/auspice_raw_root-sequence.json" ]; then
+            cp "data/{wildcards.analysis}/auspice_raw_root-sequence.json" "data/{wildcards.analysis}/auspice_root-sequence.json"
+        fi
+
         python scripts/alignment.py \
             --json {input.auspice:q} \
             --output {output.alignment:q} \
