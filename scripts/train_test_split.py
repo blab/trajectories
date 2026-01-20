@@ -11,12 +11,29 @@ import json
 import random
 
 
-def count_mutations_on_branch(node_dict, gene="nuc"):
-    """Count mutations in branch_attrs.mutations[gene] for this node."""
+def count_mutations_on_branch(node_dict, gene="nuc", trim_begin=None, trim_end=None):
+    """Count mutations in branch_attrs.mutations[gene] for this node.
+
+    If trim_begin and trim_end are specified, only count mutations within that range.
+    Positions are 1-indexed and inclusive on both ends.
+    """
     branch_attrs = node_dict.get("branch_attrs", {})
     mutations = branch_attrs.get("mutations", {})
     gene_mutations = mutations.get(gene, [])
-    return len(gene_mutations)
+
+    if trim_begin is None or trim_end is None:
+        return len(gene_mutations)
+
+    count = 0
+    for mut_str in gene_mutations:
+        try:
+            position = int(mut_str[1:-1])
+            if trim_begin <= position <= trim_end:
+                count += 1
+        except (ValueError, IndexError):
+            continue
+
+    return count
 
 
 def build_node_map(tree_dict):
@@ -66,13 +83,16 @@ def get_all_tips(tree_dict):
     return tips
 
 
-def walk_back_mutations(tip_name, parent_map, node_map, target_mutations, gene):
+def walk_back_mutations(tip_name, parent_map, node_map, target_mutations, gene, trim_begin=None, trim_end=None):
     """
     Walk back from tip counting mutations, return ancestor name.
 
     Returns the name of the ancestor node reached after accumulating
     at least target_mutations mutations. If we reach the root before
     accumulating enough mutations, returns the root.
+
+    If trim_begin and trim_end are specified, only mutations within that
+    position range are counted.
     """
     current_name = tip_name
     accumulated_mutations = 0
@@ -83,7 +103,7 @@ def walk_back_mutations(tip_name, parent_map, node_map, target_mutations, gene):
 
         # Count mutations on the branch leading to current node
         current_node = node_map[current_name]
-        branch_mutations = count_mutations_on_branch(current_node, gene)
+        branch_mutations = count_mutations_on_branch(current_node, gene, trim_begin, trim_end)
         accumulated_mutations += branch_mutations
 
         if accumulated_mutations >= target_mutations:
@@ -126,11 +146,14 @@ def get_clade_tip_count(node_dict):
     return count
 
 
-def iterative_test_selection(tree_dict, test_proportion, mutations_back, max_clade_proportion, gene, rng):
+def iterative_test_selection(tree_dict, test_proportion, mutations_back, max_clade_proportion, gene, rng, trim_begin=None, trim_end=None):
     """
     Main loop: select seed tips, find ancestors, skip oversized clades, mark until target reached.
 
     Returns a set of node names marked as test.
+
+    If trim_begin and trim_end are specified, only mutations within that
+    position range are counted when walking back.
     """
     all_tips = get_all_tips(tree_dict)
     total_tips = len(all_tips)
@@ -162,7 +185,7 @@ def iterative_test_selection(tree_dict, test_proportion, mutations_back, max_cla
             break
 
         # Walk back from seed tip to find ancestor
-        ancestor_name = walk_back_mutations(seed_tip, parent_map, node_map, mutations_back, gene)
+        ancestor_name = walk_back_mutations(seed_tip, parent_map, node_map, mutations_back, gene, trim_begin, trim_end)
         ancestor_node = node_map[ancestor_name]
 
         # Check clade size
@@ -257,6 +280,14 @@ def main():
         "--seed", type=int, default=None,
         help="Random seed for reproducibility"
     )
+    parser.add_argument(
+        "--trim-begin", type=str, default="",
+        help="Start position for filtering mutations (1-indexed, inclusive). Empty string means no filtering."
+    )
+    parser.add_argument(
+        "--trim-end", type=str, default="",
+        help="End position for filtering mutations (1-indexed, inclusive). Empty string means no filtering."
+    )
 
     args = parser.parse_args()
 
@@ -270,6 +301,10 @@ def main():
 
     # Set up random number generator
     rng = random.Random(args.seed)
+
+    # Convert trim args to int or None
+    trim_begin = int(args.trim_begin) if args.trim_begin else None
+    trim_end = int(args.trim_end) if args.trim_end else None
 
     # Load Auspice JSON
     with open(args.json, 'r') as f:
@@ -290,7 +325,9 @@ def main():
         args.mutations_back,
         args.max_clade_proportion,
         args.gene,
-        rng
+        rng,
+        trim_begin,
+        trim_end
     )
 
     # Annotate nodes with train/test labels

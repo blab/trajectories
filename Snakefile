@@ -40,7 +40,9 @@ rule train_test_split:
         test_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("test_proportion", 0.1),
         mutations_back = lambda wildcards: config["analysis"][wildcards.analysis].get("mutations_back", 5),
         max_clade_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("max_clade_proportion", 0.01),
-        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42)
+        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42),
+        trim_begin_arg = lambda wildcards: f"--trim-begin {config['analysis'][wildcards.analysis]['trim_begin']}" if "trim_begin" in config['analysis'][wildcards.analysis] else "",
+        trim_end_arg = lambda wildcards: f"--trim-end {config['analysis'][wildcards.analysis]['trim_end']}" if "trim_end" in config['analysis'][wildcards.analysis] else ""
     shell:
         """
         python scripts/train_test_split.py \
@@ -50,7 +52,9 @@ rule train_test_split:
             --test-proportion {params.test_proportion} \
             --mutations-back {params.mutations_back} \
             --max-clade-proportion {params.max_clade_proportion} \
-            --seed {params.seed}
+            --seed {params.seed} \
+            {params.trim_begin_arg} \
+            {params.trim_end_arg}
         """
 
 rule provision_alignment:
