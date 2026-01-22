@@ -57,6 +57,10 @@ Dataset names include a size suffix indicating the number of tips:
 - `md`: 100k - 1M tips
 - `lg`: 1M - 10M tips
 
+## Train/test split
+
+The workflow automatically splits tips into train and test sets by marking entire clades as test data. This ensures test trajectories represent independent evolutionary lineages. See [notes/train_test.md](notes/train_test.md) for details on the algorithm and how it affects trajectory construction.
+
 ## S3 upload
 
 The `upload` target packages trajectories and uploads to S3:
@@ -76,18 +80,22 @@ For each dataset, the workflow generates intermediate files in `data/{dataset}/`
 - `auspice.json` - Original Nextstrain tree data
 - `alignment.fasta` - Sequences for all nodes (tips and internal)
 - `metadata.tsv` - Phylogenetic metadata with parent relationships
-- `branches.tsv` - Parent-child relationships with Hamming distances
+- `branches.tsv` - Parent-child relationships with Hamming distances and train/test labels
 
 ## Trajectory files
 
-The main output is one trajectory file per tip in `results/{dataset}/`:
+The main output is one trajectory file per tip in `results/{dataset}/`, organized into `train/` and `test/` subdirectories:
 
 ```
 results/
 ├── spike-xs/
-│   ├── USACA-CDC-STM-A1234562021.fasta
-│   ├── NigeriaISTH-E02312020.fasta
-│   └── ...
+│   ├── train/
+│   │   ├── USACA-CDC-STM-A1234562021.fasta
+│   │   ├── NigeriaISTH-E02312020.fasta
+│   │   └── ...
+│   └── test/
+│       ├── Algeria10372023.fasta
+│       └── ...
 ├── cytb-xs/
 │   └── ...
 └── n450-xs/
@@ -107,6 +115,8 @@ ATGTTCGTTTTT...
 
 Where each header contains `>{node_name}|{cumulative_hamming_distance}`. Intermediate nodes with zero mutations are skipped (root and tip are always included).
 
+**Training trajectories** contain the full root-to-tip path. **Test trajectories** are truncated to start at the test clade boundary, ensuring they contain only evolutionary history unseen during training.
+
 ## Export shards
 
 For distribution and efficient data loading, trajectories are packaged into sharded tar.zst archives in `export/`:
@@ -114,15 +124,18 @@ For distribution and efficient data loading, trajectories are packaged into shar
 ```
 export/
 ├── spike-xs/
-│   └── trajectories-000.tar.zst
+│   ├── trajectories-train-000.tar.zst
+│   └── trajectories-test-000.tar.zst
 ├── cytb-xs/
-│   └── trajectories-000.tar.zst
+│   ├── trajectories-train-000.tar.zst
+│   └── trajectories-test-000.tar.zst
 ├── n450-xs/
-│   └── trajectories-000.tar.zst
+│   ├── trajectories-train-000.tar.zst
+│   └── trajectories-test-000.tar.zst
 └── summary.json
 ```
 
-Each shard contains up to 10,000 trajectories. Files are shuffled before sharding. Larger datasets will have multiple shards (e.g., `trajectories-000.tar.zst`, `trajectories-001.tar.zst`, etc.).
+Each shard contains up to 10,000 trajectories. Files are shuffled before sharding. Larger datasets will have multiple shards (e.g., `trajectories-train-000.tar.zst`, `trajectories-train-001.tar.zst`, etc.).
 
 ## Summary statistics
 
@@ -130,24 +143,26 @@ A consolidated `results/summary.json` file contains statistics for all processed
 
 ```json
 {
-  "cytb-xs": {
-    "url": "nextstrain.org/groups/blab/cytb",
-    "num_tips": 5059,
-    "num_nodes": 10117,
-    "sequence_length": 1140,
-    "hamming_from_root": { "min": 154, "max": 602, "mean": 377.81 },
-    "path_depth": { "min": 6, "max": 43, "mean": 22.28 },
-    "total_branches": 10116,
-    "zero_distance_branches": 373,
-    "per_branch_hamming": { "min": 0, "max": 253, "mean": 29.24 }
+  "spike-xs": {
+    "url": "nextstrain.org/groups/blab/ncov/trajectories/10k/2025-09-15",
+    "num_tips": 10195,
+    "num_nodes": 19960,
+    "sequence_length": 2055,
+    "hamming_from_root": { "min": 0, "max": 80, "mean": 27.18 },
+    "path_depth": { "min": 1, "max": 24, "mean": 10.57 },
+    "total_branches": 19959,
+    "zero_distance_branches": 15095,
+    "per_branch_hamming": { "min": 0, "max": 37, "mean": 0.35 },
+    "train_tips": 9172,
+    "test_tips": 1023
   },
-  "spike-xs": { ... },
-  "spike-sm": { ... },  
+  "cytb-xs": { ... },
+  "spike-sm": { ... },
   "n450-xs": { ... }
 }
 ```
 
-Each dataset entry is added or updated when its trajectories are generated.
+Each dataset entry is added or updated when its trajectories are generated. The `train_tips` and `test_tips` fields indicate the number of trajectories in each split.
 
 # License
 

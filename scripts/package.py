@@ -38,6 +38,53 @@ def create_shard(files, input_dir, output_path):
     return len(tar_data), len(compressed)
 
 
+def process_split(input_dir, output_dir, shard_size, shuffle, seed, split_name=None):
+    """
+    Process FASTA files from a directory into sharded tar.zst archives.
+
+    Args:
+        input_dir: Directory containing .fasta files
+        output_dir: Output directory for tar.zst shards
+        shard_size: Number of trajectories per shard
+        shuffle: Whether to shuffle files before sharding
+        seed: Random seed for shuffling
+        split_name: Optional split name (e.g., 'train', 'test') for shard naming
+
+    Returns:
+        Tuple of (num_shards, total_uncompressed, total_compressed)
+    """
+    files = get_fasta_files(input_dir)
+    if not files:
+        return 0, 0, 0
+
+    print(f"Found {len(files)} {split_name or ''} FASTA files".strip())
+
+    if shuffle:
+        random.seed(seed)
+        random.shuffle(files)
+
+    # Group into shards
+    shards = []
+    for i in range(0, len(files), shard_size):
+        shards.append(files[i:i + shard_size])
+
+    # Create each shard
+    total_uncompressed = 0
+    total_compressed = 0
+    desc = f"Creating {split_name} shards" if split_name else "Creating shards"
+    for shard_idx, shard_files in enumerate(tqdm(shards, desc=desc)):
+        if split_name:
+            filename = f"trajectories-{split_name}-{shard_idx:03d}.tar.zst"
+        else:
+            filename = f"trajectories-{shard_idx:03d}.tar.zst"
+        output_path = os.path.join(output_dir, filename)
+        uncompressed, compressed = create_shard(shard_files, input_dir, output_path)
+        total_uncompressed += uncompressed
+        total_compressed += compressed
+
+    return len(shards), total_uncompressed, total_compressed
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Package trajectory FASTA files into sharded tar.zst archives."
@@ -67,42 +114,45 @@ def main():
     # Create output directory
     os.makedirs(args.output_dir, exist_ok=True)
 
-    # Get list of FASTA files
-    files = get_fasta_files(args.input_dir)
-    if not files:
+    if args.shuffle:
+        print(f"Shuffling enabled (seed={args.seed})")
+
+    # Check for train/test subdirectories
+    train_dir = os.path.join(args.input_dir, 'train')
+    test_dir = os.path.join(args.input_dir, 'test')
+
+    total_shards = 0
+    total_uncompressed = 0
+    total_compressed = 0
+
+    if os.path.isdir(train_dir) and os.path.isdir(test_dir):
+        # Process train and test separately
+        for split in ['train', 'test']:
+            split_dir = os.path.join(args.input_dir, split)
+            num_shards, uncompressed, compressed = process_split(
+                split_dir, args.output_dir, args.shard_size,
+                args.shuffle, args.seed, split_name=split
+            )
+            total_shards += num_shards
+            total_uncompressed += uncompressed
+            total_compressed += compressed
+    else:
+        # Fall back to original behavior (backward compatibility)
+        num_shards, uncompressed, compressed = process_split(
+            args.input_dir, args.output_dir, args.shard_size,
+            args.shuffle, args.seed
+        )
+        total_shards = num_shards
+        total_uncompressed = uncompressed
+        total_compressed = compressed
+
+    if total_shards == 0:
         print(f"No .fasta files found in {args.input_dir}")
         return
 
-    print(f"Found {len(files)} FASTA files")
-
-    # Shuffle if requested
-    if args.shuffle:
-        random.seed(args.seed)
-        random.shuffle(files)
-        print(f"Shuffled files (seed={args.seed})")
-
-    # Group into shards
-    shards = []
-    for i in range(0, len(files), args.shard_size):
-        shards.append(files[i:i + args.shard_size])
-
-    print(f"Creating {len(shards)} shard(s) with up to {args.shard_size} files each")
-
-    # Create each shard
-    total_uncompressed = 0
-    total_compressed = 0
-    for shard_idx, shard_files in enumerate(tqdm(shards, desc="Creating shards")):
-        output_path = os.path.join(
-            args.output_dir,
-            f"trajectories-{shard_idx:03d}.tar.zst"
-        )
-        uncompressed, compressed = create_shard(shard_files, args.input_dir, output_path)
-        total_uncompressed += uncompressed
-        total_compressed += compressed
-
     # Report compression stats
     ratio = total_uncompressed / total_compressed if total_compressed > 0 else 0
-    print(f"Done! Created {len(shards)} shard(s) in {args.output_dir}")
+    print(f"Done! Created {total_shards} shard(s) in {args.output_dir}")
     print(f"Total size: {total_compressed / 1024 / 1024:.1f} MB "
           f"(compression ratio: {ratio:.1f}x)")
 
