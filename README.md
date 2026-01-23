@@ -26,7 +26,7 @@ The workflow is managed through Snakemake with three main targets:
 ```
 snakemake --cores 1 -p results   # Generate trajectory FASTA files
 snakemake --cores 1 -p export    # Package into tar.zst shards
-snakemake --cores 1 -p upload    # Upload to S3
+snakemake --cores 1 -p upload    # After export, upload to S3
 ```
 
 Running `snakemake` with no target defaults to `results`.
@@ -84,16 +84,16 @@ For each dataset, the workflow generates intermediate files in `data/{dataset}/`
 
 ## Trajectory files
 
-The main output is one trajectory file per tip in `results/{dataset}/`, organized into `train/` and `test/` subdirectories:
+The main output is one trajectory file per tip in `results/{dataset}/`, organized into `forwards-train/` and `forwards-test/` subdirectories:
 
 ```
 results/
 ├── spike-xs/
-│   ├── train/
+│   ├── forwards-train/
 │   │   ├── USACA-CDC-STM-A1234562021.fasta
 │   │   ├── NigeriaISTH-E02312020.fasta
 │   │   └── ...
-│   └── test/
+│   └── forwards-test/
 │       ├── Algeria10372023.fasta
 │       └── ...
 ├── cytb-xs/
@@ -124,14 +124,14 @@ For distribution and efficient data loading, trajectories are packaged into shar
 ```
 export/
 ├── spike-xs/
-│   ├── trajectories-train-000.tar.zst
-│   └── trajectories-test-000.tar.zst
+│   ├── forwards-train-000.tar.zst
+│   └── forwards-test-000.tar.zst
 ├── cytb-xs/
-│   ├── trajectories-train-000.tar.zst
-│   └── trajectories-test-000.tar.zst
+│   ├── forwards-train-000.tar.zst
+│   └── forwards-test-000.tar.zst
 ├── n450-xs/
-│   ├── trajectories-train-000.tar.zst
-│   └── trajectories-test-000.tar.zst
+│   ├── forwards-train-000.tar.zst
+│   └── forwards-test-000.tar.zst
 └── summary.json
 ```
 

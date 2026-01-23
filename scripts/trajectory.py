@@ -220,8 +220,8 @@ def main():
 
     # Create output subdirectories if we have train/test labels
     if has_train_test:
-        train_dir = os.path.join(args.output_dir, 'train')
-        test_dir = os.path.join(args.output_dir, 'test')
+        train_dir = os.path.join(args.output_dir, 'forwards-train')
+        test_dir = os.path.join(args.output_dir, 'forwards-test')
         os.makedirs(train_dir, exist_ok=True)
         os.makedirs(test_dir, exist_ok=True)
     else:

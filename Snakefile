@@ -182,12 +182,11 @@ rule package:
 
 rule copy_summary:
     input:
-        summary = "results/summary.json",
         trajdirs = expand("results/{analysis}", analysis=ANALYSES)
     output:
         "export/summary.json"
     shell:
-        "cp {input.summary} {output}"
+        "cp results/summary.json {output}"
 
 rule export:
     input:

@@ -74,7 +74,7 @@ def process_split(input_dir, output_dir, shard_size, shuffle, seed, split_name=N
     desc = f"Creating {split_name} shards" if split_name else "Creating shards"
     for shard_idx, shard_files in enumerate(tqdm(shards, desc=desc)):
         if split_name:
-            filename = f"trajectories-{split_name}-{shard_idx:03d}.tar.zst"
+            filename = f"forwards-{split_name}-{shard_idx:03d}.tar.zst"
         else:
             filename = f"trajectories-{shard_idx:03d}.tar.zst"
         output_path = os.path.join(output_dir, filename)
@@ -118,8 +118,8 @@ def main():
         print(f"Shuffling enabled (seed={args.seed})")
 
     # Check for train/test subdirectories
-    train_dir = os.path.join(args.input_dir, 'train')
-    test_dir = os.path.join(args.input_dir, 'test')
+    train_dir = os.path.join(args.input_dir, 'forwards-train')
+    test_dir = os.path.join(args.input_dir, 'forwards-test')
 
     total_shards = 0
     total_uncompressed = 0
@@ -128,7 +128,7 @@ def main():
     if os.path.isdir(train_dir) and os.path.isdir(test_dir):
         # Process train and test separately
         for split in ['train', 'test']:
-            split_dir = os.path.join(args.input_dir, split)
+            split_dir = os.path.join(args.input_dir, f'forwards-{split}')
             num_shards, uncompressed, compressed = process_split(
                 split_dir, args.output_dir, args.shard_size,
                 args.shuffle, args.seed, split_name=split
