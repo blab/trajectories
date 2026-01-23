@@ -46,10 +46,10 @@ snakemake --cores 1 -p results --config target_analyses='["spike-xs","cytb-xs"]'
 
 The following datasets are pre-configured and can be used with the above commands:
 
-- `spike-xs`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/blab/ncov/trajectories/10k/2025-09-15) (10,195 sequences x 2055 nucleotides)
-- `spike-sm`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/blab/ncov/trajectories/30k/2026-01-01) (34,707 sequences x 2055 nucleotides)
-- `cytb-xs`: [Mammalian cytochrome B sequences](https://nextstrain.org/groups/blab/cytb) (5059 sequences x 1140 nucleotides)
-- `n450-xs`: [Measles N450 sequences](https://nextstrain.org/measles/N450@2025-10-01) (2429 sequences x 450 nucleotides)
+- `cytb-xs`: [Mammalian cytochrome B sequences](https://next.nextstrain.org/groups/trajectories/cytb-xs) (5059 sequences x 1140 nucleotides)
+- `n450-xs`: [Measles N450 sequences](https://next.nextstrain.org/groups/trajectories/n450-xs) (2429 sequences x 450 nucleotides)
+- `spike-xs`: [SARS-CoV-2 spike S1 sequences](https://next.nextstrain.org/groups/trajectories/spike-xs) (10,195 sequences x 2055 nucleotides)
+- `spike-sm`: [SARS-CoV-2 spike S1 sequences](https://next.nextstrain.org/groups/trajectories/spike-sm) (34,707 sequences x 2055 nucleotides)
 
 Dataset names include a size suffix indicating the number of tips:
 - `xs`: 1k - 10k tips
@@ -144,7 +144,7 @@ A consolidated `results/summary.json` file contains statistics for all processed
 ```json
 {
   "spike-xs": {
-    "url": "nextstrain.org/groups/blab/ncov/trajectories/10k/2025-09-15",
+    "url": "next.nextstrain.org/groups/trajectories/spike-xs",
     "num_tips": 10195,
     "num_nodes": 19960,
     "sequence_length": 2055,
