@@ -38,7 +38,7 @@ def create_shard(files, input_dir, output_path):
     return len(tar_data), len(compressed)
 
 
-def process_split(input_dir, output_dir, shard_size, shuffle, seed, split_name=None):
+def process_split(input_dir, output_dir, shard_size, shuffle, seed, split_name=None, prefix="forwards"):
     """
     Process FASTA files from a directory into sharded tar.zst archives.
 
@@ -49,6 +49,7 @@ def process_split(input_dir, output_dir, shard_size, shuffle, seed, split_name=N
         shuffle: Whether to shuffle files before sharding
         seed: Random seed for shuffling
         split_name: Optional split name (e.g., 'train', 'test') for shard naming
+        prefix: Prefix for shard filenames (e.g., 'forwards', 'pairwise')
 
     Returns:
         Tuple of (num_shards, total_uncompressed, total_compressed)
@@ -57,7 +58,7 @@ def process_split(input_dir, output_dir, shard_size, shuffle, seed, split_name=N
     if not files:
         return 0, 0, 0
 
-    print(f"Found {len(files)} {split_name or ''} FASTA files".strip())
+    print(f"Found {len(files)} {prefix}-{split_name if split_name else ''} FASTA files".strip())
 
     if shuffle:
         random.seed(seed)
@@ -71,10 +72,10 @@ def process_split(input_dir, output_dir, shard_size, shuffle, seed, split_name=N
     # Create each shard
     total_uncompressed = 0
     total_compressed = 0
-    desc = f"Creating {split_name} shards" if split_name else "Creating shards"
+    desc = f"Creating {prefix}-{split_name} shards" if split_name else "Creating shards"
     for shard_idx, shard_files in enumerate(tqdm(shards, desc=desc)):
         if split_name:
-            filename = f"forwards-{split_name}-{shard_idx:03d}.tar.zst"
+            filename = f"{prefix}-{split_name}-{shard_idx:03d}.tar.zst"
         else:
             filename = f"trajectories-{shard_idx:03d}.tar.zst"
         output_path = os.path.join(output_dir, filename)
@@ -126,12 +127,12 @@ def main():
     total_compressed = 0
 
     if os.path.isdir(train_dir) and os.path.isdir(test_dir):
-        # Process train and test separately
+        # Process forwards train and test separately
         for split in ['train', 'test']:
             split_dir = os.path.join(args.input_dir, f'forwards-{split}')
             num_shards, uncompressed, compressed = process_split(
                 split_dir, args.output_dir, args.shard_size,
-                args.shuffle, args.seed, split_name=split
+                args.shuffle, args.seed, split_name=split, prefix="forwards"
             )
             total_shards += num_shards
             total_uncompressed += uncompressed
@@ -145,6 +146,21 @@ def main():
         total_shards = num_shards
         total_uncompressed = uncompressed
         total_compressed = compressed
+
+    # Also process pairwise directories if they exist
+    pairwise_train_dir = os.path.join(args.input_dir, 'pairwise-train')
+    pairwise_test_dir = os.path.join(args.input_dir, 'pairwise-test')
+
+    if os.path.isdir(pairwise_train_dir) and os.path.isdir(pairwise_test_dir):
+        for split in ['train', 'test']:
+            split_dir = os.path.join(args.input_dir, f'pairwise-{split}')
+            num_shards, uncompressed, compressed = process_split(
+                split_dir, args.output_dir, args.shard_size,
+                args.shuffle, args.seed, split_name=split, prefix="pairwise"
+            )
+            total_shards += num_shards
+            total_uncompressed += uncompressed
+            total_compressed += compressed
 
     if total_shards == 0:
         print(f"No .fasta files found in {args.input_dir}")

@@ -11,13 +11,19 @@ rule all:
     input:
         expand("data/{analysis}/metadata.tsv", analysis=ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
-        expand("results/{analysis}", analysis=ANALYSES),
+        expand("results/{analysis}/forwards-train", analysis=ANALYSES),
+        expand("results/{analysis}/forwards-test", analysis=ANALYSES),
+        expand("results/{analysis}/pairwise-train", analysis=ANALYSES),
+        expand("results/{analysis}/pairwise-test", analysis=ANALYSES),
 
 rule results:
     input:
         expand("data/{analysis}/metadata.tsv", analysis=ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
-        expand("results/{analysis}", analysis=ANALYSES),
+        expand("results/{analysis}/forwards-train", analysis=ANALYSES),
+        expand("results/{analysis}/forwards-test", analysis=ANALYSES),
+        expand("results/{analysis}/pairwise-train", analysis=ANALYSES),
+        expand("results/{analysis}/pairwise-test", analysis=ANALYSES),
 
 rule download_auspice_json:
     output:
@@ -152,8 +158,10 @@ rule trajectories:
         branches = "data/{analysis}/branches.tsv",
         alignment = "data/{analysis}/alignment.fasta"
     output:
-        outdir = directory("results/{analysis}")
+        train_dir = directory("results/{analysis}/forwards-train"),
+        test_dir = directory("results/{analysis}/forwards-test")
     params:
+        output_dir = "results/{analysis}",
         summary = "results/summary.json",
         url = lambda wildcards: config["analysis"][wildcards.analysis]["dataset"]
     shell:
@@ -161,7 +169,35 @@ rule trajectories:
         python scripts/trajectory.py \
             --branches {input.branches:q} \
             --alignment {input.alignment:q} \
-            --output-dir {output.outdir:q} \
+            --output-dir {params.output_dir:q} \
+            --summary {params.summary:q} \
+            --dataset {wildcards.analysis} \
+            --url {params.url:q}
+        """
+
+rule pairwise:
+    input:
+        branches = "data/{analysis}/branches.tsv",
+        alignment = "data/{analysis}/alignment.fasta"
+    output:
+        train_dir = directory("results/{analysis}/pairwise-train"),
+        test_dir = directory("results/{analysis}/pairwise-test")
+    params:
+        output_dir = "results/{analysis}",
+        train_limit = lambda wildcards: config["analysis"][wildcards.analysis].get("pairwise_train_limit", 100000),
+        test_limit = lambda wildcards: config["analysis"][wildcards.analysis].get("pairwise_test_limit", 50000),
+        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42),
+        summary = "results/summary.json",
+        url = lambda wildcards: config["analysis"][wildcards.analysis]["dataset"]
+    shell:
+        """
+        python scripts/pairwise_trajectory.py \
+            --branches {input.branches:q} \
+            --alignment {input.alignment:q} \
+            --output-dir {params.output_dir:q} \
+            --train-limit {params.train_limit} \
+            --test-limit {params.test_limit} \
+            --seed {params.seed} \
             --summary {params.summary:q} \
             --dataset {wildcards.analysis} \
             --url {params.url:q}
@@ -169,20 +205,26 @@ rule trajectories:
 
 rule package:
     input:
-        trajdir = "results/{analysis}"
+        forwards_train = "results/{analysis}/forwards-train",
+        forwards_test = "results/{analysis}/forwards-test",
+        pairwise_train = "results/{analysis}/pairwise-train",
+        pairwise_test = "results/{analysis}/pairwise-test"
     output:
         sharddir = directory("export/{analysis}")
+    params:
+        input_dir = "results/{analysis}"
     shell:
         """
         python scripts/package.py \
-            --input-dir {input.trajdir:q} \
+            --input-dir {params.input_dir:q} \
             --output-dir {output.sharddir:q} \
             --shuffle
         """
 
 rule copy_summary:
     input:
-        trajdirs = expand("results/{analysis}", analysis=ANALYSES)
+        forwards = expand("results/{analysis}/forwards-train", analysis=ANALYSES),
+        pairwise = expand("results/{analysis}/pairwise-train", analysis=ANALYSES)
     output:
         "export/summary.json"
     shell:
