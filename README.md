@@ -84,17 +84,22 @@ For each dataset, the workflow generates intermediate files in `data/{dataset}/`
 
 ## Trajectory files
 
-The main output is one trajectory file per tip in `results/{dataset}/`, organized into `forwards-train/` and `forwards-test/` subdirectories:
+The main output is trajectory files in `results/{dataset}/`, organized into forwards (root-to-tip) and pairwise (tip-to-tip) subdirectories:
 
 ```
 results/
 ├── spike-xs/
 │   ├── forwards-train/
 │   │   ├── USACA-CDC-STM-A1234562021.fasta
-│   │   ├── NigeriaISTH-E02312020.fasta
 │   │   └── ...
-│   └── forwards-test/
-│       ├── Algeria10372023.fasta
+│   ├── forwards-test/
+│   │   ├── Algeria10372023.fasta
+│   │   └── ...
+│   ├── pairwise-train/
+│   │   ├── TipA__TipB.fasta
+│   │   └── ...
+│   └── pairwise-test/
+│       ├── TipX__TipY.fasta
 │       └── ...
 ├── cytb-xs/
 │   └── ...
@@ -102,7 +107,9 @@ results/
     └── ...
 ```
 
-Each trajectory is a FASTA file containing the evolutionary path from root to tip:
+### Forwards trajectories
+
+Each forwards trajectory is a FASTA file containing the evolutionary path from root to tip:
 
 ```
 >NODE_0000000|0
@@ -117,6 +124,21 @@ Where each header contains `>{node_name}|{cumulative_hamming_distance}`. Interme
 
 **Training trajectories** contain the full root-to-tip path. **Test trajectories** are truncated to start at the test clade boundary, ensuring they contain only evolutionary history unseen during training.
 
+### Pairwise trajectories
+
+Each pairwise trajectory is a FASTA file containing two tip sequences with their Hamming distance:
+
+```
+>TipA|0
+ATGTTCGTTTTT...
+>TipB|23
+ATGTTCGTTTAT...
+```
+
+The first sequence gets `|0` and the second gets `|{hamming_distance}` representing the distance between the two sequences. File naming uses double underscore separator: `{tip1}__{tip2}.fasta`.
+
+**Training pairs** are random samples from all training tips (default limit: 100K pairs). **Test pairs** are only generated within the same test clade to avoid overlap with training branches (default limit: 50K pairs). Limits can be configured via `pairwise_train_limit` and `pairwise_test_limit` in config.
+
 ## Export shards
 
 For distribution and efficient data loading, trajectories are packaged into sharded tar.zst archives in `export/`:
@@ -125,17 +147,19 @@ For distribution and efficient data loading, trajectories are packaged into shar
 export/
 ├── spike-xs/
 │   ├── forwards-train-000.tar.zst
-│   └── forwards-test-000.tar.zst
+│   ├── forwards-test-000.tar.zst
+│   ├── pairwise-train-000.tar.zst
+│   ├── pairwise-train-001.tar.zst
+│   ├── ...
+│   └── pairwise-test-000.tar.zst
 ├── cytb-xs/
-│   ├── forwards-train-000.tar.zst
-│   └── forwards-test-000.tar.zst
+│   └── ...
 ├── n450-xs/
-│   ├── forwards-train-000.tar.zst
-│   └── forwards-test-000.tar.zst
+│   └── ...
 └── summary.json
 ```
 
-Each shard contains up to 10,000 trajectories. Files are shuffled before sharding. Larger datasets will have multiple shards (e.g., `trajectories-train-000.tar.zst`, `trajectories-train-001.tar.zst`, etc.).
+Each shard contains up to 10,000 trajectories. Files are shuffled before sharding. Larger datasets will have multiple shards (e.g., `pairwise-train-000.tar.zst`, `pairwise-train-001.tar.zst`, etc.).
 
 ## Summary statistics
 
@@ -154,7 +178,12 @@ A consolidated `results/summary.json` file contains statistics for all processed
     "zero_distance_branches": 15095,
     "per_branch_hamming": { "min": 0, "max": 37, "mean": 0.35 },
     "train_tips": 9172,
-    "test_tips": 1023
+    "test_tips": 1023,
+    "pairwise_train_pairs": 100000,
+    "pairwise_test_pairs": 8500,
+    "pairwise_test_clades": 25,
+    "pairwise_train_hamming": { "min": 0, "max": 80, "mean": 35.2 },
+    "pairwise_test_hamming": { "min": 0, "max": 45, "mean": 12.3 }
   },
   "cytb-xs": { ... },
   "spike-sm": { ... },
@@ -162,7 +191,7 @@ A consolidated `results/summary.json` file contains statistics for all processed
 }
 ```
 
-Each dataset entry is added or updated when its trajectories are generated. The `train_tips` and `test_tips` fields indicate the number of trajectories in each split.
+Each dataset entry is added or updated when its trajectories are generated. The `train_tips` and `test_tips` fields indicate the number of forwards trajectories in each split. The `pairwise_*` fields show pairwise pair counts, number of test clades, and Hamming distance statistics.
 
 # License
 

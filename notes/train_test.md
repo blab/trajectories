@@ -46,24 +46,31 @@ For models that predict trajectories between arbitrary sequence pairs (not just 
 
 **Test pairs**: Pairs within test clades only (e.g., `Y↔Z`)
 
-Cross-clade pairs between train and test tips are excluded to maintain separation.
+Cross-clade pairs between train and test tips are excluded to maintain separation. Each pairwise FASTA contains two sequences with their Hamming distance in the headers (`|0` for the first sequence, `|{distance}` for the second).
 
 ## Output Structure
 
-The pipeline produces separate directories for train and test trajectories:
+The pipeline produces separate directories for forwards (root-to-tip) and pairwise (tip-to-tip) trajectories:
 
 ```
 results/{analysis}/
-├── train/
+├── forwards-train/
 │   ├── tip1.fasta
 │   ├── tip2.fasta
 │   └── ...
-└── test/
-    ├── tip3.fasta
-    ├── tip4.fasta
+├── forwards-test/
+│   ├── tip3.fasta
+│   └── ...
+├── pairwise-train/
+│   ├── tipA__tipB.fasta
+│   └── ...
+└── pairwise-test/
+    ├── tipX__tipY.fasta
     └── ...
 ```
 
 These are then packaged into separate shards:
-- `trajectories-train-000.tar.zst`, `trajectories-train-001.tar.zst`, ...
-- `trajectories-test-000.tar.zst`, `trajectories-test-001.tar.zst`, ...
+- `forwards-train-000.tar.zst`, `forwards-train-001.tar.zst`, ...
+- `forwards-test-000.tar.zst`, `forwards-test-001.tar.zst`, ...
+- `pairwise-train-000.tar.zst`, `pairwise-train-001.tar.zst`, ...
+- `pairwise-test-000.tar.zst`, `pairwise-test-001.tar.zst`, ...
