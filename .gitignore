@@ -2,6 +2,7 @@
 data/
 results/
 export/
+plans/
 
 # Errors from tests
 *.err
