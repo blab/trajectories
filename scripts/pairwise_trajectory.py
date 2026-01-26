@@ -91,13 +91,18 @@ def generate_pairs(items, limit=None, seed=42):
         idx = random.randint(0, total_pairs - 1)
         selected_indices.add(idx)
 
-    # Convert indices to pairs
-    # For index k, find i,j such that k = i*(i-1)/2 + j where j < i
+    # Convert indices to pairs using triangular number enumeration.
+    # Pairs are enumerated row by row where row i contains pairs (0,i), (1,i), ..., (i-1,i):
+    #   idx 0: (0,1)
+    #   idx 1: (0,2), idx 2: (1,2)
+    #   idx 3: (0,3), idx 4: (1,3), idx 5: (2,3)
+    #   ...
+    # Row i starts at index T(i-1) = i*(i-1)/2 (triangular number).
+    # Given idx, solve i*(i-1)/2 <= idx < i*(i+1)/2 for i, then j = idx - i*(i-1)/2.
+    # Formula: i = floor((1 + sqrt(1 + 8*idx)) / 2), with adjustment loops for float precision.
     pairs = []
     for idx in selected_indices:
-        # Solve for i: i is roughly sqrt(2*idx)
         i = int((1 + (1 + 8 * idx) ** 0.5) / 2)
-        # Adjust i if needed
         while i * (i - 1) // 2 > idx:
             i -= 1
         while (i + 1) * i // 2 <= idx:
@@ -152,7 +157,7 @@ def generate_test_pairs_by_clade(clade_membership, limit=None, seed=42):
                 local_idx = idx - cumsum
                 clade_tips = clade_list[clade_idx]
                 n = len(clade_tips)
-                # Convert local index to i,j
+                # Convert local index to i,j using triangular enumeration (see generate_pairs)
                 i = int((1 + (1 + 8 * local_idx) ** 0.5) / 2)
                 while i * (i - 1) // 2 > local_idx:
                     i -= 1
