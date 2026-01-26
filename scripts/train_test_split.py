@@ -205,6 +205,72 @@ def iterative_test_selection(tree_dict, test_proportion, mutations_back, max_cla
     return test_nodes, test_tips
 
 
+def find_monophyletic_clade(tree_dict, target_size, tolerance=0.5):
+    """Find a single clade closest to target_size for test set.
+
+    JSON traversal version - no BioPython dependency.
+
+    Args:
+        tree_dict: Root node of tree as dict with 'children' key
+        target_size: Target number of tips in the clade
+        tolerance: Acceptable deviation from target (0.5 = ±50%)
+
+    Returns:
+        Tuple of (node_dict, tip_count, depth) for the best matching clade
+    """
+    candidates = []
+    min_size = target_size * (1 - tolerance)
+    max_size = target_size * (1 + tolerance)
+
+    def search(node, depth=0):
+        tip_count = get_clade_tip_count(node)
+        if min_size <= tip_count <= max_size:
+            candidates.append((node, tip_count, depth))
+        for child in node.get("children", []):
+            search(child, depth + 1)
+
+    search(tree_dict)
+
+    if not candidates:
+        raise ValueError(f"No clade found with size near {target_size} (tolerance: ±{tolerance*100:.0f}%)")
+
+    # Return clade closest to target size
+    return min(candidates, key=lambda x: abs(x[1] - target_size))
+
+
+def monophyletic_test_selection(tree_dict, test_proportion, tolerance=0.5):
+    """Select test nodes using single monophyletic clade strategy.
+
+    Finds a single contiguous clade in the tree that is closest to the
+    target test size. This ensures the test set is phylogenetically
+    coherent (one contiguous subtree).
+
+    Args:
+        tree_dict: Root node of tree as dict
+        test_proportion: Target proportion of tips for test set
+        tolerance: Acceptable deviation from target size (default: 0.5)
+
+    Returns:
+        Tuple of (test_nodes set, test_tips set) like iterative_test_selection
+    """
+    all_tips = get_all_tips(tree_dict)
+    total_tips = len(all_tips)
+    target_test_count = max(1, int(total_tips * test_proportion))
+
+    # Find the best monophyletic clade
+    clade_node, clade_tip_count, depth = find_monophyletic_clade(
+        tree_dict, target_test_count, tolerance
+    )
+
+    # Get all descendants of the selected clade
+    test_nodes = set(get_all_descendants(clade_node))
+    test_tips = set(tip for tip in all_tips if tip in test_nodes)
+
+    print(f"Selected monophyletic clade: {clade_tip_count} tips at depth {depth}")
+
+    return test_nodes, test_tips
+
+
 def add_train_test_coloring(auspice_json):
     """Add train_test to meta.colorings with categorical scale."""
     if "meta" not in auspice_json:
@@ -288,6 +354,14 @@ def main():
         "--trim-end", type=str, default="",
         help="End position for filtering mutations (1-indexed, inclusive). Empty string means no filtering."
     )
+    parser.add_argument(
+        "--strategy", type=str, choices=["random-clades", "monophyletic"], default="random-clades",
+        help="Test selection strategy: random-clades (multiple random clades) or monophyletic (single contiguous clade)"
+    )
+    parser.add_argument(
+        "--tolerance", type=float, default=0.5,
+        help="Size tolerance for monophyletic strategy (default: 0.5, meaning ±50%% of target size)"
+    )
 
     args = parser.parse_args()
 
@@ -298,6 +372,8 @@ def main():
         raise ValueError("Max clade proportion must be between 0.0 and 1.0")
     if args.mutations_back < 0:
         raise ValueError("Mutations back must be non-negative")
+    if not 0.0 < args.tolerance <= 1.0:
+        raise ValueError("Tolerance must be between 0.0 and 1.0")
 
     # Set up random number generator
     rng = random.Random(args.seed)
@@ -318,17 +394,24 @@ def main():
     all_tips = get_all_tips(tree_dict)
     total_tips = len(all_tips)
 
-    # Select test nodes
-    test_nodes, test_tips = iterative_test_selection(
-        tree_dict,
-        args.test_proportion,
-        args.mutations_back,
-        args.max_clade_proportion,
-        args.gene,
-        rng,
-        trim_begin,
-        trim_end
-    )
+    # Select test nodes based on strategy
+    if args.strategy == "monophyletic":
+        test_nodes, test_tips = monophyletic_test_selection(
+            tree_dict,
+            args.test_proportion,
+            args.tolerance
+        )
+    else:  # random-clades (default)
+        test_nodes, test_tips = iterative_test_selection(
+            tree_dict,
+            args.test_proportion,
+            args.mutations_back,
+            args.max_clade_proportion,
+            args.gene,
+            rng,
+            trim_begin,
+            trim_end
+        )
 
     # Annotate nodes with train/test labels
     annotate_nodes_train_test(tree_dict, test_nodes)
@@ -345,6 +428,7 @@ def main():
     train_tip_count = total_tips - test_tip_count
     achieved_proportion = test_tip_count / total_tips if total_tips > 0 else 0
 
+    print(f"Strategy: {args.strategy}")
     print(f"Total tips: {total_tips}")
     print(f"Test tips: {test_tip_count} ({achieved_proportion:.1%})")
     print(f"Train tips: {train_tip_count} ({1-achieved_proportion:.1%})")

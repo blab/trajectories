@@ -51,6 +51,12 @@ The following datasets are pre-configured and can be used with the above command
 - `spike-xs`: [SARS-CoV-2 spike S1 sequences](https://next.nextstrain.org/groups/trajectories/spike-xs) (10,195 sequences x 2055 nucleotides)
 - `spike-sm`: [SARS-CoV-2 spike S1 sequences](https://next.nextstrain.org/groups/trajectories/spike-sm) (34,707 sequences x 2055 nucleotides)
 
+**RdRp datasets (local):**
+- `rdrp-paramyxoviridae`: Paramyxoviridae L Domain V (3,985 sequences x 1,653 nucleotides)
+- `rdrp-flaviviridae`: Flaviviridae NS5 RdRp (4,785 sequences x 1,884 nucleotides)
+- `rdrp-picornaviridae`: Picornaviridae 3D polymerase (2,627 sequences x 1,386 nucleotides)
+- Plus subtree datasets (e.g., `rdrp-paramyxoviridae_001`, `rdrp-flaviviridae_001`)
+
 Dataset names include a size suffix indicating the number of tips:
 - `xs`: 1k - 10k tips
 - `sm`: 10k - 100k tips

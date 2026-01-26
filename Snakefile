@@ -1,5 +1,32 @@
 configfile: "defaults/config.yaml"
 
+# Auto-discover rdrp subtrees
+import glob
+import os
+
+RDRP_BASE = "../rdrp/phylogenetic/auspice"
+RDRP_FAMILIES = {
+    "paramyxoviridae": 1653,
+    "flaviviridae": 1884,
+    "picornaviridae": 1386,
+}
+
+for family, seq_length in RDRP_FAMILIES.items():
+    subtree_pattern = f"{RDRP_BASE}/{family}/subtrees/{family}_*.json"
+    for json_path in sorted(glob.glob(subtree_pattern)):
+        # Extract subtree ID (e.g., "001" from "paramyxoviridae_001.json")
+        filename = os.path.basename(json_path)
+        subtree_id = filename.replace(f"{family}_", "").replace(".json", "")
+        analysis_name = f"rdrp-{family}_{subtree_id}"
+
+        # Skip if already in config (allows manual overrides)
+        if analysis_name not in config["analysis"]:
+            config["analysis"][analysis_name] = {
+                "dataset": json_path,
+                "gene": "nuc",
+                "seq_length": seq_length,
+            }
+
 # Get all analyses from config, or use target_analyses if specified on command line
 ANALYSES = config.get("target_analyses", list(config["analysis"].keys()))
 
@@ -33,7 +60,16 @@ rule download_auspice_json:
     shell:
         """
         mkdir -p data/{wildcards.analysis}
-        nextstrain remote download {params.dataset:q} {output.tree:q}
+        dataset={params.dataset:q}
+        if [[ "$dataset" == file://* ]]; then
+            # Local file with file:// prefix - copy it
+            cp "${{dataset#file://}}" {output.tree:q}
+        elif [[ "$dataset" != http* && "$dataset" != s3://* && "$dataset" != *nextstrain.org* ]]; then
+            # Relative or absolute local path - copy it
+            cp "$dataset" {output.tree:q}
+        else
+            nextstrain remote download "$dataset" {output.tree:q}
+        fi
         """
 
 rule train_test_split:
