@@ -21,16 +21,16 @@ analysis:
     trim_begin: 21563
     trim_end: 23617
     seq_length: 2055 # spike s1
-  rdrp-paramyxoviridae:
-    dataset: https://next.nextstrain.org/groups/trajectories-private/rdrp-paramyxoviridae
+  rdrp-paramyxoviridae-xs:
+    dataset: https://next.nextstrain.org/groups/trajectories-private/rdrp-paramyxoviridae-xs
     gene: nuc
     seq_length: 1653
-  rdrp-flaviviridae:
-    dataset: https://next.nextstrain.org/groups/trajectories-private/rdrp-flaviviridae
+  rdrp-flaviviridae-xs:
+    dataset: https://next.nextstrain.org/groups/trajectories-private/rdrp-flaviviridae-xs
     gene: nuc
     seq_length: 1884
-  rdrp-picornaviridae:
-    dataset: https://next.nextstrain.org/groups/trajectories-private/rdrp-picornaviridae
+  rdrp-picornaviridae-xs:
+    dataset: https://next.nextstrain.org/groups/trajectories-private/rdrp-picornaviridae-xs
     gene: nuc
     seq_length: 1386
   # Subtrees auto-discovered from ../rdrp/phylogenetic/auspice/*/subtrees/

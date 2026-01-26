@@ -20,6 +20,19 @@ Key parameters:
 - `mutations_back`: How far back from seed tip to place clade root (default: 5)
 - `max_clade_proportion`: Maximum allowed size for any single test clade (default: 0.01)
 
+## Alternative: Monophyletic Strategy
+
+The `--strategy monophyletic` option selects a single contiguous clade as the test set, rather than multiple random clades. This finds the clade whose size is closest to the target test proportion.
+
+```bash
+python scripts/train_test_split.py --json input.json --output output.json \
+    --strategy monophyletic --test-proportion 0.2 --tolerance 0.5
+```
+
+The `--tolerance` parameter (default: 0.5) controls how far from the target size the selected clade can be. A tolerance of 0.5 means the clade size can be 50% smaller or larger than the target.
+
+This strategy is useful when you want test data to represent a single evolutionary lineage rather than multiple scattered clades.
+
 ## Trajectory Construction
 
 Once nodes are labeled, trajectories are constructed differently for train vs test tips:

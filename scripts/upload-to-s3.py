@@ -2,12 +2,30 @@
 
 import argparse
 import os
+import re
 import sys
 import boto3
 from tqdm import tqdm
 
 
 EXCLUDED_FILES = {'.DS_Store', '.snakemake_timestamp'}
+
+
+def get_s3_prefix_for_analysis(analysis, base_prefix):
+    """Get S3 prefix, nesting subtrees under their parent family.
+
+    For example:
+      - rdrp-paramyxoviridae-xs -> trajectories/rdrp-paramyxoviridae-xs/
+      - rdrp-paramyxoviridae-xs_001 -> trajectories/rdrp-paramyxoviridae-xs/subtrees/rdrp-paramyxoviridae-xs_001/
+      - cytb-xs -> trajectories/cytb-xs/
+    """
+    # Match rdrp-FAMILY-xs_XXX pattern (subtrees)
+    match = re.match(r'^(rdrp-[a-z]+-xs)_(\d+)$', analysis)
+    if match:
+        parent = match.group(1)
+        # Subtrees go under their parent
+        return f"{base_prefix}/{parent}/subtrees/{analysis}"
+    return f"{base_prefix}/{analysis}"
 
 
 def count_files(directory):
@@ -60,7 +78,7 @@ def main():
     for item in os.listdir(args.export_dir):
         item_path = os.path.join(args.export_dir, item)
         if os.path.isdir(item_path):
-            s3_prefix = f"{args.prefix}/{item}/"
+            s3_prefix = get_s3_prefix_for_analysis(item, args.prefix) + "/"
             print(f"Deleting existing files at s3://{bucket}/{s3_prefix}")
             deleted = delete_s3_prefix(s3, bucket, s3_prefix)
             if deleted:
@@ -77,9 +95,21 @@ def main():
                 if filename in EXCLUDED_FILES:
                     continue
                 local_path = os.path.join(root, filename)
-                # Convert local path to S3 key
+                # Convert local path to S3 key with proper nesting
                 relative_path = os.path.relpath(local_path, args.export_dir)
-                s3_key = f"{args.prefix}/{relative_path}"
+                # Get the analysis name (first path component)
+                path_parts = relative_path.split(os.sep)
+
+                # Handle root-level files (like summary.json)
+                if len(path_parts) == 1:
+                    s3_key = f"{args.prefix}/{filename}"
+                else:
+                    analysis = path_parts[0]
+                    rest_of_path = os.sep.join(path_parts[1:])
+                    # Get the proper S3 prefix for this analysis (handles subtree nesting)
+                    s3_analysis_prefix = get_s3_prefix_for_analysis(analysis, args.prefix)
+                    s3_key = f"{s3_analysis_prefix}/{rest_of_path}"
+
                 s3.upload_file(local_path, bucket, s3_key)
                 pbar.update(1)
 

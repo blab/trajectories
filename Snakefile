@@ -17,7 +17,7 @@ for family, seq_length in RDRP_FAMILIES.items():
         # Extract subtree ID (e.g., "001" from "paramyxoviridae_001.json")
         filename = os.path.basename(json_path)
         subtree_id = filename.replace(f"{family}_", "").replace(".json", "")
-        analysis_name = f"rdrp-{family}_{subtree_id}"
+        analysis_name = f"rdrp-{family}-xs_{subtree_id}"
 
         # Skip if already in config (allows manual overrides)
         if analysis_name not in config["analysis"]:
