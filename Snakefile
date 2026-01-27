@@ -1,31 +1,32 @@
 configfile: "defaults/config.yaml"
 
-# Auto-discover rdrp subtrees
+# Auto-discover rdrp subtrees (only if include_subtrees=true)
 import glob
 import os
 
-RDRP_BASE = "../rdrp/phylogenetic/auspice"
-RDRP_FAMILIES = {
-    "paramyxoviridae": 1653,
-    "flaviviridae": 1884,
-    "picornaviridae": 1386,
-}
+if config.get("include_subtrees", False):
+    RDRP_BASE = "../rdrp/phylogenetic/auspice"
+    RDRP_FAMILIES = {
+        "paramyxoviridae": 1653,
+        "flaviviridae": 1884,
+        "picornaviridae": 1386,
+    }
 
-for family, seq_length in RDRP_FAMILIES.items():
-    subtree_pattern = f"{RDRP_BASE}/{family}/subtrees/{family}_*.json"
-    for json_path in sorted(glob.glob(subtree_pattern)):
-        # Extract subtree ID (e.g., "001" from "paramyxoviridae_001.json")
-        filename = os.path.basename(json_path)
-        subtree_id = filename.replace(f"{family}_", "").replace(".json", "")
-        analysis_name = f"rdrp-{family}-xs_{subtree_id}"
+    for family, seq_length in RDRP_FAMILIES.items():
+        subtree_pattern = f"{RDRP_BASE}/{family}/subtrees/{family}_*.json"
+        for json_path in sorted(glob.glob(subtree_pattern)):
+            # Extract subtree ID (e.g., "001" from "paramyxoviridae_001.json")
+            filename = os.path.basename(json_path)
+            subtree_id = filename.replace(f"{family}_", "").replace(".json", "")
+            analysis_name = f"rdrp-{family}-xs_{subtree_id}"
 
-        # Skip if already in config (allows manual overrides)
-        if analysis_name not in config["analysis"]:
-            config["analysis"][analysis_name] = {
-                "dataset": json_path,
-                "gene": "nuc",
-                "seq_length": seq_length,
-            }
+            # Skip if already in config (allows manual overrides)
+            if analysis_name not in config["analysis"]:
+                config["analysis"][analysis_name] = {
+                    "dataset": json_path,
+                    "gene": "nuc",
+                    "seq_length": seq_length,
+                }
 
 # Get all analyses from config, or use target_analyses if specified on command line
 ANALYSES = config.get("target_analyses", list(config["analysis"].keys()))
