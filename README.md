@@ -21,6 +21,9 @@ curl -fsSL --proto '=https' https://nextstrain.org/cli/installer/linux | bash
 
 # Workflow
 
+Before executing the workflow, please run `nextstrain login https://next.nextstrain.org` to access `trajectories-private` datasets in config.yaml, 
+or alternatively, remove these datasets from the config.
+
 The workflow is managed through Snakemake with three main targets:
 
 ```
@@ -50,6 +53,19 @@ The following datasets are pre-configured and can be used with the above command
 - `n450-xs`: [Measles N450 sequences](https://next.nextstrain.org/groups/trajectories/n450-xs) (2429 sequences x 450 nucleotides)
 - `spike-xs`: [SARS-CoV-2 spike S1 sequences](https://next.nextstrain.org/groups/trajectories/spike-xs) (10,195 sequences x 2055 nucleotides)
 - `spike-sm`: [SARS-CoV-2 spike S1 sequences](https://next.nextstrain.org/groups/trajectories/spike-sm) (34,707 sequences x 2055 nucleotides)
+
+**RdRp datasets (local):**
+- `rdrp-paramyxoviridae-xs`: Paramyxoviridae L Domain V (3,985 sequences x 1,653 nucleotides)
+- `rdrp-flaviviridae-xs`: Flaviviridae NS5 RdRp (4,785 sequences x 1,884 nucleotides)
+- `rdrp-picornaviridae-xs`: Picornaviridae 3D polymerase (2,627 sequences x 1,386 nucleotides)
+
+**RdRp subtrees (opt-in):**
+
+Subtree datasets are auto-discovered from `../rdrp/phylogenetic/auspice/*/subtrees/` but must be explicitly enabled:
+```bash
+snakemake --cores 8 -p results --config include_subtrees=true
+```
+This adds datasets like `rdrp-paramyxoviridae-xs_001`, `rdrp-flaviviridae-xs_001`, etc.
 
 Dataset names include a size suffix indicating the number of tips:
 - `xs`: 1k - 10k tips

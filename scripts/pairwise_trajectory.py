@@ -74,15 +74,43 @@ def generate_pairs(items, limit=None, seed=42):
     Generate all pairs or random sample if limit specified.
 
     For N items, there are N*(N-1)/2 possible pairs.
+    Uses memory-efficient sampling when limit is specified and much smaller than total.
     """
     items = list(items)
-    all_pairs = list(itertools.combinations(items, 2))
+    n = len(items)
+    total_pairs = n * (n - 1) // 2
 
-    if limit is None or limit >= len(all_pairs):
-        return all_pairs
+    if limit is None or limit >= total_pairs:
+        return list(itertools.combinations(items, 2))
 
+    # Memory-efficient sampling: generate random indices without materializing all pairs
     random.seed(seed)
-    return random.sample(all_pairs, limit)
+    selected_indices = set()
+    while len(selected_indices) < limit:
+        # Sample random pair index
+        idx = random.randint(0, total_pairs - 1)
+        selected_indices.add(idx)
+
+    # Convert indices to pairs using triangular number enumeration.
+    # Pairs are enumerated row by row where row i contains pairs (0,i), (1,i), ..., (i-1,i):
+    #   idx 0: (0,1)
+    #   idx 1: (0,2), idx 2: (1,2)
+    #   idx 3: (0,3), idx 4: (1,3), idx 5: (2,3)
+    #   ...
+    # Row i starts at index T(i-1) = i*(i-1)/2 (triangular number).
+    # Given idx, solve i*(i-1)/2 <= idx < i*(i+1)/2 for i, then j = idx - i*(i-1)/2.
+    # Formula: i = floor((1 + sqrt(1 + 8*idx)) / 2), with adjustment loops for float precision.
+    pairs = []
+    for idx in selected_indices:
+        i = int((1 + (1 + 8 * idx) ** 0.5) / 2)
+        while i * (i - 1) // 2 > idx:
+            i -= 1
+        while (i + 1) * i // 2 <= idx:
+            i += 1
+        j = idx - i * (i - 1) // 2
+        pairs.append((items[j], items[i]))
+
+    return pairs
 
 
 def generate_test_pairs_by_clade(clade_membership, limit=None, seed=42):
@@ -90,6 +118,7 @@ def generate_test_pairs_by_clade(clade_membership, limit=None, seed=42):
     Generate test pairs only within same clade.
 
     Returns list of (tip1, tip2) tuples.
+    Uses memory-efficient sampling when limit is specified.
     """
     # Group tips by clade
     clades = {}
@@ -98,17 +127,48 @@ def generate_test_pairs_by_clade(clade_membership, limit=None, seed=42):
             clades[clade_root] = []
         clades[clade_root].append(tip)
 
-    # Generate pairs within each clade
-    all_pairs = []
-    for clade_tips in clades.values():
-        if len(clade_tips) >= 2:
-            all_pairs.extend(itertools.combinations(clade_tips, 2))
+    # Calculate total pairs across all clades
+    clade_list = [tips for tips in clades.values() if len(tips) >= 2]
+    clade_pair_counts = [len(tips) * (len(tips) - 1) // 2 for tips in clade_list]
+    total_pairs = sum(clade_pair_counts)
 
-    if limit is None or limit >= len(all_pairs):
+    if limit is None or limit >= total_pairs:
+        # Generate all pairs
+        all_pairs = []
+        for clade_tips in clade_list:
+            all_pairs.extend(itertools.combinations(clade_tips, 2))
         return all_pairs
 
+    # Memory-efficient sampling across clades
     random.seed(seed)
-    return random.sample(all_pairs, limit)
+    selected_indices = set()
+    while len(selected_indices) < limit:
+        idx = random.randint(0, total_pairs - 1)
+        selected_indices.add(idx)
+
+    # Convert indices to pairs
+    pairs = []
+    for idx in selected_indices:
+        # Find which clade this index belongs to
+        cumsum = 0
+        for clade_idx, count in enumerate(clade_pair_counts):
+            if cumsum + count > idx:
+                # This clade contains the pair
+                local_idx = idx - cumsum
+                clade_tips = clade_list[clade_idx]
+                n = len(clade_tips)
+                # Convert local index to i,j using triangular enumeration (see generate_pairs)
+                i = int((1 + (1 + 8 * local_idx) ** 0.5) / 2)
+                while i * (i - 1) // 2 > local_idx:
+                    i -= 1
+                while (i + 1) * i // 2 <= local_idx:
+                    i += 1
+                j = local_idx - i * (i - 1) // 2
+                pairs.append((clade_tips[j], clade_tips[i]))
+                break
+            cumsum += count
+
+    return pairs
 
 
 def write_pairwise_fasta(tip1, tip2, sequences, output_path):
