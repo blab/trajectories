@@ -21,6 +21,9 @@ curl -fsSL --proto '=https' https://nextstrain.org/cli/installer/linux | bash
 
 # Workflow
 
+Before executing the workflow, please run `nextstrain login https://next.nextstrain.org` to access `trajectories-private` datasets in config.yaml, 
+or alternatively, remove these datasets from the config.
+
 The workflow is managed through Snakemake with three main targets:
 
 ```
