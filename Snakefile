@@ -3,6 +3,7 @@ configfile: "defaults/config.yaml"
 # Auto-discover rdrp subtrees (only if include_subtrees=true)
 import glob
 import os
+import re
 import shutil
 
 # Helper function to detect UShER datasets
@@ -348,4 +349,19 @@ rule upload:
         python scripts/upload-to-s3.py \
             --upload-dir results \
             --prefix trajectories
+        """
+
+# Upload only main RdRp datasets (not subtrees, not other datasets like cytb)
+RDRP_MAIN = [a for a in ANALYSES if re.match(r'^rdrp-[a-z]+-xs$', a)]
+
+rule upload_rdrp:
+    input:
+        expand("export/{analysis}", analysis=RDRP_MAIN),
+        "export/summary.json"
+    shell:
+        """
+        python scripts/upload-to-s3.py \
+            --export-dir export \
+            --prefix trajectories \
+            --filter '^rdrp-[a-z]+-xs$'
         """
