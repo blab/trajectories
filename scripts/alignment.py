@@ -58,6 +58,10 @@ if __name__ == '__main__':
                         help="Output FASTA file for sequences")
     parser.add_argument("--tips-only", action="store_true",
                         help="If set, only include tip sequences (leaf nodes)")
+    parser.add_argument("--trim-begin", type=int, default=None,
+                        help="Start position for trimming (1-indexed, inclusive)")
+    parser.add_argument("--trim-end", type=int, default=None,
+                        help="End position for trimming (1-indexed, inclusive)")
 
     args = parser.parse_args()
 
@@ -113,6 +117,11 @@ if __name__ == '__main__':
         node_seq = apply_muts_to_root(root_seq, muts)
         # Strip trailing stop codons
         stripped_seq = Seq(str(node_seq).rstrip('*'))
+        # Apply trimming if specified
+        if args.trim_begin is not None or args.trim_end is not None:
+            start = (args.trim_begin - 1) if args.trim_begin else 0
+            end = args.trim_end if args.trim_end else len(stripped_seq)
+            stripped_seq = stripped_seq[start:end]
         # Strip hCoV-19/ from beginning of strain name
         strain = node.name.removeprefix('hCoV-19/')
         # Only keep records without stop codons (*)

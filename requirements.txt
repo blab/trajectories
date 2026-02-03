@@ -2,6 +2,7 @@ biopython
 boto3
 nextstrain-augur
 pulp<3.0
+requests
 snakemake
 tqdm
 zstandard

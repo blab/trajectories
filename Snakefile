@@ -3,6 +3,12 @@ configfile: "defaults/config.yaml"
 # Auto-discover rdrp subtrees (only if include_subtrees=true)
 import glob
 import os
+import shutil
+
+# Helper function to detect UShER datasets
+def is_usher_dataset(analysis_name):
+    """Check if a dataset uses UShER protobuf format instead of Auspice JSON."""
+    return "usher_pb" in config["analysis"].get(analysis_name, {})
 
 if config.get("include_subtrees", False):
     RDRP_BASE = "../rdrp/phylogenetic/auspice"
@@ -35,9 +41,23 @@ ANALYSES = config.get("target_analyses", list(config["analysis"].keys()))
 wildcard_constraints:
     analysis = "|".join(config["analysis"].keys())
 
+# Separate wildcard constraints for UShER vs Auspice datasets
+# This ensures rules only match the appropriate dataset types
+def _usher_analyses():
+    return [a for a in config["analysis"].keys() if "usher_pb" in config["analysis"][a]]
+
+def _auspice_analyses():
+    return [a for a in config["analysis"].keys() if "usher_pb" not in config["analysis"][a]]
+
+# Split analyses into UShER and non-UShER for different rule requirements
+USHER_ANALYSES = [a for a in ANALYSES if is_usher_dataset(a)]
+AUSPICE_ANALYSES = [a for a in ANALYSES if not is_usher_dataset(a)]
+
 rule all:
     input:
-        expand("data/{analysis}/metadata.tsv", analysis=ANALYSES),
+        # Auspice datasets have metadata and labeled JSON, UShER datasets don't
+        expand("data/{analysis}/metadata.tsv", analysis=AUSPICE_ANALYSES),
+        expand("data/{analysis}/auspice.json", analysis=AUSPICE_ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
         expand("results/{analysis}/forwards-train", analysis=ANALYSES),
         expand("results/{analysis}/forwards-test", analysis=ANALYSES),
@@ -46,7 +66,9 @@ rule all:
 
 rule results:
     input:
-        expand("data/{analysis}/metadata.tsv", analysis=ANALYSES),
+        # Auspice datasets have metadata and labeled JSON, UShER datasets don't
+        expand("data/{analysis}/metadata.tsv", analysis=AUSPICE_ANALYSES),
+        expand("data/{analysis}/auspice.json", analysis=AUSPICE_ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
         expand("results/{analysis}/forwards-train", analysis=ANALYSES),
         expand("results/{analysis}/forwards-test", analysis=ANALYSES),
@@ -54,6 +76,8 @@ rule results:
         expand("results/{analysis}/pairwise-test", analysis=ANALYSES),
 
 rule download_auspice_json:
+    wildcard_constraints:
+        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     output:
         tree = "data/{analysis}/auspice_raw.json"
     params:
@@ -73,40 +97,17 @@ rule download_auspice_json:
         fi
         """
 
-rule train_test_split:
+rule provision_alignment:
+    wildcard_constraints:
+        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     input:
         auspice = "data/{analysis}/auspice_raw.json"
     output:
-        auspice = "data/{analysis}/auspice.json"
+        alignment = "data/{analysis}/alignment.fasta"
     params:
         gene = lambda wildcards: config["analysis"][wildcards.analysis]["gene"],
-        test_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("test_proportion", 0.1),
-        mutations_back = lambda wildcards: config["analysis"][wildcards.analysis].get("mutations_back", 5),
-        max_clade_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("max_clade_proportion", 0.01),
-        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42),
         trim_begin_arg = lambda wildcards: f"--trim-begin {config['analysis'][wildcards.analysis]['trim_begin']}" if "trim_begin" in config['analysis'][wildcards.analysis] else "",
         trim_end_arg = lambda wildcards: f"--trim-end {config['analysis'][wildcards.analysis]['trim_end']}" if "trim_end" in config['analysis'][wildcards.analysis] else ""
-    shell:
-        """
-        python scripts/train_test_split.py \
-            --json {input.auspice:q} \
-            --output {output.auspice:q} \
-            --gene {params.gene:q} \
-            --test-proportion {params.test_proportion} \
-            --mutations-back {params.mutations_back} \
-            --max-clade-proportion {params.max_clade_proportion} \
-            --seed {params.seed} \
-            {params.trim_begin_arg} \
-            {params.trim_end_arg}
-        """
-
-rule provision_alignment:
-    input:
-        auspice = "data/{analysis}/auspice.json"
-    output:
-        alignment = "data/{analysis}/full_alignment.fasta"
-    params:
-        gene = lambda wildcards: config["analysis"][wildcards.analysis]["gene"]
     shell:
         """
         # Copy root-sequence sidecar file if it exists (some datasets have inline root sequence instead)
@@ -117,12 +118,16 @@ rule provision_alignment:
         python scripts/alignment.py \
             --json {input.auspice:q} \
             --output {output.alignment:q} \
-            --gene {params.gene:q}
+            --gene {params.gene:q} \
+            {params.trim_begin_arg} \
+            {params.trim_end_arg}
         """
 
 rule provision_metadata:
+    wildcard_constraints:
+        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     input:
-        auspice = "data/{analysis}/auspice.json"
+        auspice = "data/{analysis}/auspice_raw.json"
     output:
         metadata = "data/{analysis}/metadata.tsv"
     shell:
@@ -133,11 +138,13 @@ rule provision_metadata:
         """
 
 rule provision_branches:
+    wildcard_constraints:
+        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     input:
-        auspice = "data/{analysis}/auspice.json",
+        auspice = "data/{analysis}/auspice_raw.json",
         alignment = "data/{analysis}/alignment.fasta"
     output:
-        branches = "data/{analysis}/branches.tsv"
+        branches = "data/{analysis}/branches_raw.tsv"
     shell:
         """
         python scripts/branches.py \
@@ -147,8 +154,10 @@ rule provision_branches:
         """
 
 rule provision_colors:
+    wildcard_constraints:
+        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     input:
-        auspice = "data/{analysis}/auspice.json"
+        auspice = "data/{analysis}/auspice_raw.json"
     output:
         colors = "data/{analysis}/colors.json"
     shell:
@@ -158,23 +167,48 @@ rule provision_colors:
             --output {output.colors:q}
         """
 
-rule trim:
+rule train_test_split:
+    """
+    Unified train/test split for both Auspice and UShER datasets.
+    Works on branches_raw.tsv and outputs branches.tsv with train_test labels.
+    """
     input:
-        alignment = "data/{analysis}/full_alignment.fasta"
+        branches_raw = "data/{analysis}/branches_raw.tsv"
     output:
-        alignment = "data/{analysis}/alignment.fasta"
+        branches = "data/{analysis}/branches.tsv"
     params:
-        begin = lambda wildcards: config["analysis"][wildcards.analysis].get("trim_begin"),
-        end = lambda wildcards: config["analysis"][wildcards.analysis].get("trim_end"),
-        begin_arg = lambda wildcards: f"--begin {config['analysis'][wildcards.analysis]['trim_begin']}" if "trim_begin" in config['analysis'][wildcards.analysis] else "",
-        end_arg = lambda wildcards: f"--end {config['analysis'][wildcards.analysis]['trim_end']}" if "trim_end" in config['analysis'][wildcards.analysis] else ""
+        test_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("test_proportion", 0.1),
+        mutations_back = lambda wildcards: config["analysis"][wildcards.analysis].get("mutations_back", 5),
+        max_clade_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("max_clade_proportion", 0.01),
+        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42)
     shell:
         """
-        python scripts/trim.py \
-            --input-alignment {input.alignment:q} \
-            --output-alignment {output.alignment:q} \
-            {params.begin_arg} \
-            {params.end_arg}
+        python scripts/train_test_split.py \
+            --branches-raw {input.branches_raw:q} \
+            --output {output.branches:q} \
+            --test-proportion {params.test_proportion} \
+            --mutations-back {params.mutations_back} \
+            --max-clade-proportion {params.max_clade_proportion} \
+            --seed {params.seed}
+        """
+
+rule label_auspice_json:
+    """
+    Add train/test labels to Auspice JSON for visualization.
+    """
+    wildcard_constraints:
+        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
+    input:
+        auspice_raw = "data/{analysis}/auspice_raw.json",
+        branches = "data/{analysis}/branches.tsv"
+    output:
+        auspice = "data/{analysis}/auspice.json"
+    shell:
+        """
+        python scripts/label_auspice_json.py \
+            --json {input.auspice_raw:q} \
+            --branches {input.branches:q} \
+            --output {output.auspice:q}
         """
 
 rule sample:
@@ -200,7 +234,7 @@ rule trajectories:
     params:
         output_dir = "results/{analysis}",
         summary = "results/summary.json",
-        url = lambda wildcards: config["analysis"][wildcards.analysis]["dataset"]
+        url = lambda wildcards: config["analysis"][wildcards.analysis].get("dataset", config["analysis"][wildcards.analysis].get("usher_pb", ""))
     shell:
         """
         python scripts/trajectory.py \
@@ -225,7 +259,7 @@ rule pairwise:
         test_limit = lambda wildcards: config["analysis"][wildcards.analysis].get("pairwise_test_limit", 50000),
         seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42),
         summary = "results/summary.json",
-        url = lambda wildcards: config["analysis"][wildcards.analysis]["dataset"]
+        url = lambda wildcards: config["analysis"][wildcards.analysis].get("dataset", config["analysis"][wildcards.analysis].get("usher_pb", ""))
     shell:
         """
         python scripts/pairwise_trajectory.py \
@@ -239,6 +273,69 @@ rule pairwise:
             --dataset {wildcards.analysis} \
             --url {params.url:q}
         """
+
+# ============================================================================
+# UShER-specific rules for processing mutation-annotated trees (protobuf)
+# ============================================================================
+
+rule download_usher_pb:
+    """Download UShER protobuf file from UCSC."""
+    wildcard_constraints:
+        analysis = "|".join(_usher_analyses()) if _usher_analyses() else "NOMATCH"
+    output:
+        pb = "data/{analysis}/tree.pb.gz"
+    params:
+        url = lambda wildcards: config["analysis"][wildcards.analysis]["usher_pb"]
+    shell:
+        """
+        mkdir -p data/{wildcards.analysis}
+        curl -L -o {output.pb:q} {params.url:q}
+        """
+
+rule usher_provision_alignment_branches:
+    """
+    Extract tree and mutations from UShER protobuf, reconstruct sequences.
+
+    This rule:
+    1. Runs matUtils extract to get tree.nwk and mutations
+    2. Fetches SARS-CoV-2 reference from NCBI
+    3. Reconstructs sequences by applying mutations from root
+    4. Outputs alignment.fasta (trimmed) and branches_raw.tsv
+    """
+    wildcard_constraints:
+        analysis = "|".join(_usher_analyses()) if _usher_analyses() else "NOMATCH"
+    input:
+        pb = "data/{analysis}/tree.pb.gz"
+    output:
+        alignment = "data/{analysis}/alignment.fasta",
+        branches_raw = "data/{analysis}/branches_raw.tsv",
+        tree = "data/{analysis}/tree.nwk"
+    params:
+        subsample = lambda wildcards: config["analysis"][wildcards.analysis].get("subsample"),
+        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42),
+        trim_begin = lambda wildcards: config["analysis"][wildcards.analysis].get("trim_begin"),
+        trim_end = lambda wildcards: config["analysis"][wildcards.analysis].get("trim_end"),
+        subsample_arg = lambda wildcards: f"--subsample {config['analysis'][wildcards.analysis]['subsample']}" if config['analysis'][wildcards.analysis].get('subsample') else "",
+        trim_begin_arg = lambda wildcards: f"--trim-begin {config['analysis'][wildcards.analysis]['trim_begin']}" if config['analysis'][wildcards.analysis].get('trim_begin') else "",
+        trim_end_arg = lambda wildcards: f"--trim-end {config['analysis'][wildcards.analysis]['trim_end']}" if config['analysis'][wildcards.analysis].get('trim_end') else "",
+        reference_cache = "data/{analysis}/reference.fasta"
+    shell:
+        """
+        python scripts/usher_provision_alignment_branches.py \
+            --pb {input.pb:q} \
+            --output-fasta {output.alignment:q} \
+            --output-branches {output.branches_raw:q} \
+            --output-tree {output.tree:q} \
+            --reference-cache {params.reference_cache:q} \
+            --seed {params.seed} \
+            {params.subsample_arg} \
+            {params.trim_begin_arg} \
+            {params.trim_end_arg}
+        """
+
+# ============================================================================
+# End of UShER-specific rules
+# ============================================================================
 
 rule package:
     input:

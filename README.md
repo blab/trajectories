@@ -19,6 +19,24 @@ curl -fsSL --proto '=https' https://nextstrain.org/cli/installer/mac | bash
 curl -fsSL --proto '=https' https://nextstrain.org/cli/installer/linux | bash
 ```
 
+For UShER-based datasets (like `spike-lg`), matUtils is required. Install via miniconda:
+
+```bash
+# Install miniconda via Homebrew (Mac)
+brew install --cask miniconda
+
+# Create isolated usher environment (no need to run conda init)
+/opt/homebrew/Caskroom/miniconda/base/bin/conda create -n usher -c conda-forge -c bioconda usher -y
+```
+
+The workflow automatically detects matUtils in common conda locations. To verify installation:
+
+```bash
+/opt/homebrew/Caskroom/miniconda/base/envs/usher/bin/matUtils --version
+```
+
+On Linux, miniconda installs to `~/miniconda3/` instead of `/opt/homebrew/Caskroom/miniconda/base/`.
+
 # Workflow
 
 Before executing the workflow, please run `nextstrain login https://next.nextstrain.org` to access `trajectories-private` datasets in config.yaml, 
@@ -53,6 +71,7 @@ The following datasets are pre-configured and can be used with the above command
 - `n450-xs`: [Measles N450 sequences](https://next.nextstrain.org/groups/trajectories/n450-xs) (2429 sequences x 450 nucleotides)
 - `spike-xs`: [SARS-CoV-2 spike S1 sequences](https://next.nextstrain.org/groups/trajectories/spike-xs) (10,195 sequences x 2055 nucleotides)
 - `spike-sm`: [SARS-CoV-2 spike S1 sequences](https://next.nextstrain.org/groups/trajectories/spike-sm) (34,707 sequences x 2055 nucleotides)
+- `spike-lg`: SARS-CoV-2 full spike from [UShER](https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2/) (~6M sequences x 2055 nucleotides, subsampled to 10k by default)
 
 **RdRp datasets (local):**
 - `rdrp-paramyxoviridae-xs`: Paramyxoviridae L Domain V (3,985 sequences x 1,653 nucleotides)
@@ -72,6 +91,18 @@ Dataset names include a size suffix indicating the number of tips:
 - `sm`: 10k - 100k tips
 - `md`: 100k - 1M tips
 - `lg`: 1M - 10M tips
+
+## UShER datasets
+
+Some large datasets use UShER mutation-annotated trees (protobuf format) instead of Auspice JSON. These datasets have a `usher_pb` field in the config instead of `dataset`. The workflow automatically detects and processes them differently:
+
+1. Downloads the protobuf file from UCSC
+2. Uses `matUtils extract` to get tree structure and mutations
+3. Fetches reference sequence from NCBI
+4. Reconstructs all node sequences by applying mutations from root
+5. Applies train/test split using tree structure
+
+The `spike-lg` dataset is an example, processing the full SARS-CoV-2 UShER tree (~6M genomes). By default it subsamples to 10,000 sequences for testing. To process the full tree, remove the `subsample` line from the config.
 
 ## Train/test split
 
