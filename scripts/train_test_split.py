@@ -15,6 +15,8 @@ import argparse
 import random
 from collections import defaultdict
 
+from tqdm import tqdm
+
 
 def build_tree_from_branches(branches_dict):
     """
@@ -73,33 +75,33 @@ def get_all_tips_iterative(children, root):
     return tips
 
 
-def get_clade_tips_iterative(children, node):
-    """Get all tips in a clade using iterative traversal."""
-    tips = []
-    stack = [node]
+def get_clade_with_early_exit(children, node, all_tips_set, max_tips=None):
+    """
+    Get all descendants and tips in a clade using single traversal.
 
-    while stack:
-        current = stack.pop()
-        if current not in children or not children[current]:
-            tips.append(current)
-        else:
-            stack.extend(children[current])
+    If max_tips is set, returns (None, None) early if tip count exceeds max_tips.
 
-    return tips
-
-
-def get_all_descendants_iterative(children, node):
-    """Get all descendants (tips + internal) using iterative traversal."""
+    Returns:
+        (descendants, clade_tips) or (None, None) if exceeded max_tips
+    """
     descendants = []
+    clade_tips = []
     stack = [node]
 
     while stack:
         current = stack.pop()
         descendants.append(current)
+
+        if current in all_tips_set:
+            clade_tips.append(current)
+            # Early exit if we've exceeded max tips
+            if max_tips and len(clade_tips) > max_tips:
+                return None, None
+
         if current in children:
             stack.extend(children[current])
 
-    return descendants
+    return descendants, clade_tips
 
 
 def count_branch_mutations(branches_dict, node):
@@ -159,10 +161,14 @@ def iterative_test_selection(
     test_nodes = set()
     test_tips = set()
     tried_seeds = set()
+    all_tips_set = set(all_tips)
 
     # Shuffle tips for random selection
     available_tips = list(all_tips)
     rng.shuffle(available_tips)
+
+    # Progress bar tracking test tips collected
+    pbar = tqdm(total=target_test_count, desc="Selecting test tips", unit="tips")
 
     while len(test_tips) < target_test_count and available_tips:
         # Get next seed tip that hasn't been tried and isn't already test
@@ -182,20 +188,27 @@ def iterative_test_selection(
             seed_tip, parents, branches_dict, mutations_back
         )
 
-        # Check clade size
-        clade_tips = get_clade_tips_iterative(children, ancestor)
-        if len(clade_tips) > max_clade_tips:
+        # Get clade with early exit if too large
+        descendants, clade_tips = get_clade_with_early_exit(
+            children, ancestor, all_tips_set, max_tips=max_clade_tips
+        )
+        if descendants is None:
             # Clade too large, skip this seed
             continue
 
         # Mark all descendants as test
-        descendants = get_all_descendants_iterative(children, ancestor)
-        for desc in descendants:
-            test_nodes.add(desc)
-            if desc in all_tips:
-                test_tips.add(desc)
+        prev_test_tips = len(test_tips)
+        test_nodes.update(descendants)
+        test_tips.update(clade_tips)
 
-    return test_nodes, test_tips
+        # Update progress bar
+        new_tips = len(test_tips) - prev_test_tips
+        if new_tips > 0:
+            pbar.update(new_tips)
+
+    pbar.close()
+
+    return test_nodes, test_tips, total_tips
 
 
 def load_branches_raw(branches_path):
@@ -239,7 +252,7 @@ def write_branches_with_split(branches_raw, test_nodes, output_path):
     with open(output_path, "w") as f:
         f.write("parent\tchild\thamming\ttrain_test\n")
 
-        for child, (parent, hamming, _) in branches_raw.items():
+        for child, (parent, hamming, _) in tqdm(branches_raw.items(), desc="Writing branches"):
             label = "test" if child in test_nodes else "train"
             hamming_str = "?" if hamming == "?" else str(hamming)
             f.write(f"{parent}\t{child}\t{hamming_str}\t{label}\n")
@@ -298,7 +311,7 @@ def main():
 
     # Select test nodes
     print("Selecting test clades...")
-    test_nodes, test_tips = iterative_test_selection(
+    test_nodes, test_tips, total_tips = iterative_test_selection(
         children, parents, root, branches_raw,
         args.test_proportion,
         args.mutations_back,
@@ -310,8 +323,6 @@ def main():
     write_branches_with_split(branches_raw, test_nodes, args.output)
 
     # Report results
-    all_tips = get_all_tips_iterative(children, root)
-    total_tips = len(all_tips)
     test_tip_count = len(test_tips)
     train_tip_count = total_tips - test_tip_count
     achieved_proportion = test_tip_count / total_tips if total_tips > 0 else 0

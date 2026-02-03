@@ -328,6 +328,8 @@ def subsample_tips_stratified(tips, n_samples, rng):
     """
     Subsample tips with stratification by year for temporal diversity.
 
+    Tips without parseable dates are excluded from sampling.
+
     Args:
         tips: list of tip names
         n_samples: target number of samples
@@ -338,18 +340,19 @@ def subsample_tips_stratified(tips, n_samples, rng):
     """
     from collections import defaultdict
 
-    # Group tips by year
+    # Group tips by year, excluding tips without dates
     tips_by_year = defaultdict(list)
-    tips_no_year = []
+    n_no_year = 0
 
     for tip in tips:
         year = extract_year_from_name(tip)
         if year:
             tips_by_year[year].append(tip)
         else:
-            tips_no_year.append(tip)
+            n_no_year += 1
 
     years = sorted(tips_by_year.keys())
+    dated_tips = sum(len(v) for v in tips_by_year.values())
 
     if not years:
         # No years found, fall back to random sampling
@@ -357,23 +360,13 @@ def subsample_tips_stratified(tips, n_samples, rng):
         return set(rng.sample(tips, min(n_samples, len(tips))))
 
     # Report year distribution before sampling
-    print(f"  Tips by year before sampling:")
+    print(f"  Tips by year before sampling ({dated_tips} dated, {n_no_year} undated excluded):")
     for year in years:
         print(f"    {year}: {len(tips_by_year[year])}")
-    if tips_no_year:
-        print(f"    unknown: {len(tips_no_year)}")
 
     # Calculate samples per year (equal distribution)
-    # Reserve 10% for tips without dates if any exist
-    if tips_no_year:
-        n_for_dated = int(n_samples * 0.9)
-        n_for_undated = n_samples - n_for_dated
-    else:
-        n_for_dated = n_samples
-        n_for_undated = 0
-
-    samples_per_year = n_for_dated // len(years)
-    extra_samples = n_for_dated % len(years)
+    samples_per_year = n_samples // len(years)
+    extra_samples = n_samples % len(years)
 
     sampled_tips = set()
 
@@ -387,36 +380,25 @@ def subsample_tips_stratified(tips, n_samples, rng):
         if n_year > 0:
             sampled_tips.update(rng.sample(year_tips, n_year))
 
-    # Sample from undated tips
-    if tips_no_year and n_for_undated > 0:
-        n_undated = min(n_for_undated, len(tips_no_year))
-        sampled_tips.update(rng.sample(tips_no_year, n_undated))
-
     # If we didn't get enough samples (some years had fewer tips), sample more from larger years
     if len(sampled_tips) < n_samples:
         remaining = n_samples - len(sampled_tips)
-        available = [t for t in tips if t not in sampled_tips]
+        available = [t for y in tips_by_year.values() for t in y if t not in sampled_tips]
         if available:
             extra = rng.sample(available, min(remaining, len(available)))
             sampled_tips.update(extra)
 
     # Report year distribution after sampling
     sampled_by_year = defaultdict(int)
-    sampled_no_year = 0
     for tip in sampled_tips:
         year = extract_year_from_name(tip)
         if year:
             sampled_by_year[year] += 1
-        else:
-            sampled_no_year += 1
 
     print(f"  Tips by year after sampling ({len(sampled_tips)} total):")
     for year in sorted(sampled_by_year.keys()):
         pct = 100 * sampled_by_year[year] / len(sampled_tips)
         print(f"    {year}: {sampled_by_year[year]} ({pct:.1f}%)")
-    if sampled_no_year:
-        pct = 100 * sampled_no_year / len(sampled_tips)
-        print(f"    unknown: {sampled_no_year} ({pct:.1f}%)")
 
     return sampled_tips
 

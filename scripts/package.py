@@ -11,14 +11,15 @@ from tqdm import tqdm
 
 def get_fasta_files(input_dir):
     """Get list of .fasta files in directory."""
-    files = []
-    for filename in os.listdir(input_dir):
-        if filename.endswith('.fasta'):
-            files.append(filename)
+    # Use scandir for better performance on large directories
+    files = [
+        entry.name for entry in os.scandir(input_dir)
+        if entry.is_file() and entry.name.endswith('.fasta')
+    ]
     return sorted(files)
 
 
-def create_shard(files, input_dir, output_path):
+def create_shard(files, input_dir, output_path, compressor):
     """Create a tar.zst shard from a list of FASTA files."""
     # Create tar archive in memory
     tar_buffer = io.BytesIO()
@@ -29,8 +30,7 @@ def create_shard(files, input_dir, output_path):
 
     # Compress with zstd and write
     tar_data = tar_buffer.getvalue()
-    cctx = zstd.ZstdCompressor()
-    compressed = cctx.compress(tar_data)
+    compressed = compressor.compress(tar_data)
 
     with open(output_path, 'wb') as f:
         f.write(compressed)
@@ -69,6 +69,9 @@ def process_split(input_dir, output_dir, shard_size, shuffle, seed, split_name=N
     for i in range(0, len(files), shard_size):
         shards.append(files[i:i + shard_size])
 
+    # Create single compressor for reuse
+    compressor = zstd.ZstdCompressor()
+
     # Create each shard
     total_uncompressed = 0
     total_compressed = 0
@@ -79,7 +82,7 @@ def process_split(input_dir, output_dir, shard_size, shuffle, seed, split_name=N
         else:
             filename = f"trajectories-{shard_idx:03d}.tar.zst"
         output_path = os.path.join(output_dir, filename)
-        uncompressed, compressed = create_shard(shard_files, input_dir, output_path)
+        uncompressed, compressed = create_shard(shard_files, input_dir, output_path, compressor)
         total_uncompressed += uncompressed
         total_compressed += compressed
 
