@@ -55,8 +55,9 @@ AUSPICE_ANALYSES = [a for a in ANALYSES if not is_usher_dataset(a)]
 
 rule all:
     input:
-        # Auspice datasets have metadata, UShER datasets don't
+        # Auspice datasets have metadata and labeled JSON, UShER datasets don't
         expand("data/{analysis}/metadata.tsv", analysis=AUSPICE_ANALYSES),
+        expand("data/{analysis}/auspice.json", analysis=AUSPICE_ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
         expand("results/{analysis}/forwards-train", analysis=ANALYSES),
         expand("results/{analysis}/forwards-test", analysis=ANALYSES),
@@ -65,8 +66,9 @@ rule all:
 
 rule results:
     input:
-        # Auspice datasets have metadata, UShER datasets don't
+        # Auspice datasets have metadata and labeled JSON, UShER datasets don't
         expand("data/{analysis}/metadata.tsv", analysis=AUSPICE_ANALYSES),
+        expand("data/{analysis}/auspice.json", analysis=AUSPICE_ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
         expand("results/{analysis}/forwards-train", analysis=ANALYSES),
         expand("results/{analysis}/forwards-test", analysis=ANALYSES),
@@ -95,40 +97,11 @@ rule download_auspice_json:
         fi
         """
 
-rule train_test_split:
-    wildcard_constraints:
-        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
-    input:
-        auspice = "data/{analysis}/auspice_raw.json"
-    output:
-        auspice = "data/{analysis}/auspice.json"
-    params:
-        gene = lambda wildcards: config["analysis"][wildcards.analysis]["gene"],
-        test_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("test_proportion", 0.1),
-        mutations_back = lambda wildcards: config["analysis"][wildcards.analysis].get("mutations_back", 5),
-        max_clade_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("max_clade_proportion", 0.01),
-        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42),
-        trim_begin_arg = lambda wildcards: f"--trim-begin {config['analysis'][wildcards.analysis]['trim_begin']}" if "trim_begin" in config['analysis'][wildcards.analysis] else "",
-        trim_end_arg = lambda wildcards: f"--trim-end {config['analysis'][wildcards.analysis]['trim_end']}" if "trim_end" in config['analysis'][wildcards.analysis] else ""
-    shell:
-        """
-        python scripts/train_test_split.py \
-            --json {input.auspice:q} \
-            --output {output.auspice:q} \
-            --gene {params.gene:q} \
-            --test-proportion {params.test_proportion} \
-            --mutations-back {params.mutations_back} \
-            --max-clade-proportion {params.max_clade_proportion} \
-            --seed {params.seed} \
-            {params.trim_begin_arg} \
-            {params.trim_end_arg}
-        """
-
 rule provision_alignment:
     wildcard_constraints:
         analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     input:
-        auspice = "data/{analysis}/auspice.json"
+        auspice = "data/{analysis}/auspice_raw.json"
     output:
         alignment = "data/{analysis}/alignment.fasta"
     params:
@@ -154,7 +127,7 @@ rule provision_metadata:
     wildcard_constraints:
         analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     input:
-        auspice = "data/{analysis}/auspice.json"
+        auspice = "data/{analysis}/auspice_raw.json"
     output:
         metadata = "data/{analysis}/metadata.tsv"
     shell:
@@ -168,10 +141,10 @@ rule provision_branches:
     wildcard_constraints:
         analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     input:
-        auspice = "data/{analysis}/auspice.json",
+        auspice = "data/{analysis}/auspice_raw.json",
         alignment = "data/{analysis}/alignment.fasta"
     output:
-        branches = "data/{analysis}/branches.tsv"
+        branches = "data/{analysis}/branches_raw.tsv"
     shell:
         """
         python scripts/branches.py \
@@ -184,7 +157,7 @@ rule provision_colors:
     wildcard_constraints:
         analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     input:
-        auspice = "data/{analysis}/auspice.json"
+        auspice = "data/{analysis}/auspice_raw.json"
     output:
         colors = "data/{analysis}/colors.json"
     shell:
@@ -192,6 +165,50 @@ rule provision_colors:
         python scripts/colors.py \
             --json {input.auspice:q} \
             --output {output.colors:q}
+        """
+
+rule train_test_split:
+    """
+    Unified train/test split for both Auspice and UShER datasets.
+    Works on branches_raw.tsv and outputs branches.tsv with train_test labels.
+    """
+    input:
+        branches_raw = "data/{analysis}/branches_raw.tsv"
+    output:
+        branches = "data/{analysis}/branches.tsv"
+    params:
+        test_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("test_proportion", 0.1),
+        mutations_back = lambda wildcards: config["analysis"][wildcards.analysis].get("mutations_back", 5),
+        max_clade_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("max_clade_proportion", 0.01),
+        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42)
+    shell:
+        """
+        python scripts/train_test_split.py \
+            --branches-raw {input.branches_raw:q} \
+            --output {output.branches:q} \
+            --test-proportion {params.test_proportion} \
+            --mutations-back {params.mutations_back} \
+            --max-clade-proportion {params.max_clade_proportion} \
+            --seed {params.seed}
+        """
+
+rule label_auspice_json:
+    """
+    Add train/test labels to Auspice JSON for visualization.
+    """
+    wildcard_constraints:
+        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
+    input:
+        auspice_raw = "data/{analysis}/auspice_raw.json",
+        branches = "data/{analysis}/branches.tsv"
+    output:
+        auspice = "data/{analysis}/auspice.json"
+    shell:
+        """
+        python scripts/label_auspice_json.py \
+            --json {input.auspice_raw:q} \
+            --branches {input.branches:q} \
+            --output {output.auspice:q}
         """
 
 rule sample:
@@ -304,7 +321,7 @@ rule usher_provision_alignment_branches:
         reference_cache = "data/{analysis}/reference.fasta"
     shell:
         """
-        python scripts/usher_to_trajectories.py \
+        python scripts/usher_provision_alignment_branches.py \
             --pb {input.pb:q} \
             --output-fasta {output.alignment:q} \
             --output-branches {output.branches_raw:q} \
@@ -314,32 +331,6 @@ rule usher_provision_alignment_branches:
             {params.subsample_arg} \
             {params.trim_begin_arg} \
             {params.trim_end_arg}
-        """
-
-rule usher_train_test_split:
-    """Apply train/test split to UShER-derived branches using tree structure."""
-    wildcard_constraints:
-        analysis = "|".join(_usher_analyses()) if _usher_analyses() else "NOMATCH"
-    input:
-        tree = "data/{analysis}/tree.nwk",
-        branches_raw = "data/{analysis}/branches_raw.tsv"
-    output:
-        branches = "data/{analysis}/branches.tsv"
-    params:
-        test_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("test_proportion", 0.1),
-        mutations_back = lambda wildcards: config["analysis"][wildcards.analysis].get("mutations_back", 5),
-        max_clade_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("max_clade_proportion", 0.01),
-        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42)
-    shell:
-        """
-        python scripts/usher_train_test_split.py \
-            --tree {input.tree:q} \
-            --branches-raw {input.branches_raw:q} \
-            --output {output.branches:q} \
-            --test-proportion {params.test_proportion} \
-            --mutations-back {params.mutations_back} \
-            --max-clade-proportion {params.max_clade_proportion} \
-            --seed {params.seed}
         """
 
 # ============================================================================

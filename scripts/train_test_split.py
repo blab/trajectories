@@ -1,167 +1,160 @@
 #!/usr/bin/env python3
 """
-Mark entire clades as "test" data in an Auspice JSON file for train/test splits.
+Train/test split for phylogenetic branches.
 
-This enables proper train/test splits where test data is truly out-of-sample
-(not sharing evolutionary paths with training data).
+This script reads branches_raw.tsv (which contains parent-child relationships)
+and marks entire clades as "test" data. Test clades are selected by randomly
+choosing tip nodes, walking back a specified number of mutations, and marking
+all descendants of that ancestor as test data.
+
+The tree structure is built directly from the branches file, avoiding the need
+to parse a separate tree file.
 """
 
 import argparse
-import json
 import random
+from collections import defaultdict
 
 
-def count_mutations_on_branch(node_dict, gene="nuc", trim_begin=None, trim_end=None):
-    """Count mutations in branch_attrs.mutations[gene] for this node.
-
-    If trim_begin and trim_end are specified, only count mutations within that range.
-    Positions are 1-indexed and inclusive on both ends.
+def build_tree_from_branches(branches_dict):
     """
-    branch_attrs = node_dict.get("branch_attrs", {})
-    mutations = branch_attrs.get("mutations", {})
-    gene_mutations = mutations.get(gene, [])
+    Build tree structure from branches dictionary.
 
-    if trim_begin is None or trim_end is None:
-        return len(gene_mutations)
+    Args:
+        branches_dict: dict mapping child -> (parent, hamming, train_test)
 
-    count = 0
-    for mut_str in gene_mutations:
-        try:
-            position = int(mut_str[1:-1])
-            if trim_begin <= position <= trim_end:
-                count += 1
-        except (ValueError, IndexError):
-            continue
+    Returns:
+        children: dict mapping node_name -> list of child names
+        parents: dict mapping child_name -> parent_name
+        root: name of root node
+    """
+    children = defaultdict(list)
+    parents = {}
 
-    return count
+    all_nodes = set()
+    child_nodes = set()
 
+    for child, (parent, _, _) in branches_dict.items():
+        parents[child] = parent
+        children[parent].append(child)
+        all_nodes.add(parent)
+        all_nodes.add(child)
+        child_nodes.add(child)
 
-def build_node_map(tree_dict):
-    """Build dict mapping node name -> node dict."""
-    node_map = {}
+    # Root is the node that has no parent (not a child of any other node)
+    root_candidates = all_nodes - child_nodes
+    if len(root_candidates) == 1:
+        root = root_candidates.pop()
+    elif len(root_candidates) > 1:
+        # Multiple roots - pick the one with most descendants
+        root = max(root_candidates, key=lambda n: len(children.get(n, [])))
+    else:
+        # All nodes are children - shouldn't happen with valid data
+        root = None
 
-    def traverse(node):
-        name = node.get("name")
-        if name:
-            node_map[name] = node
-        for child in node.get("children", []):
-            traverse(child)
-
-    traverse(tree_dict)
-    return node_map
-
-
-def build_parent_map(tree_dict):
-    """Build dict mapping child name -> parent name."""
-    parent_map = {}
-
-    def traverse(node, parent_name=None):
-        name = node.get("name")
-        if name and parent_name:
-            parent_map[name] = parent_name
-        for child in node.get("children", []):
-            traverse(child, name)
-
-    traverse(tree_dict)
-    return parent_map
+    return dict(children), parents, root
 
 
-def get_all_tips(tree_dict):
-    """Get list of all tip (leaf) node names."""
+def get_all_tips_iterative(children, root):
+    """Get all tip (leaf) node names using iterative traversal."""
+    if root is None:
+        return []
+
     tips = []
+    stack = [root]
 
-    def traverse(node):
-        if "children" not in node or len(node.get("children", [])) == 0:
-            name = node.get("name")
-            if name:
-                tips.append(name)
+    while stack:
+        node = stack.pop()
+        if node not in children or not children[node]:
+            tips.append(node)
         else:
-            for child in node.get("children", []):
-                traverse(child)
+            stack.extend(children[node])
 
-    traverse(tree_dict)
     return tips
 
 
-def walk_back_mutations(tip_name, parent_map, node_map, target_mutations, gene, trim_begin=None, trim_end=None):
-    """
-    Walk back from tip counting mutations, return ancestor name.
+def get_clade_tips_iterative(children, node):
+    """Get all tips in a clade using iterative traversal."""
+    tips = []
+    stack = [node]
 
-    Returns the name of the ancestor node reached after accumulating
-    at least target_mutations mutations. If we reach the root before
-    accumulating enough mutations, returns the root.
+    while stack:
+        current = stack.pop()
+        if current not in children or not children[current]:
+            tips.append(current)
+        else:
+            stack.extend(children[current])
 
-    If trim_begin and trim_end are specified, only mutations within that
-    position range are counted.
-    """
-    current_name = tip_name
-    accumulated_mutations = 0
-
-    while current_name in parent_map:
-        parent_name = parent_map[current_name]
-        parent_node = node_map[parent_name]
-
-        # Count mutations on the branch leading to current node
-        current_node = node_map[current_name]
-        branch_mutations = count_mutations_on_branch(current_node, gene, trim_begin, trim_end)
-        accumulated_mutations += branch_mutations
-
-        if accumulated_mutations >= target_mutations:
-            return current_name
-
-        current_name = parent_name
-
-    # Reached root without accumulating enough mutations
-    return current_name
+    return tips
 
 
-def get_all_descendants(node_dict):
-    """Recursively get all descendant node names (tips + internal)."""
+def get_all_descendants_iterative(children, node):
+    """Get all descendants (tips + internal) using iterative traversal."""
     descendants = []
+    stack = [node]
 
-    def traverse(node):
-        name = node.get("name")
-        if name:
-            descendants.append(name)
-        for child in node.get("children", []):
-            traverse(child)
+    while stack:
+        current = stack.pop()
+        descendants.append(current)
+        if current in children:
+            stack.extend(children[current])
 
-    traverse(node_dict)
     return descendants
 
 
-def get_clade_tip_count(node_dict):
-    """Count tips in a clade (for size checking)."""
-    count = 0
-
-    def traverse(node):
-        nonlocal count
-        if "children" not in node or len(node.get("children", [])) == 0:
-            count += 1
-        else:
-            for child in node.get("children", []):
-                traverse(child)
-
-    traverse(node_dict)
-    return count
+def count_branch_mutations(branches_dict, node):
+    """Count mutations on branch leading to this node (using Hamming distance)."""
+    if node in branches_dict:
+        _, hamming, _ = branches_dict[node]
+        return hamming if hamming != "?" else 0
+    return 0
 
 
-def iterative_test_selection(tree_dict, test_proportion, mutations_back, max_clade_proportion, gene, rng, trim_begin=None, trim_end=None):
+def walk_back_mutations(node, parents, branches_dict, target_mutations):
     """
-    Main loop: select seed tips, find ancestors, skip oversized clades, mark until target reached.
+    Walk back from node counting mutations, return ancestor name.
 
-    Returns a set of node names marked as test.
-
-    If trim_begin and trim_end are specified, only mutations within that
-    position range are counted when walking back.
+    Returns the name of the ancestor node reached after accumulating
+    at least target_mutations mutations.
     """
-    all_tips = get_all_tips(tree_dict)
+    current = node
+    accumulated = 0
+
+    while current in parents:
+        branch_muts = count_branch_mutations(branches_dict, current)
+        accumulated += branch_muts
+
+        if accumulated >= target_mutations:
+            return current
+
+        current = parents[current]
+
+    # Reached root
+    return current
+
+
+def iterative_test_selection(
+    children, parents, root, branches_dict,
+    test_proportion, mutations_back, max_clade_proportion, rng
+):
+    """
+    Select test nodes by walking back from random tips and marking clades.
+
+    Uses iterative traversal for all operations to handle large trees.
+    """
+    all_tips = get_all_tips_iterative(children, root)
     total_tips = len(all_tips)
-    target_test_count = max(1, int(total_tips * test_proportion))
-    max_clade_tips = int(total_tips * max_clade_proportion)
 
-    node_map = build_node_map(tree_dict)
-    parent_map = build_parent_map(tree_dict)
+    if total_tips == 0:
+        print("Warning: No tips found in tree")
+        return set(), set()
+
+    target_test_count = max(1, int(total_tips * test_proportion))
+    max_clade_tips = max(1, int(total_tips * max_clade_proportion))
+
+    print(f"Total tips: {total_tips}")
+    print(f"Target test tips: {target_test_count} ({test_proportion:.1%})")
+    print(f"Max clade size: {max_clade_tips} tips")
 
     test_nodes = set()
     test_tips = set()
@@ -185,146 +178,85 @@ def iterative_test_selection(tree_dict, test_proportion, mutations_back, max_cla
             break
 
         # Walk back from seed tip to find ancestor
-        ancestor_name = walk_back_mutations(seed_tip, parent_map, node_map, mutations_back, gene, trim_begin, trim_end)
-        ancestor_node = node_map[ancestor_name]
+        ancestor = walk_back_mutations(
+            seed_tip, parents, branches_dict, mutations_back
+        )
 
         # Check clade size
-        clade_tip_count = get_clade_tip_count(ancestor_node)
-        if clade_tip_count > max_clade_tips:
+        clade_tips = get_clade_tips_iterative(children, ancestor)
+        if len(clade_tips) > max_clade_tips:
             # Clade too large, skip this seed
             continue
 
         # Mark all descendants as test
-        descendants = get_all_descendants(ancestor_node)
+        descendants = get_all_descendants_iterative(children, ancestor)
         for desc in descendants:
             test_nodes.add(desc)
-            # Track if this is a tip
             if desc in all_tips:
                 test_tips.add(desc)
 
     return test_nodes, test_tips
 
 
-def find_monophyletic_clade(tree_dict, target_size, tolerance=0.5):
-    """Find a single clade closest to target_size for test set.
-
-    JSON traversal version - no BioPython dependency.
-
-    Args:
-        tree_dict: Root node of tree as dict with 'children' key
-        target_size: Target number of tips in the clade
-        tolerance: Acceptable deviation from target (0.5 = ±50%)
-
-    Returns:
-        Tuple of (node_dict, tip_count, depth) for the best matching clade
+def load_branches_raw(branches_path):
     """
-    candidates = []
-    min_size = target_size * (1 - tolerance)
-    max_size = target_size * (1 + tolerance)
-
-    def search(node, depth=0):
-        tip_count = get_clade_tip_count(node)
-        if min_size <= tip_count <= max_size:
-            candidates.append((node, tip_count, depth))
-        for child in node.get("children", []):
-            search(child, depth + 1)
-
-    search(tree_dict)
-
-    if not candidates:
-        raise ValueError(f"No clade found with size near {target_size} (tolerance: ±{tolerance*100:.0f}%)")
-
-    # Return clade closest to target size
-    return min(candidates, key=lambda x: abs(x[1] - target_size))
-
-
-def monophyletic_test_selection(tree_dict, test_proportion, tolerance=0.5):
-    """Select test nodes using single monophyletic clade strategy.
-
-    Finds a single contiguous clade in the tree that is closest to the
-    target test size. This ensures the test set is phylogenetically
-    coherent (one contiguous subtree).
-
-    Args:
-        tree_dict: Root node of tree as dict
-        test_proportion: Target proportion of tips for test set
-        tolerance: Acceptable deviation from target size (default: 0.5)
-
-    Returns:
-        Tuple of (test_nodes set, test_tips set) like iterative_test_selection
+    Load branches_raw.tsv and return dict mapping child -> (parent, hamming, train_test).
     """
-    all_tips = get_all_tips(tree_dict)
-    total_tips = len(all_tips)
-    target_test_count = max(1, int(total_tips * test_proportion))
+    branches = {}
 
-    # Find the best monophyletic clade
-    clade_node, clade_tip_count, depth = find_monophyletic_clade(
-        tree_dict, target_test_count, tolerance
-    )
+    with open(branches_path, "r") as f:
+        header = f.readline()  # Skip header
 
-    # Get all descendants of the selected clade
-    test_nodes = set(get_all_descendants(clade_node))
-    test_tips = set(tip for tip in all_tips if tip in test_nodes)
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
 
-    print(f"Selected monophyletic clade: {clade_tip_count} tips at depth {depth}")
+            parts = line.split("\t")
+            if len(parts) < 3:
+                continue
 
-    return test_nodes, test_tips
+            parent = parts[0]
+            child = parts[1]
+            hamming = parts[2]
 
+            try:
+                hamming = int(hamming)
+            except ValueError:
+                hamming = "?"
 
-def add_train_test_coloring(auspice_json):
-    """Add train_test to meta.colorings with categorical scale."""
-    if "meta" not in auspice_json:
-        auspice_json["meta"] = {}
-    if "colorings" not in auspice_json["meta"]:
-        auspice_json["meta"]["colorings"] = []
+            train_test = parts[3] if len(parts) > 3 else ""
 
-    # Check if train_test coloring already exists
-    for coloring in auspice_json["meta"]["colorings"]:
-        if coloring.get("key") == "train_test":
-            # Update existing
-            coloring["title"] = "Train/Test Split"
-            coloring["type"] = "categorical"
-            coloring["scale"] = [["train", "#4C78A8"], ["test", "#E45756"]]
-            return
+            branches[child] = (parent, hamming, train_test)
 
-    # Add new coloring
-    train_test_coloring = {
-        "key": "train_test",
-        "title": "Train/Test Split",
-        "type": "categorical",
-        "scale": [["train", "#4C78A8"], ["test", "#E45756"]]
-    }
-    auspice_json["meta"]["colorings"].append(train_test_coloring)
+    return branches
 
 
-def annotate_nodes_train_test(tree_dict, test_node_names):
-    """Set node_attrs.train_test.value for all nodes."""
+def write_branches_with_split(branches_raw, test_nodes, output_path):
+    """Write branches.tsv with train_test labels populated."""
+    print(f"Writing branches with train/test labels to {output_path}...")
 
-    def traverse(node):
-        name = node.get("name")
-        if name:
-            if "node_attrs" not in node:
-                node["node_attrs"] = {}
-            value = "test" if name in test_node_names else "train"
-            node["node_attrs"]["train_test"] = {"value": value}
+    with open(output_path, "w") as f:
+        f.write("parent\tchild\thamming\ttrain_test\n")
 
-        for child in node.get("children", []):
-            traverse(child)
-
-    traverse(tree_dict)
+        for child, (parent, hamming, _) in branches_raw.items():
+            label = "test" if child in test_nodes else "train"
+            hamming_str = "?" if hamming == "?" else str(hamming)
+            f.write(f"{parent}\t{child}\t{hamming_str}\t{label}\n")
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Mark entire clades as test data in an Auspice JSON file"
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument(
-        "--json", required=True,
-        help="Input Auspice JSON file"
+        "--branches-raw", required=True,
+        help="Input branches_raw.tsv (without train_test labels)"
     )
     parser.add_argument(
         "--output", required=True,
-        help="Output Auspice JSON file"
+        help="Output branches.tsv with train_test labels"
     )
     parser.add_argument(
         "--test-proportion", type=float, default=0.1,
@@ -335,32 +267,12 @@ def main():
         help="Mutations to walk back from seed tip (default: 5)"
     )
     parser.add_argument(
-        "--max-clade-proportion", type=float, default=0.1,
-        help="Max size of any single test clade as proportion of total tips (default: 0.1)"
+        "--max-clade-proportion", type=float, default=0.01,
+        help="Max size of any single test clade as proportion of total tips (default: 0.01)"
     )
     parser.add_argument(
-        "--gene", type=str, default="nuc",
-        help="Gene key for counting mutations (default: nuc)"
-    )
-    parser.add_argument(
-        "--seed", type=int, default=None,
+        "--seed", type=int, default=42,
         help="Random seed for reproducibility"
-    )
-    parser.add_argument(
-        "--trim-begin", type=str, default="",
-        help="Start position for filtering mutations (1-indexed, inclusive). Empty string means no filtering."
-    )
-    parser.add_argument(
-        "--trim-end", type=str, default="",
-        help="End position for filtering mutations (1-indexed, inclusive). Empty string means no filtering."
-    )
-    parser.add_argument(
-        "--strategy", type=str, choices=["random-clades", "monophyletic"], default="random-clades",
-        help="Test selection strategy: random-clades (multiple random clades) or monophyletic (single contiguous clade)"
-    )
-    parser.add_argument(
-        "--tolerance", type=float, default=0.5,
-        help="Size tolerance for monophyletic strategy (default: 0.5, meaning ±50%% of target size)"
     )
 
     args = parser.parse_args()
@@ -370,70 +282,46 @@ def main():
         raise ValueError("Test proportion must be between 0.0 and 1.0")
     if not 0.0 < args.max_clade_proportion <= 1.0:
         raise ValueError("Max clade proportion must be between 0.0 and 1.0")
-    if args.mutations_back < 0:
-        raise ValueError("Mutations back must be non-negative")
-    if not 0.0 < args.tolerance <= 1.0:
-        raise ValueError("Tolerance must be between 0.0 and 1.0")
 
-    # Set up random number generator
+    # Set up RNG
     rng = random.Random(args.seed)
 
-    # Convert trim args to int or None
-    trim_begin = int(args.trim_begin) if args.trim_begin else None
-    trim_end = int(args.trim_end) if args.trim_end else None
+    # Load branches
+    print(f"Loading branches from {args.branches_raw}...")
+    branches_raw = load_branches_raw(args.branches_raw)
+    print(f"Loaded {len(branches_raw)} branches")
 
-    # Load Auspice JSON
-    with open(args.json, 'r') as f:
-        auspice_data = json.load(f)
+    # Build tree structure from branches
+    print("Building tree structure from branches...")
+    children, parents, root = build_tree_from_branches(branches_raw)
+    print(f"Tree has {len(parents) + 1} nodes, root: {root}")
 
-    tree_dict = auspice_data.get("tree")
-    if not tree_dict:
-        raise ValueError("No 'tree' key found in Auspice JSON")
-
-    # Get total tips for reporting
-    all_tips = get_all_tips(tree_dict)
-    total_tips = len(all_tips)
-
-    # Select test nodes based on strategy
-    if args.strategy == "monophyletic":
-        test_nodes, test_tips = monophyletic_test_selection(
-            tree_dict,
-            args.test_proportion,
-            args.tolerance
-        )
-    else:  # random-clades (default)
-        test_nodes, test_tips = iterative_test_selection(
-            tree_dict,
-            args.test_proportion,
-            args.mutations_back,
-            args.max_clade_proportion,
-            args.gene,
-            rng,
-            trim_begin,
-            trim_end
-        )
-
-    # Annotate nodes with train/test labels
-    annotate_nodes_train_test(tree_dict, test_nodes)
-
-    # Add coloring metadata
-    add_train_test_coloring(auspice_data)
+    # Select test nodes
+    print("Selecting test clades...")
+    test_nodes, test_tips = iterative_test_selection(
+        children, parents, root, branches_raw,
+        args.test_proportion,
+        args.mutations_back,
+        args.max_clade_proportion,
+        rng
+    )
 
     # Write output
-    with open(args.output, 'w') as f:
-        json.dump(auspice_data, f, separators=(',', ':'))
+    write_branches_with_split(branches_raw, test_nodes, args.output)
 
     # Report results
+    all_tips = get_all_tips_iterative(children, root)
+    total_tips = len(all_tips)
     test_tip_count = len(test_tips)
     train_tip_count = total_tips - test_tip_count
     achieved_proportion = test_tip_count / total_tips if total_tips > 0 else 0
 
-    print(f"Strategy: {args.strategy}")
-    print(f"Total tips: {total_tips}")
-    print(f"Test tips: {test_tip_count} ({achieved_proportion:.1%})")
-    print(f"Train tips: {train_tip_count} ({1-achieved_proportion:.1%})")
-    print(f"Target proportion: {args.test_proportion:.1%}")
-    print(f"Output written to: {args.output}")
+    print(f"\nResults:")
+    print(f"  Total tips: {total_tips}")
+    print(f"  Test tips: {test_tip_count} ({achieved_proportion:.1%})")
+    print(f"  Train tips: {train_tip_count} ({1-achieved_proportion:.1%})")
+    print(f"  Target proportion: {args.test_proportion:.1%}")
+    print(f"  Output written to: {args.output}")
 
 
 if __name__ == "__main__":
