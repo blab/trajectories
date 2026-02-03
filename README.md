@@ -70,7 +70,7 @@ The following datasets are pre-configured and can be used with the above command
 - `n450-xs`: [Measles N450 sequences](https://nextstrain.org/groups/trajectories/n450-xs) (2429 sequences x 450 nucleotides)
 - `spike-xs`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/trajectories/spike-xs) (10,195 sequences x 2055 nucleotides)
 - `spike-sm`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/trajectories/spike-sm) (34,707 sequences x 2055 nucleotides)
-- `spike-lg`: SARS-CoV-2 full spike from [UShER](https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2/) (~6M sequences x 2055 nucleotides, subsampled to 10k by default)
+- `spike-lg`: SARS-CoV-2 full spike from [UShER](https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2/) (~8M sequences x 2055 nucleotides)
 
 **RdRp datasets (local):**
 - `rdrp-paramyxoviridae-xs`: Paramyxoviridae L Domain V (3,985 sequences x 1,653 nucleotides)
