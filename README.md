@@ -149,6 +149,22 @@ results/
 
 Each shard contains up to 10,000 trajectories (configurable via `shard_size` in config). Files are shuffled within each shard before writing. Larger datasets will have multiple shards (e.g., `pairwise-train-000.tar.zst`, `pairwise-train-001.tar.zst`, etc.).
 
+To inspect shard contents:
+
+```bash
+# List files in a shard
+zstd -d -c results/spike-xs/forwards-train-000.tar.zst | tar -tf -
+
+# View first trajectory
+zstd -d -c results/spike-xs/forwards-train-000.tar.zst | tar -xOf - | head -50
+
+# Extract a specific file
+zstd -d -c results/spike-xs/forwards-train-000.tar.zst | tar -xOf - SomeFile.fasta
+
+# Extract all files to current directory
+zstd -d -c results/spike-xs/forwards-train-000.tar.zst | tar -xf -
+```
+
 ### Forwards trajectories
 
 Each forwards trajectory is a FASTA file containing the evolutionary path from root to tip:
