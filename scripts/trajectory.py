@@ -14,6 +14,8 @@ from Bio import SeqIO
 from tqdm import tqdm
 import zstandard as zstd
 
+from shard_writer import ShardWriter
+
 # Pre-compile regex for filename sanitization
 UNSAFE_CHARS_RE = re.compile(r'[/\\:*?"<>| ]')
 
@@ -114,17 +116,18 @@ def format_sequence(seq, line_width=60):
     return '\n'.join(seq[i:i+line_width] for i in range(0, len(seq), line_width))
 
 
-def write_trajectory(path, sequences, hamming_of, output_path, compress=False, compressor=None):
+def build_trajectory_content(path, sequences, hamming_of):
     """
-    Write trajectory FASTA file for a single tip.
+    Build trajectory FASTA content for a single tip.
 
     Path should be in root-to-tip order.
     Each header includes cumulative Hamming distance from root.
     Skips intermediate nodes with zero branch distance.
 
     Returns:
-        tuple: (tip_distance, path_depth) where tip_distance is cumulative
-               Hamming distance and path_depth is number of frames written.
+        tuple: (content, tip_distance, path_depth) where content is the FASTA string,
+               tip_distance is cumulative Hamming distance, and path_depth is
+               number of frames written.
     """
     cumulative_distance = 0
     last_node = path[-1] if path else None  # tip node
@@ -153,6 +156,24 @@ def write_trajectory(path, sequences, hamming_of, output_path, compress=False, c
         frames_written += 1
 
     content = ''.join(parts)
+    return content, cumulative_distance, frames_written
+
+
+def write_trajectory(path, sequences, hamming_of, output_path, compress=False, compressor=None):
+    """
+    Write trajectory FASTA file for a single tip.
+
+    Path should be in root-to-tip order.
+    Each header includes cumulative Hamming distance from root.
+    Skips intermediate nodes with zero branch distance.
+
+    Returns:
+        tuple: (tip_distance, path_depth) where tip_distance is cumulative
+               Hamming distance and path_depth is number of frames written.
+    """
+    content, cumulative_distance, frames_written = build_trajectory_content(
+        path, sequences, hamming_of
+    )
 
     # Write to file (compressed or plain)
     if compress:
@@ -183,8 +204,12 @@ def main():
         help="Output directory for trajectory files"
     )
     parser.add_argument(
-        "--compress", action="store_true",
-        help="Compress output files with zstd (.fasta.zst)"
+        "--shard-size", type=int, default=10000,
+        help="Number of trajectories per shard (default: 10000)"
+    )
+    parser.add_argument(
+        "--seed", type=int, default=42,
+        help="Random seed for shuffling (default: 42)"
     )
     parser.add_argument(
         "--summary",
@@ -221,60 +246,57 @@ def main():
     # Check if we have train/test labels
     has_train_test = bool(train_test_of)
 
-    # Create output subdirectories if we have train/test labels
-    if has_train_test:
-        train_dir = os.path.join(args.output_dir, 'forwards-train')
-        test_dir = os.path.join(args.output_dir, 'forwards-test')
-        os.makedirs(train_dir, exist_ok=True)
-        os.makedirs(test_dir, exist_ok=True)
-    else:
-        os.makedirs(args.output_dir, exist_ok=True)
-
     # Process each tip and collect statistics
     tip_distances = []
     path_depths = []
     train_tips = 0
     test_tips = 0
-    ext = ".fasta.zst" if args.compress else ".fasta"
-    # Create single compressor for reuse (if compressing)
-    compressor = zstd.ZstdCompressor() if args.compress else None
-    print(f"Writing trajectory files{' (compressed)' if args.compress else ''}...")
-    for tip in tqdm(tips, desc="Processing tips"):
-        # Get path from tip to root, then reverse to root-to-tip
-        path = get_path_to_root(tip, parent_of)
-        path.reverse()
 
-        # Sanitize filename
-        safe_name = sanitize_filename(tip)
+    print(f"Writing trajectory shards (shard_size={args.shard_size})...")
 
-        # Determine output path and potentially truncate path for test tips
-        if has_train_test:
-            tip_label = train_test_of.get(tip, 'train')
-            if tip_label == 'test':
-                # Find where test clade begins and truncate path
-                boundary_idx = find_test_boundary(path, train_test_of)
-                if boundary_idx is not None:
-                    path = path[boundary_idx:]  # Start from first test node
-                output_path = os.path.join(test_dir, f"{safe_name}{ext}")
-                test_tips += 1
+    with ShardWriter(args.output_dir, "forwards-train", args.shard_size, shuffle=True, seed=args.seed) as train_writer, \
+         ShardWriter(args.output_dir, "forwards-test", args.shard_size, shuffle=True, seed=args.seed) as test_writer:
+
+        for tip in tqdm(tips, desc="Processing tips"):
+            # Get path from tip to root, then reverse to root-to-tip
+            path = get_path_to_root(tip, parent_of)
+            path.reverse()
+
+            # Sanitize filename
+            safe_name = sanitize_filename(tip)
+            filename = f"{safe_name}.fasta"
+
+            # Determine which writer to use and potentially truncate path for test tips
+            if has_train_test:
+                tip_label = train_test_of.get(tip, 'train')
+                if tip_label == 'test':
+                    # Find where test clade begins and truncate path
+                    boundary_idx = find_test_boundary(path, train_test_of)
+                    if boundary_idx is not None:
+                        path = path[boundary_idx:]  # Start from first test node
+                    writer = test_writer
+                    test_tips += 1
+                else:
+                    writer = train_writer
+                    train_tips += 1
             else:
-                output_path = os.path.join(train_dir, f"{safe_name}{ext}")
+                writer = train_writer
                 train_tips += 1
-        else:
-            output_path = os.path.join(args.output_dir, f"{safe_name}{ext}")
 
-        # Write trajectory and collect stats
-        tip_dist, path_depth = write_trajectory(
-            path, sequences, hamming_of, output_path,
-            compress=args.compress, compressor=compressor
-        )
-        tip_distances.append(tip_dist)
-        path_depths.append(path_depth)
+            # Build trajectory content and collect stats
+            content, tip_dist, path_depth = build_trajectory_content(
+                path, sequences, hamming_of
+            )
+            writer.add(filename, content)
+            tip_distances.append(tip_dist)
+            path_depths.append(path_depth)
 
-    if has_train_test:
-        print(f"Done! Wrote {train_tips} train and {test_tips} test trajectory files to {args.output_dir}")
-    else:
-        print(f"Done! Wrote {len(tips)} trajectory files to {args.output_dir}")
+    # Report results
+    train_shards, train_files, train_bytes = train_writer.stats
+    test_shards, test_files, test_bytes = test_writer.stats
+
+    print(f"Done! Wrote {train_tips} train trajectories ({train_shards} shards, {train_bytes / 1024 / 1024:.1f} MB)")
+    print(f"      Wrote {test_tips} test trajectories ({test_shards} shards, {test_bytes / 1024 / 1024:.1f} MB)")
 
     # Write summary statistics if requested
     if args.summary and args.dataset:

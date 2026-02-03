@@ -39,9 +39,9 @@ analysis:
     trim_begin: 21563
     trim_end: 23617
     seq_length: 2055 # spike S1
-    subsample: 10000 # Remove this line to process all ~6M sequences
+    # subsample: 10000 # Include this line for testing purposes, the full dataset is 8M samples
     seed: 42
     test_proportion: 0.1
-    pairwise_train_limit: 100000
-    pairwise_test_limit: 50000
+    pairwise_train_limit: 10000000
+    pairwise_test_limit: 1000000
   # Subtrees auto-discovered from ../rdrp/phylogenetic/auspice/*/subtrees/

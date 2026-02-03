@@ -14,6 +14,7 @@ from tqdm import tqdm
 
 # Reuse utilities from trajectory.py
 from trajectory import sanitize_filename, parse_branches, load_sequences, find_tips
+from shard_writer import ShardWriter
 
 
 def calculate_hamming_distance(seq1, seq2):
@@ -171,18 +172,18 @@ def generate_test_pairs_by_clade(clade_membership, limit=None, seed=42):
     return pairs
 
 
-def write_pairwise_fasta(tip1, tip2, sequences, output_path):
+def build_pairwise_content(tip1, tip2, sequences):
     """
-    Write pairwise FASTA file.
+    Build pairwise FASTA content as a string.
 
     First sequence gets |0, second gets |{hamming_distance}.
-    Returns the Hamming distance, or None if sequences missing.
+    Returns tuple of (content, hamming_distance), or (None, None) if sequences missing.
     """
     seq1 = sequences.get(tip1, '')
     seq2 = sequences.get(tip2, '')
 
     if not seq1 or not seq2:
-        return None
+        return None, None
 
     hamming = calculate_hamming_distance(seq1, seq2)
 
@@ -197,8 +198,22 @@ def write_pairwise_fasta(tip1, tip2, sequences, output_path):
     for j in range(0, len(seq2), 60):
         lines.append(seq2[j:j+60] + '\n')
 
+    return ''.join(lines), hamming
+
+
+def write_pairwise_fasta(tip1, tip2, sequences, output_path):
+    """
+    Write pairwise FASTA file.
+
+    First sequence gets |0, second gets |{hamming_distance}.
+    Returns the Hamming distance, or None if sequences missing.
+    """
+    content, hamming = build_pairwise_content(tip1, tip2, sequences)
+    if content is None:
+        return None
+
     with open(output_path, 'w') as f:
-        f.write(''.join(lines))
+        f.write(content)
 
     return hamming
 
@@ -217,8 +232,10 @@ def main():
                         help="Max training pairs (default: all)")
     parser.add_argument("--test-limit", type=int, default=None,
                         help="Max test pairs (default: all)")
+    parser.add_argument("--shard-size", type=int, default=10000,
+                        help="Number of pairs per shard (default: 10000)")
     parser.add_argument("--seed", type=int, default=42,
-                        help="Random seed for sampling")
+                        help="Random seed for sampling and shuffling")
     parser.add_argument("--summary", help="Path to summary JSON file")
     parser.add_argument("--dataset", help="Dataset name for summary")
     parser.add_argument("--url", help="Dataset URL for summary")
@@ -232,32 +249,17 @@ def main():
     tips = find_tips(parent_of)
 
     # Separate train/test tips
-    train_tips = [t for t in tips if train_test_of.get(t, 'train') == 'train']
-    test_tips = [t for t in tips if train_test_of.get(t) == 'test']
+    train_tips_list = [t for t in tips if train_test_of.get(t, 'train') == 'train']
+    test_tips_list = [t for t in tips if train_test_of.get(t) == 'test']
 
-    print(f"Found {len(train_tips)} train tips and {len(test_tips)} test tips")
-
-    # Create output directories
-    train_dir = os.path.join(args.output_dir, 'pairwise-train')
-    test_dir = os.path.join(args.output_dir, 'pairwise-test')
-    os.makedirs(train_dir, exist_ok=True)
-    os.makedirs(test_dir, exist_ok=True)
+    print(f"Found {len(train_tips_list)} train tips and {len(test_tips_list)} test tips")
 
     # Generate train pairs
-    train_pairs = generate_pairs(train_tips, args.train_limit, args.seed)
+    train_pairs = generate_pairs(train_tips_list, args.train_limit, args.seed)
     train_distances = []
 
-    print(f"Writing {len(train_pairs)} train pairs...")
-    for tip1, tip2 in tqdm(train_pairs, desc="Train pairs"):
-        safe1 = sanitize_filename(tip1)
-        safe2 = sanitize_filename(tip2)
-        output_path = os.path.join(train_dir, f"{safe1}__{safe2}.fasta")
-        dist = write_pairwise_fasta(tip1, tip2, sequences, output_path)
-        if dist is not None:
-            train_distances.append(dist)
-
     # Generate test pairs (within clades only)
-    clade_membership = get_clade_membership(test_tips, parent_of, train_test_of)
+    clade_membership = get_clade_membership(test_tips_list, parent_of, train_test_of)
     test_pairs = generate_test_pairs_by_clade(clade_membership, args.test_limit, args.seed)
     test_distances = []
 
@@ -265,16 +267,37 @@ def main():
     unique_clades = set(clade_membership.values())
     print(f"Found {len(unique_clades)} test clades")
 
-    print(f"Writing {len(test_pairs)} test pairs...")
-    for tip1, tip2 in tqdm(test_pairs, desc="Test pairs"):
-        safe1 = sanitize_filename(tip1)
-        safe2 = sanitize_filename(tip2)
-        output_path = os.path.join(test_dir, f"{safe1}__{safe2}.fasta")
-        dist = write_pairwise_fasta(tip1, tip2, sequences, output_path)
-        if dist is not None:
-            test_distances.append(dist)
+    print(f"Writing {len(train_pairs)} train pairs and {len(test_pairs)} test pairs to shards...")
 
-    print(f"Done! Wrote {len(train_distances)} train and {len(test_distances)} test pairs")
+    with ShardWriter(args.output_dir, "pairwise-train", args.shard_size, shuffle=True, seed=args.seed) as train_writer, \
+         ShardWriter(args.output_dir, "pairwise-test", args.shard_size, shuffle=True, seed=args.seed) as test_writer:
+
+        # Process train pairs
+        for tip1, tip2 in tqdm(train_pairs, desc="Train pairs"):
+            safe1 = sanitize_filename(tip1)
+            safe2 = sanitize_filename(tip2)
+            filename = f"{safe1}__{safe2}.fasta"
+            content, dist = build_pairwise_content(tip1, tip2, sequences)
+            if content is not None:
+                train_writer.add(filename, content)
+                train_distances.append(dist)
+
+        # Process test pairs
+        for tip1, tip2 in tqdm(test_pairs, desc="Test pairs"):
+            safe1 = sanitize_filename(tip1)
+            safe2 = sanitize_filename(tip2)
+            filename = f"{safe1}__{safe2}.fasta"
+            content, dist = build_pairwise_content(tip1, tip2, sequences)
+            if content is not None:
+                test_writer.add(filename, content)
+                test_distances.append(dist)
+
+    # Report results
+    train_shards, train_files, train_bytes = train_writer.stats
+    test_shards, test_files, test_bytes = test_writer.stats
+
+    print(f"Done! Wrote {len(train_distances)} train pairs ({train_shards} shards, {train_bytes / 1024 / 1024:.1f} MB)")
+    print(f"      Wrote {len(test_distances)} test pairs ({test_shards} shards, {test_bytes / 1024 / 1024:.1f} MB)")
 
     # Update summary if requested
     if args.summary and args.dataset:
