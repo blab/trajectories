@@ -59,10 +59,8 @@ rule all:
         expand("data/{analysis}/metadata.tsv", analysis=AUSPICE_ANALYSES),
         expand("data/{analysis}/auspice.json", analysis=AUSPICE_ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
-        expand("results/{analysis}/forwards-train", analysis=ANALYSES),
-        expand("results/{analysis}/forwards-test", analysis=ANALYSES),
-        expand("results/{analysis}/pairwise-train", analysis=ANALYSES),
-        expand("results/{analysis}/pairwise-test", analysis=ANALYSES),
+        expand("results/{analysis}/.trajectories.done", analysis=ANALYSES),
+        expand("results/{analysis}/.pairwise.done", analysis=ANALYSES),
 
 rule results:
     input:
@@ -70,10 +68,8 @@ rule results:
         expand("data/{analysis}/metadata.tsv", analysis=AUSPICE_ANALYSES),
         expand("data/{analysis}/auspice.json", analysis=AUSPICE_ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
-        expand("results/{analysis}/forwards-train", analysis=ANALYSES),
-        expand("results/{analysis}/forwards-test", analysis=ANALYSES),
-        expand("results/{analysis}/pairwise-train", analysis=ANALYSES),
-        expand("results/{analysis}/pairwise-test", analysis=ANALYSES),
+        expand("results/{analysis}/.trajectories.done", analysis=ANALYSES),
+        expand("results/{analysis}/.pairwise.done", analysis=ANALYSES),
 
 rule download_auspice_json:
     wildcard_constraints:
@@ -229,21 +225,25 @@ rule trajectories:
         branches = "data/{analysis}/branches.tsv",
         alignment = "data/{analysis}/alignment.fasta"
     output:
-        train_dir = directory("results/{analysis}/forwards-train"),
-        test_dir = directory("results/{analysis}/forwards-test")
+        done = "results/{analysis}/.trajectories.done"
     params:
         output_dir = "results/{analysis}",
         summary = "results/summary.json",
-        url = lambda wildcards: config["analysis"][wildcards.analysis].get("dataset", config["analysis"][wildcards.analysis].get("usher_pb", ""))
+        url = lambda wildcards: config["analysis"][wildcards.analysis].get("dataset", config["analysis"][wildcards.analysis].get("usher_pb", "")),
+        shard_size = lambda wildcards: config["analysis"][wildcards.analysis].get("shard_size", 10000),
+        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42)
     shell:
         """
         python scripts/trajectory.py \
             --branches {input.branches:q} \
             --alignment {input.alignment:q} \
             --output-dir {params.output_dir:q} \
+            --shard-size {params.shard_size} \
+            --seed {params.seed} \
             --summary {params.summary:q} \
             --dataset {wildcards.analysis} \
             --url {params.url:q}
+        touch {output.done}
         """
 
 rule pairwise:
@@ -251,12 +251,12 @@ rule pairwise:
         branches = "data/{analysis}/branches.tsv",
         alignment = "data/{analysis}/alignment.fasta"
     output:
-        train_dir = directory("results/{analysis}/pairwise-train"),
-        test_dir = directory("results/{analysis}/pairwise-test")
+        done = "results/{analysis}/.pairwise.done"
     params:
         output_dir = "results/{analysis}",
         train_limit = lambda wildcards: config["analysis"][wildcards.analysis].get("pairwise_train_limit", 100000),
         test_limit = lambda wildcards: config["analysis"][wildcards.analysis].get("pairwise_test_limit", 50000),
+        shard_size = lambda wildcards: config["analysis"][wildcards.analysis].get("shard_size", 10000),
         seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42),
         summary = "results/summary.json",
         url = lambda wildcards: config["analysis"][wildcards.analysis].get("dataset", config["analysis"][wildcards.analysis].get("usher_pb", ""))
@@ -268,10 +268,12 @@ rule pairwise:
             --output-dir {params.output_dir:q} \
             --train-limit {params.train_limit} \
             --test-limit {params.test_limit} \
+            --shard-size {params.shard_size} \
             --seed {params.seed} \
             --summary {params.summary:q} \
             --dataset {wildcards.analysis} \
             --url {params.url:q}
+        touch {output.done}
         """
 
 # ============================================================================
@@ -337,45 +339,13 @@ rule usher_provision_alignment_branches:
 # End of UShER-specific rules
 # ============================================================================
 
-rule package:
-    input:
-        forwards_train = "results/{analysis}/forwards-train",
-        forwards_test = "results/{analysis}/forwards-test",
-        pairwise_train = "results/{analysis}/pairwise-train",
-        pairwise_test = "results/{analysis}/pairwise-test"
-    output:
-        sharddir = directory("export/{analysis}")
-    params:
-        input_dir = "results/{analysis}"
-    shell:
-        """
-        python scripts/package.py \
-            --input-dir {params.input_dir:q} \
-            --output-dir {output.sharddir:q} \
-            --shuffle
-        """
-
-rule copy_summary:
-    input:
-        forwards = expand("results/{analysis}/forwards-train", analysis=ANALYSES),
-        pairwise = expand("results/{analysis}/pairwise-train", analysis=ANALYSES)
-    output:
-        "export/summary.json"
-    shell:
-        "cp results/summary.json {output}"
-
-rule export:
-    input:
-        expand("export/{analysis}", analysis=ANALYSES),
-        "export/summary.json"
-
 rule upload:
     input:
-        expand("export/{analysis}", analysis=ANALYSES),
-        "export/summary.json"
+        expand("results/{analysis}/.trajectories.done", analysis=ANALYSES),
+        expand("results/{analysis}/.pairwise.done", analysis=ANALYSES)
     shell:
         """
         python scripts/upload-to-s3.py \
-            --export-dir export \
+            --upload-dir results \
             --prefix trajectories
         """

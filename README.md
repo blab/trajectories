@@ -42,12 +42,11 @@ On Linux, miniconda installs to `~/miniconda3/` instead of `/opt/homebrew/Caskro
 Before executing the workflow, please run `nextstrain login https://nextstrain.org` to access `trajectories-private` datasets in config.yaml, 
 or alternatively, remove these datasets from the config.
 
-The workflow is managed through Snakemake with three main targets:
+The workflow is managed through Snakemake with two main targets:
 
 ```
-snakemake --cores 1 -p results   # Generate trajectory FASTA files
-snakemake --cores 1 -p export    # Package into tar.zst shards
-snakemake --cores 1 -p upload    # After export, upload to S3
+snakemake --cores 1 -p results   # Generate trajectory shards
+snakemake --cores 1 -p upload    # Upload results to S3
 ```
 
 Running `snakemake` with no target defaults to `results`.
@@ -110,13 +109,13 @@ The workflow automatically splits tips into train and test sets by marking entir
 
 ## S3 upload
 
-The `upload` target packages trajectories and uploads to S3:
+The `upload` target uploads trajectory shards to S3:
 
 ```
 snakemake --cores 1 -p upload
 ```
 
-This uploads `export/` to `s3://{bucket}/trajectories/`. Requires `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` environment variables to be set.
+This uploads `results/` to `s3://{bucket}/trajectories/`. Requires `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` environment variables to be set.
 
 # Outputs
 
@@ -129,30 +128,26 @@ For each dataset, the workflow generates intermediate files in `data/{dataset}/`
 - `metadata.tsv` - Phylogenetic metadata with parent relationships
 - `branches.tsv` - Parent-child relationships with Hamming distances and train/test labels
 
-## Trajectory files
+## Trajectory shards
 
-The main output is trajectory files in `results/{dataset}/`, organized into forwards (root-to-tip) and pairwise (tip-to-tip) subdirectories:
+The main output is sharded tar.zst archives in `results/{dataset}/`:
 
 ```
 results/
 ├── spike-xs/
-│   ├── forwards-train/
-│   │   ├── USACA-CDC-STM-A1234562021.fasta
-│   │   └── ...
-│   ├── forwards-test/
-│   │   ├── Algeria10372023.fasta
-│   │   └── ...
-│   ├── pairwise-train/
-│   │   ├── TipA__TipB.fasta
-│   │   └── ...
-│   └── pairwise-test/
-│       ├── TipX__TipY.fasta
-│       └── ...
+│   ├── forwards-train-000.tar.zst
+│   ├── forwards-test-000.tar.zst
+│   ├── pairwise-train-000.tar.zst
+│   ├── pairwise-train-001.tar.zst
+│   ├── ...
+│   └── pairwise-test-000.tar.zst
 ├── cytb-xs/
 │   └── ...
 └── n450-xs/
     └── ...
 ```
+
+Each shard contains up to 10,000 trajectories (configurable via `shard_size` in config). Files are shuffled within each shard before writing. Larger datasets will have multiple shards (e.g., `pairwise-train-000.tar.zst`, `pairwise-train-001.tar.zst`, etc.).
 
 ### Forwards trajectories
 
@@ -185,28 +180,6 @@ ATGTTCGTTTAT...
 The first sequence gets `|0` and the second gets `|{hamming_distance}` representing the distance between the two sequences. File naming uses double underscore separator: `{tip1}__{tip2}.fasta`.
 
 **Training pairs** are random samples from all training tips (default limit: 100K pairs). **Test pairs** are only generated within the same test clade to avoid overlap with training branches (default limit: 50K pairs). Limits can be configured via `pairwise_train_limit` and `pairwise_test_limit` in config.
-
-## Export shards
-
-For distribution and efficient data loading, trajectories are packaged into sharded tar.zst archives in `export/`:
-
-```
-export/
-├── spike-xs/
-│   ├── forwards-train-000.tar.zst
-│   ├── forwards-test-000.tar.zst
-│   ├── pairwise-train-000.tar.zst
-│   ├── pairwise-train-001.tar.zst
-│   ├── ...
-│   └── pairwise-test-000.tar.zst
-├── cytb-xs/
-│   └── ...
-├── n450-xs/
-│   └── ...
-└── summary.json
-```
-
-Each shard contains up to 10,000 trajectories. Files are shuffled before sharding. Larger datasets will have multiple shards (e.g., `pairwise-train-000.tar.zst`, `pairwise-train-001.tar.zst`, etc.).
 
 ## Summary statistics
 
