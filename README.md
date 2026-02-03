@@ -39,7 +39,7 @@ On Linux, miniconda installs to `~/miniconda3/` instead of `/opt/homebrew/Caskro
 
 # Workflow
 
-Before executing the workflow, please run `nextstrain login https://next.nextstrain.org` to access `trajectories-private` datasets in config.yaml, 
+Before executing the workflow, please run `nextstrain login https://nextstrain.org` to access `trajectories-private` datasets in config.yaml, 
 or alternatively, remove these datasets from the config.
 
 The workflow is managed through Snakemake with three main targets:
@@ -67,10 +67,10 @@ snakemake --cores 1 -p results --config target_analyses='["spike-xs","cytb-xs"]'
 
 The following datasets are pre-configured and can be used with the above commands:
 
-- `cytb-xs`: [Mammalian cytochrome B sequences](https://next.nextstrain.org/groups/trajectories/cytb-xs) (5059 sequences x 1140 nucleotides)
-- `n450-xs`: [Measles N450 sequences](https://next.nextstrain.org/groups/trajectories/n450-xs) (2429 sequences x 450 nucleotides)
-- `spike-xs`: [SARS-CoV-2 spike S1 sequences](https://next.nextstrain.org/groups/trajectories/spike-xs) (10,195 sequences x 2055 nucleotides)
-- `spike-sm`: [SARS-CoV-2 spike S1 sequences](https://next.nextstrain.org/groups/trajectories/spike-sm) (34,707 sequences x 2055 nucleotides)
+- `cytb-xs`: [Mammalian cytochrome B sequences](https://nextstrain.org/groups/trajectories/cytb-xs) (5059 sequences x 1140 nucleotides)
+- `n450-xs`: [Measles N450 sequences](https://nextstrain.org/groups/trajectories/n450-xs) (2429 sequences x 450 nucleotides)
+- `spike-xs`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/trajectories/spike-xs) (10,195 sequences x 2055 nucleotides)
+- `spike-sm`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/trajectories/spike-sm) (34,707 sequences x 2055 nucleotides)
 - `spike-lg`: SARS-CoV-2 full spike from [UShER](https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2/) (~6M sequences x 2055 nucleotides, subsampled to 10k by default)
 
 **RdRp datasets (local):**
@@ -215,7 +215,7 @@ A consolidated `results/summary.json` file contains statistics for all processed
 ```json
 {
   "spike-xs": {
-    "url": "next.nextstrain.org/groups/trajectories/spike-xs",
+    "url": "nextstrain.org/groups/trajectories/spike-xs",
     "num_tips": 10195,
     "num_nodes": 19960,
     "sequence_length": 2055,
