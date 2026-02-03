@@ -89,25 +89,8 @@ def find_matutils():
     return None
 
 
-def check_docker_available():
-    """Check if Docker is available and running."""
-    try:
-        result = subprocess.run(
-            ["docker", "info"],
-            capture_output=True,
-            text=True,
-            timeout=10
-        )
-        return result.returncode == 0
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        return False
-
-
 def run_matutils_extract(pb_file, output_dir):
-    """Run matUtils extract to get tree and mutations.
-
-    Tries local matUtils first (including conda envs), falls back to Docker if not found.
-    """
+    """Run matUtils extract to get tree and mutations."""
     # Use absolute paths for tracking, but run matUtils from output_dir with relative paths
     # (matUtils has a bug where it prepends cwd to absolute paths)
     abs_output_dir = os.path.abspath(output_dir)
@@ -118,58 +101,27 @@ def run_matutils_extract(pb_file, output_dir):
     # Find matUtils executable
     matutils_path = find_matutils()
 
-    if matutils_path:
-        print(f"Running matUtils extract using: {matutils_path}")
-        # Run from output directory with relative output paths to work around matUtils path bug
-        cmd = [
-            matutils_path, "extract",
-            "-i", abs_pb_file,  # Input can be absolute
-            "-t", "tree.nwk",   # Output must be relative
-            "-A", "all_mutations.txt"
-        ]
-
-        try:
-            subprocess.run(cmd, check=True, capture_output=True, text=True, cwd=abs_output_dir)
-            return tree_path, mutations_path
-        except subprocess.CalledProcessError as e:
-            print(f"ERROR: matUtils failed: {e.stderr}")
-            sys.exit(1)
-
-    # Fall back to Docker
-    print("Local matUtils not found, trying Docker...")
-    if not check_docker_available():
-        print("ERROR: Neither matUtils nor Docker is available.")
-        print("Please install one of:")
-        print("  - UShER via conda: conda create -n usher -c conda-forge -c bioconda usher")
-        print("  - Docker: docker pull pathogengenomics/usher:latest")
+    if not matutils_path:
+        print("ERROR: matUtils not found.")
+        print("Please install UShER via conda:")
+        print("  conda create -n usher -c conda-forge -c bioconda usher")
         sys.exit(1)
 
-    # Use absolute paths for Docker volume mounting
-    abs_pb_file = os.path.abspath(pb_file)
-    abs_output_dir = os.path.abspath(output_dir)
-
-    # Docker command with volume mounts
-    # Use --workdir / to ensure absolute paths are interpreted correctly
-    docker_cmd = [
-        "docker", "run", "--rm",
-        "--workdir", "/",
-        "-v", f"{os.path.dirname(abs_pb_file)}:/input:ro",
-        "-v", f"{abs_output_dir}:/output",
-        "pathogengenomics/usher:latest",
-        "matUtils", "extract",
-        "-i", f"/input/{os.path.basename(abs_pb_file)}",
-        "-t", "/output/tree.nwk",
-        "-A", "/output/all_mutations.txt"
+    print(f"Running matUtils extract using: {matutils_path}")
+    # Run from output directory with relative output paths to work around matUtils path bug
+    cmd = [
+        matutils_path, "extract",
+        "-i", abs_pb_file,  # Input can be absolute
+        "-t", "tree.nwk",   # Output must be relative
+        "-A", "all_mutations.txt"
     ]
 
-    print(f"Running via Docker: pathogengenomics/usher:latest")
     try:
-        result = subprocess.run(docker_cmd, check=True, capture_output=True, text=True)
+        subprocess.run(cmd, check=True, capture_output=True, text=True, cwd=abs_output_dir)
+        return tree_path, mutations_path
     except subprocess.CalledProcessError as e:
-        print(f"ERROR: Docker matUtils failed: {e.stderr}")
+        print(f"ERROR: matUtils failed: {e.stderr}")
         sys.exit(1)
-
-    return tree_path, mutations_path
 
 
 def parse_newick_iterative(newick_str):
@@ -571,19 +523,18 @@ def reconstruct_sequences_streaming(
 
 
 def write_branches_tsv(sequences, parents, output_path):
-    """Write branches.tsv with parent-child relationships and Hamming distances."""
+    """Write branches_raw.tsv with parent-child relationships and Hamming distances."""
     print(f"Writing branches to {output_path}...")
 
     with open(output_path, "w") as f:
-        f.write("parent\tchild\thamming\ttrain_test\n")
+        f.write("parent\tchild\thamming\n")
 
         for child, parent in tqdm(parents.items(), desc="Branches"):
             if child not in sequences or parent not in sequences:
                 continue
 
             hamming = calculate_hamming(sequences[parent], sequences[child])
-            # train_test will be filled in by usher_train_test_split.py
-            f.write(f"{parent}\t{child}\t{hamming}\t\n")
+            f.write(f"{parent}\t{child}\t{hamming}\n")
 
 
 def main():
