@@ -130,9 +130,11 @@ rule provision_alignment:
     input:
         auspice = "data/{analysis}/auspice.json"
     output:
-        alignment = "data/{analysis}/full_alignment.fasta"
+        alignment = "data/{analysis}/alignment.fasta"
     params:
-        gene = lambda wildcards: config["analysis"][wildcards.analysis]["gene"]
+        gene = lambda wildcards: config["analysis"][wildcards.analysis]["gene"],
+        trim_begin_arg = lambda wildcards: f"--trim-begin {config['analysis'][wildcards.analysis]['trim_begin']}" if "trim_begin" in config['analysis'][wildcards.analysis] else "",
+        trim_end_arg = lambda wildcards: f"--trim-end {config['analysis'][wildcards.analysis]['trim_end']}" if "trim_end" in config['analysis'][wildcards.analysis] else ""
     shell:
         """
         # Copy root-sequence sidecar file if it exists (some datasets have inline root sequence instead)
@@ -143,7 +145,9 @@ rule provision_alignment:
         python scripts/alignment.py \
             --json {input.auspice:q} \
             --output {output.alignment:q} \
-            --gene {params.gene:q}
+            --gene {params.gene:q} \
+            {params.trim_begin_arg} \
+            {params.trim_end_arg}
         """
 
 rule provision_metadata:
@@ -188,27 +192,6 @@ rule provision_colors:
         python scripts/colors.py \
             --json {input.auspice:q} \
             --output {output.colors:q}
-        """
-
-rule trim:
-    wildcard_constraints:
-        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
-    input:
-        alignment = "data/{analysis}/full_alignment.fasta"
-    output:
-        alignment = "data/{analysis}/alignment.fasta"
-    params:
-        begin = lambda wildcards: config["analysis"][wildcards.analysis].get("trim_begin"),
-        end = lambda wildcards: config["analysis"][wildcards.analysis].get("trim_end"),
-        begin_arg = lambda wildcards: f"--begin {config['analysis'][wildcards.analysis]['trim_begin']}" if "trim_begin" in config['analysis'][wildcards.analysis] else "",
-        end_arg = lambda wildcards: f"--end {config['analysis'][wildcards.analysis]['trim_end']}" if "trim_end" in config['analysis'][wildcards.analysis] else ""
-    shell:
-        """
-        python scripts/trim.py \
-            --input-alignment {input.alignment:q} \
-            --output-alignment {output.alignment:q} \
-            {params.begin_arg} \
-            {params.end_arg}
         """
 
 rule sample:
@@ -300,14 +283,14 @@ rule usher_provision_alignment_branches:
     1. Runs matUtils extract to get tree.nwk and mutations
     2. Fetches SARS-CoV-2 reference from NCBI
     3. Reconstructs sequences by applying mutations from root
-    4. Outputs full_alignment.fasta and branches_raw.tsv
+    4. Outputs alignment.fasta (trimmed) and branches_raw.tsv
     """
     wildcard_constraints:
         analysis = "|".join(_usher_analyses()) if _usher_analyses() else "NOMATCH"
     input:
         pb = "data/{analysis}/tree.pb.gz"
     output:
-        alignment = "data/{analysis}/full_alignment.fasta",
+        alignment = "data/{analysis}/alignment.fasta",
         branches_raw = "data/{analysis}/branches_raw.tsv",
         tree = "data/{analysis}/tree.nwk"
     params:
@@ -332,23 +315,6 @@ rule usher_provision_alignment_branches:
             {params.trim_begin_arg} \
             {params.trim_end_arg}
         """
-
-rule usher_trim:
-    """
-    For UShER datasets, trimming is done during reconstruction.
-    This rule just copies the file to maintain pipeline compatibility.
-    """
-    wildcard_constraints:
-        analysis = "|".join(_usher_analyses()) if _usher_analyses() else "NOMATCH"
-    input:
-        alignment = "data/{analysis}/full_alignment.fasta",
-        # Depend on tree.nwk to ensure this rule only matches UShER datasets
-        tree = "data/{analysis}/tree.nwk"
-    output:
-        alignment = "data/{analysis}/alignment.fasta"
-    run:
-        # Trimming already done in usher_provision_alignment_branches
-        shutil.copy(input.alignment, output.alignment)
 
 rule usher_train_test_split:
     """Apply train/test split to UShER-derived branches using tree structure."""
