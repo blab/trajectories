@@ -361,7 +361,7 @@ rule upload_rdrp:
     shell:
         """
         python scripts/upload-to-s3.py \
-            --export-dir export \
+            --upload-dir export \
             --prefix trajectories \
             --filter '^rdrp-[a-z]+-xs$'
         """

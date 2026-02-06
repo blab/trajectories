@@ -64,10 +64,6 @@ def main():
         help="Local directory to upload"
     )
     parser.add_argument(
-        "--export-dir", default=None,
-        help="Local directory to upload (alias for --upload-dir)"
-    )
-    parser.add_argument(
         "--prefix", default="trajectories",
         help="S3 key prefix"
     )
@@ -88,8 +84,7 @@ def main():
     # Initialize S3 client (uses AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY from env)
     s3 = boto3.client('s3')
 
-    # Support both --upload-dir and --export-dir (export-dir takes precedence)
-    upload_dir = args.export_dir if args.export_dir else args.upload_dir
+    upload_dir = args.upload_dir
 
     # Compile filter pattern if provided
     filter_pattern = re.compile(args.filter) if args.filter else None
