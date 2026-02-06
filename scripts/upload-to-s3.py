@@ -29,10 +29,10 @@ def get_s3_prefix_for_analysis(analysis, base_prefix):
 
 
 def count_files(directory):
-    """Count total files in directory tree (excluding system files)."""
+    """Count .tar.zst shards in directory tree."""
     total = 0
     for root, dirs, files in os.walk(directory):
-        total += sum(1 for f in files if f not in EXCLUDED_FILES)
+        total += sum(1 for f in files if f.endswith('.tar.zst'))
     return total
 
 
@@ -142,7 +142,7 @@ def main():
             dataset_path = os.path.join(upload_dir, dataset)
             for root, dirs, files in os.walk(dataset_path):
                 for filename in files:
-                    if filename in EXCLUDED_FILES:
+                    if not filename.endswith('.tar.zst'):
                         continue
                     local_path = os.path.join(root, filename)
                     # Get path relative to the dataset directory
