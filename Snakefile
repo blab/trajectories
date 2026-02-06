@@ -3,6 +3,7 @@ configfile: "defaults/config.yaml"
 # Auto-discover rdrp subtrees (only if include_subtrees=true)
 import glob
 import os
+import re
 import shutil
 
 # Helper function to detect UShER datasets
@@ -52,6 +53,7 @@ def _auspice_analyses():
 # Split analyses into UShER and non-UShER for different rule requirements
 USHER_ANALYSES = [a for a in ANALYSES if is_usher_dataset(a)]
 AUSPICE_ANALYSES = [a for a in ANALYSES if not is_usher_dataset(a)]
+RDRP_ANALYSES = [a for a in ANALYSES if re.match(r'^rdrp-[a-z]+-xs$', a)]
 
 rule all:
     input:
@@ -348,4 +350,16 @@ rule upload:
         python scripts/upload-to-s3.py \
             --upload-dir results \
             --prefix trajectories
+        """
+
+rule upload_rdrp:
+    input:
+        expand("results/{analysis}/.trajectories.done", analysis=RDRP_ANALYSES),
+        expand("results/{analysis}/.pairwise.done", analysis=RDRP_ANALYSES)
+    shell:
+        """
+        python scripts/upload-to-s3.py \
+            --upload-dir results \
+            --prefix trajectories \
+            --filter '^rdrp-[a-z]+-xs$'
         """
