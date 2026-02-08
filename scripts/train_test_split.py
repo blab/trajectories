@@ -126,7 +126,7 @@ def walk_back_mutations(node, parents, branches_dict, target_mutations):
         branch_muts = count_branch_mutations(branches_dict, current)
         accumulated += branch_muts
 
-        if accumulated >= target_mutations:
+        if accumulated >= target_mutations and current != node:
             return current
 
         current = parents[current]

@@ -146,6 +146,12 @@ def build_trajectory_content(path, sequences, hamming_of):
             if branch_dist == 0 and node != last_node:
                 continue
 
+            # Collapse zero-length final frame: if the tip has zero
+            # branch distance, replace the previous frame with the tip
+            if branch_dist == 0 and node == last_node and frames_written > 0:
+                parts.pop()
+                frames_written -= 1
+
         # Get sequence
         seq = sequences.get(node)
         if not seq:
@@ -267,6 +273,7 @@ def main():
             filename = f"{safe_name}.fasta"
 
             # Determine which writer to use and potentially truncate path for test tips
+            is_test = False
             if has_train_test:
                 tip_label = train_test_of.get(tip, 'train')
                 if tip_label == 'test':
@@ -275,18 +282,27 @@ def main():
                     if boundary_idx is not None:
                         path = path[boundary_idx:]  # Start from first test node
                     writer = test_writer
-                    test_tips += 1
+                    is_test = True
                 else:
                     writer = train_writer
-                    train_tips += 1
             else:
                 writer = train_writer
-                train_tips += 1
 
             # Build trajectory content and collect stats
             content, tip_dist, path_depth = build_trajectory_content(
                 path, sequences, hamming_of
             )
+
+            # Skip trajectories with fewer than 2 sequences
+            if path_depth < 2:
+                continue
+
+            # Count tips after filtering
+            if is_test:
+                test_tips += 1
+            else:
+                train_tips += 1
+
             writer.add(filename, content)
             tip_distances.append(tip_dist)
             path_depths.append(path_depth)
