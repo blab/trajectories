@@ -1,6 +1,8 @@
 # code from Trevor Bedford and Katie Kistler
 # MIT license
 import argparse
+import sys
+sys.setrecursionlimit(100000)
 import json
 import os
 import Bio.Phylo

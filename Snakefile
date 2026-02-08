@@ -1,7 +1,11 @@
 configfile: "defaults/config.yaml"
 
-# Auto-discover rdrp subtrees (only if include_subtrees=true)
+# Auto-load bac120 phylum configs
 import glob
+for _cfg in sorted(glob.glob("defaults/bac120-*.yaml")):
+    configfile: _cfg
+
+# Auto-discover rdrp subtrees (only if include_subtrees=true)
 import os
 import re
 import shutil
