@@ -146,6 +146,12 @@ def build_trajectory_content(path, sequences, hamming_of):
             if branch_dist == 0 and node != last_node:
                 continue
 
+            # Collapse zero-length final frame: if the tip has zero
+            # branch distance, replace the previous frame with the tip
+            if branch_dist == 0 and node == last_node and frames_written > 0:
+                parts.pop()
+                frames_written -= 1
+
         # Get sequence
         seq = sequences.get(node)
         if not seq:
