@@ -85,6 +85,17 @@ snakemake --cores 8 -p results --config include_subtrees=true
 ```
 This adds datasets like `rdrp-paramyxoviridae-xs_001`, `rdrp-flaviviridae-xs_001`, etc.
 
+**bac120 marker gene datasets:**
+
+Bacterial marker gene datasets from the [GTDB bac120](https://gtdb.ecogenomic.org/) set are configured in separate per-phylum YAML files in `defaults/` that are auto-loaded by the Snakefile via glob. Currently available:
+
+- `defaults/bac120-cyano.yaml` — 123 Cyanobacteria marker genes (~2,500 genomes per marker, 389–11,348 nucleotides)
+- `defaults/bac120-bacteroidota.yaml` — 124 Bacteroidota marker genes (~22,000 genomes per marker, 658–41,943 nucleotides)
+
+This gives 247 datasets totaling ~3M sequences. Auspice JSONs are hosted at `nextstrain.org/groups/trajectories-private/bac120/{cyano,bacteroidota}/<marker>`. New phyla can be added by dropping a `defaults/bac120-*.yaml` config file.
+
+**Suffixing:**
+
 Dataset names include a size suffix indicating the number of tips:
 - `xs`: 1k - 10k tips
 - `sm`: 10k - 100k tips
