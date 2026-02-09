@@ -1,0 +1,493 @@
+analysis:
+  bac120-cyano-PF00380.20:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/PF00380.20
+    gene: nuc
+    seq_length: 519
+  bac120-cyano-PF00410.20:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/PF00410.20
+    gene: nuc
+    seq_length: 606
+  bac120-cyano-PF00466.21:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/PF00466.21
+    gene: nuc
+    seq_length: 2105
+  bac120-cyano-PF00687.22:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/PF00687.22
+    gene: nuc
+    seq_length: 389
+  bac120-cyano-PF01025.20:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/PF01025.20
+    gene: nuc
+    seq_length: 2676
+  bac120-cyano-PF02576.18:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/PF02576.18
+    gene: nuc
+    seq_length: 1468
+  bac120-cyano-PF03726.15:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/PF03726.15
+    gene: nuc
+    seq_length: 2537
+  bac120-cyano-PF04919.13:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/PF04919.13
+    gene: nuc
+    seq_length: 2556
+  bac120-cyano-TIGR00006:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00006
+    gene: nuc
+    seq_length: 3054
+  bac120-cyano-TIGR00019:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00019
+    gene: nuc
+    seq_length: 1580
+  bac120-cyano-TIGR00020:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00020
+    gene: nuc
+    seq_length: 1393
+  bac120-cyano-TIGR00029:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00029
+    gene: nuc
+    seq_length: 1080
+  bac120-cyano-TIGR00043:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00043
+    gene: nuc
+    seq_length: 2479
+  bac120-cyano-TIGR00054:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00054
+    gene: nuc
+    seq_length: 3022
+  bac120-cyano-TIGR00059:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00059
+    gene: nuc
+    seq_length: 748
+  bac120-cyano-TIGR00061:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00061
+    gene: nuc
+    seq_length: 2250
+  bac120-cyano-TIGR00064:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00064
+    gene: nuc
+    seq_length: 6586
+  bac120-cyano-TIGR00065:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00065
+    gene: nuc
+    seq_length: 5133
+  bac120-cyano-TIGR00082:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00082
+    gene: nuc
+    seq_length: 1831
+  bac120-cyano-TIGR00083:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00083
+    gene: nuc
+    seq_length: 3407
+  bac120-cyano-TIGR00084:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00084
+    gene: nuc
+    seq_length: 1386
+  bac120-cyano-TIGR00086:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00086
+    gene: nuc
+    seq_length: 807
+  bac120-cyano-TIGR00088:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00088
+    gene: nuc
+    seq_length: 2586
+  bac120-cyano-TIGR00090:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00090
+    gene: nuc
+    seq_length: 1100
+  bac120-cyano-TIGR00092:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00092
+    gene: nuc
+    seq_length: 1444
+  bac120-cyano-TIGR00095:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00095
+    gene: nuc
+    seq_length: 2038
+  bac120-cyano-TIGR00115:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00115
+    gene: nuc
+    seq_length: 3494
+  bac120-cyano-TIGR00116:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00116
+    gene: nuc
+    seq_length: 3798
+  bac120-cyano-TIGR00138:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00138
+    gene: nuc
+    seq_length: 2754
+  bac120-cyano-TIGR00158:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00158
+    gene: nuc
+    seq_length: 818
+  bac120-cyano-TIGR00166:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00166
+    gene: nuc
+    seq_length: 1260
+  bac120-cyano-TIGR00168:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00168
+    gene: nuc
+    seq_length: 1273
+  bac120-cyano-TIGR00186:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00186
+    gene: nuc
+    seq_length: 7785
+  bac120-cyano-TIGR00194:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00194
+    gene: nuc
+    seq_length: 5433
+  bac120-cyano-TIGR00250:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00250
+    gene: nuc
+    seq_length: 1815
+  bac120-cyano-TIGR00337:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00337
+    gene: nuc
+    seq_length: 2900
+  bac120-cyano-TIGR00344:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00344
+    gene: nuc
+    seq_length: 7292
+  bac120-cyano-TIGR00362:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00362
+    gene: nuc
+    seq_length: 2640
+  bac120-cyano-TIGR00382:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00382
+    gene: nuc
+    seq_length: 2482
+  bac120-cyano-TIGR00392:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00392
+    gene: nuc
+    seq_length: 10480
+  bac120-cyano-TIGR00396:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00396
+    gene: nuc
+    seq_length: 8167
+  bac120-cyano-TIGR00398:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00398
+    gene: nuc
+    seq_length: 4114
+  bac120-cyano-TIGR00414:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00414
+    gene: nuc
+    seq_length: 2097
+  bac120-cyano-TIGR00416:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00416
+    gene: nuc
+    seq_length: 3661
+  bac120-cyano-TIGR00420:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00420
+    gene: nuc
+    seq_length: 2516
+  bac120-cyano-TIGR00431:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00431
+    gene: nuc
+    seq_length: 3434
+  bac120-cyano-TIGR00435:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00435
+    gene: nuc
+    seq_length: 5942
+  bac120-cyano-TIGR00436:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00436
+    gene: nuc
+    seq_length: 3195
+  bac120-cyano-TIGR00442:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00442
+    gene: nuc
+    seq_length: 2988
+  bac120-cyano-TIGR00445:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00445
+    gene: nuc
+    seq_length: 1970
+  bac120-cyano-TIGR00456:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00456
+    gene: nuc
+    seq_length: 5520
+  bac120-cyano-TIGR00459:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00459
+    gene: nuc
+    seq_length: 2921
+  bac120-cyano-TIGR00460:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00460
+    gene: nuc
+    seq_length: 2026
+  bac120-cyano-TIGR00468:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00468
+    gene: nuc
+    seq_length: 2040
+  bac120-cyano-TIGR00472:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00472
+    gene: nuc
+    seq_length: 5426
+  bac120-cyano-TIGR00487:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00487
+    gene: nuc
+    seq_length: 8749
+  bac120-cyano-TIGR00496:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00496
+    gene: nuc
+    seq_length: 652
+  bac120-cyano-TIGR00539:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00539
+    gene: nuc
+    seq_length: 3217
+  bac120-cyano-TIGR00580:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00580
+    gene: nuc
+    seq_length: 8883
+  bac120-cyano-TIGR00593:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00593
+    gene: nuc
+    seq_length: 10821
+  bac120-cyano-TIGR00615:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00615
+    gene: nuc
+    seq_length: 1833
+  bac120-cyano-TIGR00631:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00631
+    gene: nuc
+    seq_length: 4151
+  bac120-cyano-TIGR00634:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00634
+    gene: nuc
+    seq_length: 4283
+  bac120-cyano-TIGR00635:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00635
+    gene: nuc
+    seq_length: 2799
+  bac120-cyano-TIGR00643:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00643
+    gene: nuc
+    seq_length: 5066
+  bac120-cyano-TIGR00663:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00663
+    gene: nuc
+    seq_length: 3559
+  bac120-cyano-TIGR00717:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00717
+    gene: nuc
+    seq_length: 2257
+  bac120-cyano-TIGR00755:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00755
+    gene: nuc
+    seq_length: 2251
+  bac120-cyano-TIGR00810:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00810
+    gene: nuc
+    seq_length: 2651
+  bac120-cyano-TIGR00922:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00922
+    gene: nuc
+    seq_length: 1777
+  bac120-cyano-TIGR00928:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00928
+    gene: nuc
+    seq_length: 2069
+  bac120-cyano-TIGR00959:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00959
+    gene: nuc
+    seq_length: 2573
+  bac120-cyano-TIGR00963:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00963
+    gene: nuc
+    seq_length: 5337
+  bac120-cyano-TIGR00964:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00964
+    gene: nuc
+    seq_length: 1294
+  bac120-cyano-TIGR00967:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR00967
+    gene: nuc
+    seq_length: 1956
+  bac120-cyano-TIGR01009:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01009
+    gene: nuc
+    seq_length: 1089
+  bac120-cyano-TIGR01011:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01011
+    gene: nuc
+    seq_length: 2948
+  bac120-cyano-TIGR01017:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01017
+    gene: nuc
+    seq_length: 926
+  bac120-cyano-TIGR01021:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01021
+    gene: nuc
+    seq_length: 1520
+  bac120-cyano-TIGR01029:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01029
+    gene: nuc
+    seq_length: 564
+  bac120-cyano-TIGR01032:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01032
+    gene: nuc
+    seq_length: 574
+  bac120-cyano-TIGR01039:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01039
+    gene: nuc
+    seq_length: 1996
+  bac120-cyano-TIGR01044:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01044
+    gene: nuc
+    seq_length: 787
+  bac120-cyano-TIGR01052:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01052
+    gene: nuc
+    seq_length: 2109
+  bac120-cyano-TIGR01059:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01059
+    gene: nuc
+    seq_length: 6699
+  bac120-cyano-TIGR01063:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01063
+    gene: nuc
+    seq_length: 5100
+  bac120-cyano-TIGR01066:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01066
+    gene: nuc
+    seq_length: 775
+  bac120-cyano-TIGR01071:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01071
+    gene: nuc
+    seq_length: 852
+  bac120-cyano-TIGR01079:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01079
+    gene: nuc
+    seq_length: 623
+  bac120-cyano-TIGR01082:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01082
+    gene: nuc
+    seq_length: 3098
+  bac120-cyano-TIGR01087:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01087
+    gene: nuc
+    seq_length: 4179
+  bac120-cyano-TIGR01128:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01128
+    gene: nuc
+    seq_length: 2403
+  bac120-cyano-TIGR01146:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01146
+    gene: nuc
+    seq_length: 1475
+  bac120-cyano-TIGR01164:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01164
+    gene: nuc
+    seq_length: 752
+  bac120-cyano-TIGR01169:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01169
+    gene: nuc
+    seq_length: 1031
+  bac120-cyano-TIGR01171:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01171
+    gene: nuc
+    seq_length: 1083
+  bac120-cyano-TIGR01302:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01302
+    gene: nuc
+    seq_length: 1545
+  bac120-cyano-TIGR01391:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01391
+    gene: nuc
+    seq_length: 6834
+  bac120-cyano-TIGR01393:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01393
+    gene: nuc
+    seq_length: 2238
+  bac120-cyano-TIGR01394:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01394
+    gene: nuc
+    seq_length: 2098
+  bac120-cyano-TIGR01510:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01510
+    gene: nuc
+    seq_length: 1173
+  bac120-cyano-TIGR01632:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01632
+    gene: nuc
+    seq_length: 620
+  bac120-cyano-TIGR01951:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01951
+    gene: nuc
+    seq_length: 2787
+  bac120-cyano-TIGR01953:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR01953
+    gene: nuc
+    seq_length: 3390
+  bac120-cyano-TIGR02012:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR02012
+    gene: nuc
+    seq_length: 2530
+  bac120-cyano-TIGR02013:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR02013
+    gene: nuc
+    seq_length: 8852
+  bac120-cyano-TIGR02027:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR02027
+    gene: nuc
+    seq_length: 1817
+  bac120-cyano-TIGR02075:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR02075
+    gene: nuc
+    seq_length: 1562
+  bac120-cyano-TIGR02191:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR02191
+    gene: nuc
+    seq_length: 2091
+  bac120-cyano-TIGR02273:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR02273
+    gene: nuc
+    seq_length: 2743
+  bac120-cyano-TIGR02350:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR02350
+    gene: nuc
+    seq_length: 3851
+  bac120-cyano-TIGR02386:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR02386
+    gene: nuc
+    seq_length: 7499
+  bac120-cyano-TIGR02397:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR02397
+    gene: nuc
+    seq_length: 11348
+  bac120-cyano-TIGR02432:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR02432
+    gene: nuc
+    seq_length: 5036
+  bac120-cyano-TIGR02729:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR02729
+    gene: nuc
+    seq_length: 1989
+  bac120-cyano-TIGR03263:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR03263
+    gene: nuc
+    seq_length: 1314
+  bac120-cyano-TIGR03594:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR03594
+    gene: nuc
+    seq_length: 2156
+  bac120-cyano-TIGR03625:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR03625
+    gene: nuc
+    seq_length: 1020
+  bac120-cyano-TIGR03632:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR03632
+    gene: nuc
+    seq_length: 444
+  bac120-cyano-TIGR03654:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR03654
+    gene: nuc
+    seq_length: 860
+  bac120-cyano-TIGR03723:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR03723
+    gene: nuc
+    seq_length: 1941
+  bac120-cyano-TIGR03725:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR03725
+    gene: nuc
+    seq_length: 4151
+  bac120-cyano-TIGR03953:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/cyano/TIGR03953
+    gene: nuc
+    seq_length: 1383

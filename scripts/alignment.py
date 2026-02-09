@@ -14,6 +14,8 @@ at the node will be output. (this is default if no gene is specified).
 The FASTA header is the node's name in the tree.
 """
 import argparse
+import sys
+sys.setrecursionlimit(100000)
 import json
 import os
 from augur.utils import json_to_tree
@@ -62,7 +64,6 @@ if __name__ == '__main__':
                         help="Start position for trimming (1-indexed, inclusive)")
     parser.add_argument("--trim-end", type=int, default=None,
                         help="End position for trimming (1-indexed, inclusive)")
-
     args = parser.parse_args()
 
     # Load auspice JSON file

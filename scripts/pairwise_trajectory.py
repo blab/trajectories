@@ -5,6 +5,8 @@ Each file contains two tip sequences with their Hamming distance in headers.
 """
 
 import argparse
+import sys
+sys.setrecursionlimit(100000)
 import itertools
 import json
 import os

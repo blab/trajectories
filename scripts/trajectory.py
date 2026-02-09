@@ -5,6 +5,8 @@ Each trajectory contains sequences from root to tip with cumulative Hamming dist
 """
 
 import argparse
+import sys
+sys.setrecursionlimit(100000)
 import csv
 import json
 import os

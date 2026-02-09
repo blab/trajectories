@@ -7,6 +7,8 @@ and adds the train_test labels to each node in the JSON for visualization in Aus
 """
 
 import argparse
+import sys
+sys.setrecursionlimit(100000)
 import json
 
 

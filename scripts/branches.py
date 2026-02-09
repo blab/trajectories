@@ -8,6 +8,9 @@ Train/test labels are added by a separate train_test_split step.
 
 import argparse
 import json
+import sys
+
+sys.setrecursionlimit(100000)
 import Bio.Phylo
 from Bio import SeqIO
 from tqdm import tqdm
