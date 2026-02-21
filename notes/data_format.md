@@ -27,7 +27,7 @@ C:   A  G  C  G  G  T  C  G  A  C     3 changes from X (pos 2: T→G, pos 5: A�
 
 ## Forwards trajectories
 
-A forwards trajectory traces the evolutionary path from root to a single tip. Each entry in the FASTA file records a node along the path and its cumulative Hamming distance from the root. The header format is `>{node_name}|{cumulative_hamming_distance}`. Intermediate nodes with zero branch distance are skipped.
+A forwards trajectory traces the evolutionary path from root to a single tip. Each entry in the FASTA file records a node along the path and its branch Hamming distance from the previous emitted node (0 for the root). The header format is `>{node_name}|{branch_hamming_distance}`. Intermediate nodes with zero branch distance are skipped.
 
 ### Example: trajectory for tip A
 
@@ -39,13 +39,13 @@ File `A.fasta`:
 ATCGATCGAT
 >Y|1
 ATCAATCGAT
->A|3
+>A|2
 ATCAAGCAAT
 ```
 
-- `X|0` — root, cumulative distance 0
-- `Y|1` — 1 mutation accumulated (X→Y distance is 1)
-- `A|3` — 3 mutations accumulated (1 from X→Y + 2 from Y→A)
+- `X|0` — root, branch distance 0
+- `Y|1` — 1 mutation from X (X→Y distance is 1)
+- `A|2` — 2 mutations from Y (Y→A distance is 2)
 
 ### Example: trajectory for tip B
 
@@ -57,7 +57,7 @@ File `B.fasta`:
 ATCGATCGAT
 >Y|1
 ATCAATCGAT
->B|2
+>B|1
 ATCAATCGGT
 ```
 

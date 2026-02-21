@@ -1,7 +1,7 @@
 """
 Extract per-tip trajectory FASTA files from phylogenetic tree data.
 
-Each trajectory contains sequences from root to tip with cumulative Hamming distances.
+Each trajectory contains sequences from root to tip with branch Hamming distances.
 """
 
 import argparse
@@ -123,17 +123,19 @@ def build_trajectory_content(path, sequences, hamming_of):
     Build trajectory FASTA content for a single tip.
 
     Path should be in root-to-tip order.
-    Each header includes cumulative Hamming distance from root.
+    Each header includes the branch Hamming distance from the previous emitted node
+    (0 for root).
     Skips intermediate nodes with zero branch distance.
 
     Returns:
         tuple: (content, tip_distance, path_depth) where content is the FASTA string,
-               tip_distance is cumulative Hamming distance, and path_depth is
+               tip_distance is cumulative Hamming distance from root, and path_depth is
                number of frames written.
     """
     cumulative_distance = 0
     last_node = path[-1] if path else None  # tip node
     frames_written = 0
+    last_emitted_branch_dist = 0
 
     # Build content
     parts = []
@@ -153,6 +155,9 @@ def build_trajectory_content(path, sequences, hamming_of):
             if branch_dist == 0 and node == last_node and frames_written > 0:
                 parts.pop()
                 frames_written -= 1
+                branch_dist = last_emitted_branch_dist
+        else:
+            branch_dist = 0  # root
 
         # Get sequence
         seq = sequences.get(node)
@@ -160,7 +165,8 @@ def build_trajectory_content(path, sequences, hamming_of):
             continue
 
         # Add FASTA entry
-        parts.append(f">{node}|{cumulative_distance}\n{format_sequence(seq)}\n")
+        parts.append(f">{node}|{branch_dist}\n{format_sequence(seq)}\n")
+        last_emitted_branch_dist = branch_dist
         frames_written += 1
 
     content = ''.join(parts)
@@ -172,12 +178,12 @@ def write_trajectory(path, sequences, hamming_of, output_path, compress=False, c
     Write trajectory FASTA file for a single tip.
 
     Path should be in root-to-tip order.
-    Each header includes cumulative Hamming distance from root.
+    Each header includes the branch Hamming distance from the previous emitted node.
     Skips intermediate nodes with zero branch distance.
 
     Returns:
         tuple: (tip_distance, path_depth) where tip_distance is cumulative
-               Hamming distance and path_depth is number of frames written.
+               Hamming distance from root and path_depth is number of frames written.
     """
     content, cumulative_distance, frames_written = build_trajectory_content(
         path, sequences, hamming_of
