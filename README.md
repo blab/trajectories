@@ -176,6 +176,8 @@ zstd -d -c results/spike-xs/forwards-train-000.tar.zst | tar -xOf - SomeFile.fas
 zstd -d -c results/spike-xs/forwards-train-000.tar.zst | tar -xf -
 ```
 
+See [notes/data_format.md](notes/data_format.md) for a detailed worked example with a small tree illustrating both trajectory formats.
+
 ### Forwards trajectories
 
 Each forwards trajectory is a FASTA file containing the evolutionary path from root to tip:
