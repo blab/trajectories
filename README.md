@@ -187,11 +187,11 @@ Each forwards trajectory is a FASTA file containing the evolutionary path from r
 ATGTTCGTTTTT...
 >NODE_0001234|15
 ATGTTCGTTTTT...
->TipName|42
+>TipName|14
 ATGTTCGTTTTT...
 ```
 
-Where each header contains `>{node_name}|{cumulative_hamming_distance}`. Intermediate nodes with zero mutations are skipped (root and tip are always included).
+Where each header contains `>{node_name}|{branch_hamming_distance}`, the Hamming distance from the previous emitted node (0 for root). Intermediate nodes with zero mutations are skipped (root and tip are always included).
 
 **Training trajectories** contain the full root-to-tip path. **Test trajectories** are truncated to start at the test clade boundary, ensuring they contain only evolutionary history unseen during training.
 
