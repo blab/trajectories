@@ -7,12 +7,12 @@ class TestPairwiseHamming:
     """Test pairwise Hamming distance computation."""
 
     def test_a_vs_b(self, sequences):
-        """A vs B: 3 differences (pos 6, 8, 9)."""
+        """A vs B: 3 differences (pos 4, 6, 9)."""
         assert calculate_hamming_distance(sequences["A"], sequences["B"]) == 3
 
     def test_a_vs_c(self, sequences):
-        """A vs C: 6 differences (pos 2, 4, 5, 6, 8, 10)."""
-        assert calculate_hamming_distance(sequences["A"], sequences["C"]) == 6
+        """A vs C: 4 differences (pos 2, 5, 6, 10)."""
+        assert calculate_hamming_distance(sequences["A"], sequences["C"]) == 4
 
     def test_gaps_ignored(self):
         """Gaps are not counted as differences."""
@@ -59,11 +59,11 @@ class TestBuildPairwiseContent:
     """Test pairwise FASTA content building."""
 
     def test_basic_content(self, sequences):
-        """First tip gets |0, second gets |{hamming}."""
+        """First tip gets |0|0, second gets |{hamming}|{hamming}."""
         content, hamming = build_pairwise_content("A", "B", sequences)
         assert hamming == 3
-        assert content.startswith(">A|0\n")
-        assert ">B|3\n" in content
+        assert content.startswith(">A|0|0\n")
+        assert ">B|3|3\n" in content
 
     def test_header_matches_direct_hamming(self, sequences):
         """Header distance equals direct Hamming between tip sequences."""

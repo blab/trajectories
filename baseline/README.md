@@ -13,15 +13,15 @@ There are two trajectory types, each defining source-target pairs differently:
 A forwards trajectory FASTA contains a root-to-tip path through a phylogenetic tree. Each entry is a node along the path:
 
 ```
->X|0
+>X|0|0
 ATCGATCGAT
->Y|1
+>Y|1|1
 ATCAATCGAT
->A|2
+>A|2|3
 ATCAAGCAAT
 ```
 
-The header format is `>{node_name}|{N}` where N is the number of ACGT mutations from the **previous entry** in the file (0 for the root). This produces **consecutive source-target pairs**:
+The header format is `>{node_name}|{N}|{D}` where N is the number of ACGT mutations from the **previous entry** in the file (0 for the root) and D is the direct Hamming distance from the start node. The prediction task uses N (the second field), not D (the third field). This produces **consecutive source-target pairs**:
 
 | Source | Target | N |
 |---|---|---|
@@ -35,13 +35,13 @@ A trajectory with K entries yields K-1 prediction tasks. Each pair is an indepen
 A pairwise trajectory FASTA contains exactly two tip sequences:
 
 ```
->A|0
-ATCAAGCAAT
->B|3
+>A|0|0
+ATCGAGCGAT
+>B|3|3
 ATCAATCGGT
 ```
 
-The first tip always has `|0`. The second tip has `|N` where N is the ACGT Hamming distance between the two sequences. This produces **one prediction task**: given A's sequence and N=3, predict B's sequence.
+Headers use the same three-field format as forwards trajectories: `>{name}|{N}|{D}`. For pairwise, N and D are always identical. The first tip always has `|0|0`. The second tip has `|N|N` where N is the ACGT Hamming distance between the two sequences. This produces **one prediction task**: given A's sequence and N=3, predict B's sequence.
 
 ## The metric: mutation accuracy
 
@@ -85,13 +85,14 @@ To evaluate a model, iterate over test shard trajectories and score predictions 
 for filename, content in iter_fasta_from_shards(shard_paths):
     frames = parse_fasta_frames(content)
     # frames = [(node_name, N, sequence), ...]
+    # N is the branch distance (second header field) in both formats
 
     if trajectory_type == "forwards":
         # Consecutive pairs: (frame[0], frame[1]), (frame[1], frame[2]), ...
         for i in range(len(frames) - 1):
             source_seq = frames[i][2]
             target_seq = frames[i + 1][2]
-            N = frames[i + 1][1]  # header token of the target frame
+            N = frames[i + 1][1]  # branch distance from target's header
             predicted_seq = model.predict(source_seq, N)
             score = mutation_accuracy(source_seq, target_seq, predicted_seq)
 
@@ -99,7 +100,7 @@ for filename, content in iter_fasta_from_shards(shard_paths):
         # Single pair: frame[0] is source, frame[1] is target
         source_seq = frames[0][2]
         target_seq = frames[1][2]
-        N = frames[1][1]  # header token of the second frame
+        N = frames[1][1]  # branch distance from second frame's header
         predicted_seq = model.predict(source_seq, N)
         score = mutation_accuracy(source_seq, target_seq, predicted_seq)
 ```

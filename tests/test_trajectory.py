@@ -10,12 +10,12 @@ from trajectory import build_trajectory_content, _hamming_no_gaps
 
 
 def parse_fasta_headers(content):
-    """Parse FASTA content and return list of (name, distance) tuples."""
+    """Parse FASTA content and return list of (name, branch_dist, direct_dist) tuples."""
     headers = []
     for line in content.splitlines():
         if line.startswith(">"):
-            name, dist = line[1:].split("|")
-            headers.append((name, int(dist)))
+            parts = line[1:].split("|")
+            headers.append((parts[0], int(parts[1]), int(parts[2])))
     return headers
 
 
@@ -28,8 +28,8 @@ def parse_fasta_sequences(content):
         if line.startswith(">"):
             if current_name is not None:
                 entries.append((current_name, "".join(current_seq)))
-            name, _ = line[1:].split("|")
-            current_name = name
+            parts = line[1:].split("|")
+            current_name = parts[0]
             current_seq = []
         else:
             current_seq.append(line)
@@ -56,40 +56,61 @@ def assert_header_invariant(content):
         )
 
 
+def assert_direct_distance_invariant(content):
+    """Assert direct_dist equals _hamming_no_gaps(start_seq, current_seq) for every frame."""
+    entries = parse_fasta_sequences(content)
+    headers = parse_fasta_headers(content)
+    if not entries:
+        return
+    start_name, start_seq = entries[0]
+    for i, (curr_name, curr_seq) in enumerate(entries):
+        direct_dist = headers[i][2]
+        actual_dist = _hamming_no_gaps(start_seq, curr_seq)
+        assert direct_dist == actual_dist, (
+            f"Direct distance invariant violated: {curr_name} header says {direct_dist}, "
+            f"but _hamming_no_gaps({start_name}, {curr_name}) = {actual_dist}"
+        )
+
+
 class TestBasicTrajectory:
     """Test trajectory builder against the worked example from data_format.md."""
 
     def test_path_x_y_a(self, sequences, hamming_of):
-        """Path X→Y→A produces headers X|0, Y|1, A|2."""
+        """Path X→Y→A produces headers X|0|0, Y|1|1, A|2|1.
+
+        A reverts position 4 (A→G, back to root X) and mutates position 6 (T→G),
+        so branch distance from Y is 2 but direct distance from X is only 1.
+        """
         path = ["X", "Y", "A"]
         content, tip_dist, depth = build_trajectory_content(path, sequences, hamming_of)
         headers = parse_fasta_headers(content)
-        assert headers == [("X", 0), ("Y", 1), ("A", 2)]
+        assert headers == [("X", 0, 0), ("Y", 1, 1), ("A", 2, 1)]
         assert depth == 3
         assert tip_dist == 3  # cumulative: 0 + 1 + 2
 
     def test_path_x_y_b(self, sequences, hamming_of):
-        """Path X→Y→B produces headers X|0, Y|1, B|1."""
+        """Path X→Y→B produces headers X|0|0, Y|1|1, B|1|2."""
         path = ["X", "Y", "B"]
         content, tip_dist, depth = build_trajectory_content(path, sequences, hamming_of)
         headers = parse_fasta_headers(content)
-        assert headers == [("X", 0), ("Y", 1), ("B", 1)]
+        assert headers == [("X", 0, 0), ("Y", 1, 1), ("B", 1, 2)]
         assert depth == 3
 
     def test_path_x_c(self, sequences, hamming_of):
-        """Path X→C produces headers X|0, C|3."""
+        """Path X→C produces headers X|0|0, C|3|3."""
         path = ["X", "C"]
         content, tip_dist, depth = build_trajectory_content(path, sequences, hamming_of)
         headers = parse_fasta_headers(content)
-        assert headers == [("X", 0), ("C", 3)]
+        assert headers == [("X", 0, 0), ("C", 3, 3)]
         assert depth == 2
         assert tip_dist == 3
 
     def test_header_invariant_all_paths(self, sequences, hamming_of):
-        """Header N invariant holds for all paths in the worked example."""
+        """Header invariants hold for all paths in the worked example."""
         for path in [["X", "Y", "A"], ["X", "Y", "B"], ["X", "C"]]:
             content, _, _ = build_trajectory_content(path, sequences, hamming_of)
             assert_header_invariant(content)
+            assert_direct_distance_invariant(content)
 
     def test_sequences_in_output(self, sequences, hamming_of):
         """Emitted sequences match the input sequences."""
@@ -114,13 +135,13 @@ class TestZeroDistanceSkip:
         path = ["X", "Y", "Z", "A"]
         content, _, depth = build_trajectory_content(path, seqs, h)
         headers = parse_fasta_headers(content)
-        names = [name for name, _ in headers]
+        names = [name for name, _, _ in headers]
         assert "Z" not in names
         assert names == ["X", "Y", "A"]
         assert depth == 3
 
     def test_skip_preserves_header_invariant(self, sequences, hamming_of):
-        """Header N invariant holds after skipping zero-distance nodes."""
+        """Header invariants hold after skipping zero-distance nodes."""
         seqs = dict(sequences)
         seqs["Z"] = sequences["Y"]
         h = dict(hamming_of)
@@ -130,6 +151,7 @@ class TestZeroDistanceSkip:
         path = ["X", "Y", "Z", "A"]
         content, _, _ = build_trajectory_content(path, seqs, h)
         assert_header_invariant(content)
+        assert_direct_distance_invariant(content)
 
 
 class TestZeroDistanceSkipWithGaps:
@@ -149,7 +171,7 @@ class TestZeroDistanceSkipWithGaps:
         headers = parse_fasta_headers(content)
 
         # Z should be skipped
-        names = [name for name, _ in headers]
+        names = [name for name, _, _ in headers]
         assert "Z" not in names
         assert names == ["X", "Y", "A"]
 
@@ -159,10 +181,11 @@ class TestZeroDistanceSkipWithGaps:
         assert a_header_dist == expected == 2
 
     def test_header_invariant_with_gap_changes(self, gap_sequences, gap_hamming_of):
-        """Header N invariant holds when skipped nodes have different gap patterns."""
+        """Header invariants hold when skipped nodes have different gap patterns."""
         path = ["X", "Y", "Z", "A"]
         content, _, _ = build_trajectory_content(path, gap_sequences, gap_hamming_of)
         assert_header_invariant(content)
+        assert_direct_distance_invariant(content)
 
 
 class TestCollapse:
@@ -180,13 +203,13 @@ class TestCollapse:
         headers = parse_fasta_headers(content)
 
         # Y should be replaced by T
-        names = [name for name, _ in headers]
+        names = [name for name, _, _ in headers]
         assert "Y" not in names
         assert names == ["X", "T"]
         assert depth == 2
 
     def test_collapse_preserves_header_invariant(self, sequences, hamming_of):
-        """Header N invariant holds after collapsing a tip."""
+        """Header invariants hold after collapsing a tip."""
         seqs = dict(sequences)
         seqs["T"] = sequences["Y"]
         h = dict(hamming_of)
@@ -195,6 +218,7 @@ class TestCollapse:
         path = ["X", "Y", "T"]
         content, _, _ = build_trajectory_content(path, seqs, h)
         assert_header_invariant(content)
+        assert_direct_distance_invariant(content)
 
     def test_collapse_with_gap_changes(self):
         """Collapsed tip with different gap pattern gets correct header N."""
@@ -213,9 +237,10 @@ class TestCollapse:
         headers = parse_fasta_headers(content)
 
         # Y replaced by T; header for T = _hamming_no_gaps(X, T) = 1
-        assert [name for name, _ in headers] == ["X", "T"]
+        assert [name for name, _, _ in headers] == ["X", "T"]
         assert headers[1][1] == _hamming_no_gaps(seqs["X"], seqs["T"])
         assert_header_invariant(content)
+        assert_direct_distance_invariant(content)
 
 
 class TestEdgeCases:
@@ -226,7 +251,7 @@ class TestEdgeCases:
         path = ["X"]
         content, tip_dist, depth = build_trajectory_content(path, sequences, hamming_of)
         headers = parse_fasta_headers(content)
-        assert headers == [("X", 0)]
+        assert headers == [("X", 0, 0)]
         assert depth == 1
         assert tip_dist == 0
 
@@ -235,7 +260,7 @@ class TestEdgeCases:
         path = ["X", "Y"]
         content, tip_dist, depth = build_trajectory_content(path, sequences, hamming_of)
         headers = parse_fasta_headers(content)
-        assert headers == [("X", 0), ("Y", 1)]
+        assert headers == [("X", 0, 0), ("Y", 1, 1)]
         assert depth == 2
 
     def test_missing_sequence_skipped(self, sequences, hamming_of):
@@ -244,8 +269,9 @@ class TestEdgeCases:
         path = ["X", "Y", "A"]
         content, _, depth = build_trajectory_content(path, seqs, hamming_of)
         headers = parse_fasta_headers(content)
-        names = [name for name, _ in headers]
+        names = [name for name, _, _ in headers]
         assert "Y" not in names
         assert "X" in names
         assert "A" in names
         assert_header_invariant(content)
+        assert_direct_distance_invariant(content)

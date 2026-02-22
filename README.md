@@ -183,15 +183,15 @@ See [notes/data_format.md](notes/data_format.md) for a detailed worked example w
 Each forwards trajectory is a FASTA file containing the evolutionary path from root to tip:
 
 ```
->NODE_0000000|0
+>NODE_0000000|0|0
 ATGTTCGTTTTT...
->NODE_0001234|15
+>NODE_0001234|15|15
 ATGTTCGTTTTT...
->TipName|14
+>TipName|14|27
 ATGTTCGTTTTT...
 ```
 
-Where each header contains `>{node_name}|{branch_hamming_distance}`, the Hamming distance from the previous emitted node (0 for root). Intermediate nodes with zero mutations are skipped (root and tip are always included).
+Where each header contains `>{node_name}|{branch_hamming_distance}|{direct_hamming_distance}` — the branch distance from the previous emitted node (0 for root) and the direct Hamming distance from the start node. Intermediate nodes with zero mutations are skipped (root and tip are always included).
 
 **Training trajectories** contain the full root-to-tip path. **Test trajectories** are truncated to start at the test clade boundary, ensuring they contain only evolutionary history unseen during training.
 
@@ -200,13 +200,13 @@ Where each header contains `>{node_name}|{branch_hamming_distance}`, the Hamming
 Each pairwise trajectory is a FASTA file containing two tip sequences with their Hamming distance:
 
 ```
->TipA|0
+>TipA|0|0
 ATGTTCGTTTTT...
->TipB|23
+>TipB|23|23
 ATGTTCGTTTAT...
 ```
 
-The first sequence gets `|0` and the second gets `|{hamming_distance}` representing the distance between the two sequences. File naming uses double underscore separator: `{tip1}__{tip2}.fasta`.
+Headers use the same three-field format as forwards trajectories: `>{name}|{branch_distance}|{direct_distance}`. The first sequence gets `|0|0` and the second gets `|{hamming}|{hamming}` (branch and direct are always identical for pairwise). File naming uses double underscore separator: `{tip1}__{tip2}.fasta`.
 
 **Training pairs** are random samples from all training tips (default limit: 100K pairs). **Test pairs** are only generated within the same test clade to avoid overlap with training branches (default limit: 50K pairs). Limits can be configured via `pairwise_train_limit` and `pairwise_test_limit` in config.
 

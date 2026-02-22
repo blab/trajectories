@@ -178,7 +178,9 @@ def build_pairwise_content(tip1, tip2, sequences):
     """
     Build pairwise FASTA content as a string.
 
-    First sequence gets |0, second gets |{hamming_distance}.
+    Header format matches forwards trajectories: >{name}|{branch_dist}|{direct_dist}.
+    First sequence gets |0|0, second gets |{hamming}|{hamming} (branch and direct
+    are always identical for pairwise since there are only two frames).
     Returns tuple of (content, hamming_distance), or (None, None) if sequences missing.
     """
     seq1 = sequences.get(tip1, '')
@@ -190,13 +192,13 @@ def build_pairwise_content(tip1, tip2, sequences):
     hamming = calculate_hamming_distance(seq1, seq2)
 
     lines = []
-    # First sequence with |0
-    lines.append(f">{tip1}|0\n")
+    # First sequence with |0|0
+    lines.append(f">{tip1}|0|0\n")
     for j in range(0, len(seq1), 60):
         lines.append(seq1[j:j+60] + '\n')
 
-    # Second sequence with |{hamming}
-    lines.append(f">{tip2}|{hamming}\n")
+    # Second sequence with |{hamming}|{hamming}
+    lines.append(f">{tip2}|{hamming}|{hamming}\n")
     for j in range(0, len(seq2), 60):
         lines.append(seq2[j:j+60] + '\n')
 
