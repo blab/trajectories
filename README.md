@@ -200,13 +200,13 @@ Where each header contains `>{node_name}|{branch_hamming_distance}|{direct_hammi
 Each pairwise trajectory is a FASTA file containing two tip sequences with their Hamming distance:
 
 ```
->TipA|0
+>TipA|0|0
 ATGTTCGTTTTT...
->TipB|23
+>TipB|23|23
 ATGTTCGTTTAT...
 ```
 
-The first sequence gets `|0` and the second gets `|{hamming_distance}` representing the distance between the two sequences. File naming uses double underscore separator: `{tip1}__{tip2}.fasta`.
+Headers use the same three-field format as forwards trajectories: `>{name}|{branch_distance}|{direct_distance}`. The first sequence gets `|0|0` and the second gets `|{hamming}|{hamming}` (branch and direct are always identical for pairwise). File naming uses double underscore separator: `{tip1}__{tip2}.fasta`.
 
 **Training pairs** are random samples from all training tips (default limit: 100K pairs). **Test pairs** are only generated within the same test clade to avoid overlap with training branches (default limit: 50K pairs). Limits can be configured via `pairwise_train_limit` and `pairwise_test_limit` in config.
 

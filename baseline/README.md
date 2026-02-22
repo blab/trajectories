@@ -35,13 +35,13 @@ A trajectory with K entries yields K-1 prediction tasks. Each pair is an indepen
 A pairwise trajectory FASTA contains exactly two tip sequences:
 
 ```
->A|0
-ATCAAGCAAT
->B|3
+>A|0|0
+ATCGAGCGAT
+>B|3|3
 ATCAATCGGT
 ```
 
-The first tip always has `|0`. The second tip has `|N` where N is the ACGT Hamming distance between the two sequences. This produces **one prediction task**: given A's sequence and N=3, predict B's sequence.
+Headers use the same three-field format as forwards trajectories: `>{name}|{N}|{D}`. For pairwise, N and D are always identical. The first tip always has `|0|0`. The second tip has `|N|N` where N is the ACGT Hamming distance between the two sequences. This produces **one prediction task**: given A's sequence and N=3, predict B's sequence.
 
 ## The metric: mutation accuracy
 

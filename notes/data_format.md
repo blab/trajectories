@@ -90,7 +90,7 @@ Each forwards trajectory is saved as `{tip_name}.fasta` inside a sharded tar.zst
 
 ## Pairwise trajectories
 
-A pairwise trajectory contains exactly two tip sequences. The first tip is labeled with `|0` and the second with `|{hamming_distance}`, where the Hamming distance is computed directly between the two tip sequences (ignoring positions with gaps `-` or ambiguous bases `N`).
+A pairwise trajectory contains exactly two tip sequences. Headers use the same three-field format as forwards trajectories: `>{name}|{branch_distance}|{direct_distance}`. The first tip gets `|0|0` and the second gets `|{hamming}|{hamming}`, where the Hamming distance is computed directly between the two tip sequences (ignoring positions with gaps `-` or ambiguous bases `N`). Branch and direct distance are always identical for pairwise trajectories since there are only two frames.
 
 ### Example: pair A and B
 
@@ -105,9 +105,9 @@ Differences at positions 4, 6, 9 — Hamming distance of 3.
 
 File `A__B.fasta`:
 ```
->A|0
+>A|0|0
 ATCGAGCGAT
->B|3
+>B|3|3
 ATCAATCGGT
 ```
 
@@ -124,9 +124,9 @@ Differences at positions 2, 5, 6, 10 — Hamming distance of 4.
 
 File `A__C.fasta`:
 ```
->A|0
+>A|0|0
 ATCGAGCGAT
->C|4
+>C|4|4
 AGCGGTCGAC
 ```
 
