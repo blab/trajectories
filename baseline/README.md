@@ -14,3 +14,9 @@ By default this runs on `spike-xs` and `cytb-xs`. To target other datasets:
 ```bash
 snakemake --cores 1 -p --config target_analyses='["spike-sm"]'
 ```
+
+## Results
+
+![Mutation accuracy histogram for spike-xs](figures/accuracy_histogram.png)
+
+Distribution of per-prediction mutation accuracy for the spike-xs dataset. The random baseline scores near zero on both forwards (mean = 0.0002) and pairwise (mean = 0.0005) trajectories, as expected.

@@ -63,7 +63,8 @@ def get_sentinel(dataset, trajectory_type):
 
 rule all:
     input:
-        "results/summary.json"
+        "results/summary.json",
+        "figures/accuracy_histogram.png"
 
 rule evaluate_forwards:
     input:
@@ -109,4 +110,17 @@ rule summarize:
             --summarize \
             --results-dir results \
             --output {output.summary}
+        """
+
+rule plot:
+    input:
+        forwards = expand("results/{dataset}/forwards-detail.tsv", dataset=DATASETS),
+        pairwise = expand("results/{dataset}/pairwise-detail.tsv", dataset=DATASETS)
+    output:
+        figure = "figures/accuracy_histogram.png"
+    shell:
+        """
+        python scripts/plot_accuracy.py \
+            --results-dir results \
+            --output {output.figure}
         """
