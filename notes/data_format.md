@@ -4,7 +4,7 @@ This document explains the two trajectory formats produced by the pipeline: **fo
 
 ## Worked example
 
-Consider a small phylogenetic tree with 3 tips (A, B, C) and 2 internal nodes (X, Y), where X is the root. Each node has a 10-nucleotide sequence. Branch labels show the Hamming distance (number of nucleotide differences) between parent and child:
+Consider a small phylogenetic tree with 3 tips (A, B, C) and 2 internal nodes (X, Y), where X is the root. Each node has a 10-nucleotide sequence. Branch labels show the Hamming distance (number of nucleotide differences, ignoring positions where either sequence has a gap `-` or ambiguous base `N`) between parent and child:
 
 ```
          ┌──── 2 ─── A

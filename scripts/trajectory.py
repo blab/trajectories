@@ -19,7 +19,7 @@ import zstandard as zstd
 
 from shard_writer import ShardWriter
 
-def _get_git_commit():
+def get_git_commit():
     """Return short git commit hash, with '-dirty' suffix if working tree has changes."""
     try:
         commit = subprocess.check_output(
@@ -138,7 +138,7 @@ def format_sequence(seq, line_width=60):
     return '\n'.join(seq[i:i+line_width] for i in range(0, len(seq), line_width))
 
 
-def _hamming_no_gaps(seq1, seq2):
+def hamming_distance(seq1, seq2):
     """Hamming distance ignoring positions where either sequence has a gap or N."""
     d = 0
     for c1, c2 in zip(seq1, seq2):
@@ -203,7 +203,7 @@ def build_trajectory_content(path, sequences, hamming_of):
         # not additive along tree paths when gap patterns change at skipped
         # or collapsed intermediate nodes.
         if last_emitted_seq is not None:
-            emitted_dist = _hamming_no_gaps(last_emitted_seq, seq)
+            emitted_dist = hamming_distance(last_emitted_seq, seq)
         else:
             emitted_dist = 0
 
@@ -213,7 +213,7 @@ def build_trajectory_content(path, sequences, hamming_of):
             start_seq = seq
 
         # Direct Hamming distance from the start node
-        direct_dist = _hamming_no_gaps(start_seq, seq)
+        direct_dist = hamming_distance(start_seq, seq)
 
         # Add FASTA entry
         parts.append(f">{node}|{emitted_dist}|{direct_dist}\n{format_sequence(seq)}\n")
@@ -378,7 +378,7 @@ def main():
     if args.summary and args.dataset:
         # Build stats for this dataset
         dataset_summary = {
-            "git_commit": _get_git_commit(),
+            "git_commit": get_git_commit(),
             "url": args.url,
             "num_tips": len(tips),
             "num_nodes": len(sequences),

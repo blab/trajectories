@@ -1,12 +1,12 @@
 """Tests for the forwards trajectory builder.
 
 The most critical invariant: for every consecutive pair of emitted frames,
-the header N must equal _hamming_no_gaps(prev_emitted_seq, curr_emitted_seq).
+the header N must equal hamming_distance(prev_emitted_seq, curr_emitted_seq).
 A test asserting this property would have caught the trajectory builder bug
 where tree-edge Hamming values were used instead of direct sequence comparison.
 """
 
-from trajectory import build_trajectory_content, _hamming_no_gaps
+from trajectory import build_trajectory_content, hamming_distance
 
 
 def parse_fasta_headers(content):
@@ -49,15 +49,15 @@ def assert_header_invariant(content):
         prev_name, prev_seq = entries[i - 1]
         curr_name, curr_seq = entries[i]
         header_dist = headers[i][1]
-        actual_dist = _hamming_no_gaps(prev_seq, curr_seq)
+        actual_dist = hamming_distance(prev_seq, curr_seq)
         assert header_dist == actual_dist, (
             f"Header N invariant violated: {curr_name} header says {header_dist}, "
-            f"but _hamming_no_gaps({prev_name}, {curr_name}) = {actual_dist}"
+            f"but hamming_distance({prev_name}, {curr_name}) = {actual_dist}"
         )
 
 
 def assert_direct_distance_invariant(content):
-    """Assert direct_dist equals _hamming_no_gaps(start_seq, current_seq) for every frame."""
+    """Assert direct_dist equals hamming_distance(start_seq, current_seq) for every frame."""
     entries = parse_fasta_sequences(content)
     headers = parse_fasta_headers(content)
     if not entries:
@@ -65,10 +65,10 @@ def assert_direct_distance_invariant(content):
     start_name, start_seq = entries[0]
     for i, (curr_name, curr_seq) in enumerate(entries):
         direct_dist = headers[i][2]
-        actual_dist = _hamming_no_gaps(start_seq, curr_seq)
+        actual_dist = hamming_distance(start_seq, curr_seq)
         assert direct_dist == actual_dist, (
             f"Direct distance invariant violated: {curr_name} header says {direct_dist}, "
-            f"but _hamming_no_gaps({start_name}, {curr_name}) = {actual_dist}"
+            f"but hamming_distance({start_name}, {curr_name}) = {actual_dist}"
         )
 
 
@@ -159,7 +159,7 @@ class TestZeroDistanceSkipWithGaps:
 
     When zero-distance node Z is skipped and Z has a different gap pattern
     than the last emitted node Y, the header for A must use
-    _hamming_no_gaps(Y, A), not _hamming_no_gaps(Z, A). These differ because
+    hamming_distance(Y, A), not hamming_distance(Z, A). These differ because
     Z fills a gap that Y has at position 9, making position 9 visible in
     comparisons against Z but not against Y.
     """
@@ -175,9 +175,9 @@ class TestZeroDistanceSkipWithGaps:
         assert "Z" not in names
         assert names == ["X", "Y", "A"]
 
-        # Header for A should be _hamming_no_gaps(Y, A) = 2, NOT tree-edge Z→A = 3
+        # Header for A should be hamming_distance(Y, A) = 2, NOT tree-edge Z→A = 3
         a_header_dist = headers[2][1]
-        expected = _hamming_no_gaps(gap_sequences["Y"], gap_sequences["A"])
+        expected = hamming_distance(gap_sequences["Y"], gap_sequences["A"])
         assert a_header_dist == expected == 2
 
     def test_header_invariant_with_gap_changes(self, gap_sequences, gap_hamming_of):
@@ -236,9 +236,9 @@ class TestCollapse:
         content, _, depth = build_trajectory_content(path, seqs, h)
         headers = parse_fasta_headers(content)
 
-        # Y replaced by T; header for T = _hamming_no_gaps(X, T) = 1
+        # Y replaced by T; header for T = hamming_distance(X, T) = 1
         assert [name for name, _, _ in headers] == ["X", "T"]
-        assert headers[1][1] == _hamming_no_gaps(seqs["X"], seqs["T"])
+        assert headers[1][1] == hamming_distance(seqs["X"], seqs["T"])
         assert_header_invariant(content)
         assert_direct_distance_invariant(content)
 

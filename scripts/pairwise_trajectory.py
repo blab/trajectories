@@ -5,7 +5,6 @@ Each file contains two tip sequences with their Hamming distance in headers.
 """
 
 import argparse
-import subprocess
 import sys
 sys.setrecursionlimit(100000)
 import itertools
@@ -16,42 +15,11 @@ import statistics
 from tqdm import tqdm
 
 # Reuse utilities from trajectory.py
-from trajectory import sanitize_filename, parse_branches, load_sequences, find_tips
+from trajectory import (
+    sanitize_filename, parse_branches, load_sequences, find_tips,
+    hamming_distance, get_git_commit, format_sequence,
+)
 from shard_writer import ShardWriter
-
-
-def _get_git_commit():
-    """Return short git commit hash, with '-dirty' suffix if working tree has changes."""
-    try:
-        commit = subprocess.check_output(
-            ["git", "rev-parse", "--short", "HEAD"],
-            stderr=subprocess.DEVNULL,
-        ).decode().strip()
-        try:
-            subprocess.check_call(
-                ["git", "diff", "--quiet", "HEAD"],
-                stderr=subprocess.DEVNULL,
-            )
-        except subprocess.CalledProcessError:
-            commit += "-dirty"
-        return commit
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        return None
-
-
-def calculate_hamming_distance(seq1, seq2):
-    """
-    Calculate Hamming distance between two sequences.
-
-    Ignores positions with gaps (-) or ambiguous bases (N).
-    """
-    distance = 0
-    for c1, c2 in zip(seq1, seq2):
-        if c1 in '-N' or c2 in '-N':
-            continue
-        if c1 != c2:
-            distance += 1
-    return distance
 
 
 def find_test_clade_roots(parent_of, train_test_of):
@@ -209,20 +177,13 @@ def build_pairwise_content(tip1, tip2, sequences):
     if not seq1 or not seq2:
         return None, None
 
-    hamming = calculate_hamming_distance(seq1, seq2)
+    hamming = hamming_distance(seq1, seq2)
 
-    lines = []
-    # First sequence with |0|0
-    lines.append(f">{tip1}|0|0\n")
-    for j in range(0, len(seq1), 60):
-        lines.append(seq1[j:j+60] + '\n')
+    parts = []
+    parts.append(f">{tip1}|0|0\n{format_sequence(seq1)}\n")
+    parts.append(f">{tip2}|{hamming}|{hamming}\n{format_sequence(seq2)}\n")
 
-    # Second sequence with |{hamming}|{hamming}
-    lines.append(f">{tip2}|{hamming}|{hamming}\n")
-    for j in range(0, len(seq2), 60):
-        lines.append(seq2[j:j+60] + '\n')
-
-    return ''.join(lines), hamming
+    return ''.join(parts), hamming
 
 
 def write_pairwise_fasta(tip1, tip2, sequences, output_path):
@@ -337,7 +298,7 @@ def main():
             summary[args.dataset] = {}
 
         # Add git commit and pairwise statistics
-        summary[args.dataset]['git_commit'] = _get_git_commit()
+        summary[args.dataset]['git_commit'] = get_git_commit()
         summary[args.dataset]['pairwise_train_pairs'] = len(train_distances)
         summary[args.dataset]['pairwise_test_pairs'] = len(test_distances)
         summary[args.dataset]['pairwise_test_clades'] = len(unique_clades)

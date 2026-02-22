@@ -306,19 +306,19 @@ def calculate_hamming(seq1, seq2):
 def extract_year_from_name(name):
     """Extract year from a sequence name, returning None if not found.
 
-    Looks for SARS-CoV-2 date patterns. Valid years are 2019-2026.
+    Looks for SARS-CoV-2 date patterns. Valid years are 2019-2029.
     """
     import re
     # Primary: Look for full date pattern YYYY-MM-DD (most reliable)
-    match = re.search(r'(20(?:19|2[0-6]))-\d{2}-\d{2}', name)
+    match = re.search(r'(20(?:19|2[0-9]))-\d{2}-\d{2}', name)
     if match:
         return int(match.group(1))
     # Secondary: Look for /YYYY| pattern (e.g., "England/sample/2020|accession")
-    match = re.search(r'/(20(?:19|2[0-6]))\|', name)
+    match = re.search(r'/(20(?:19|2[0-9]))\|', name)
     if match:
         return int(match.group(1))
     # Tertiary: Look for /YYYY at end before any suffix
-    match = re.search(r'/(20(?:19|2[0-6]))(?:[|\s]|$)', name)
+    match = re.search(r'/(20(?:19|2[0-9]))(?:[|\s]|$)', name)
     if match:
         return int(match.group(1))
     return None

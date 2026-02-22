@@ -34,7 +34,7 @@ analysis:
     gene: nuc
     seq_length: 1386
   spike-lg:
-    usher_pb: "https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2/public-latest.all.masked.pb.gz"
+    usher_pb: "https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2/2026/02/21/public-2026-02-21.all.masked.pb.gz"
     gene: nuc
     trim_begin: 21563
     trim_end: 23617

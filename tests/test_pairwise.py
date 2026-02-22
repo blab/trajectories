@@ -1,6 +1,7 @@
 """Tests for pairwise trajectory generation."""
 
-from pairwise_trajectory import calculate_hamming_distance, generate_pairs, build_pairwise_content
+from trajectory import hamming_distance
+from pairwise_trajectory import generate_pairs, build_pairwise_content
 
 
 class TestPairwiseHamming:
@@ -8,20 +9,20 @@ class TestPairwiseHamming:
 
     def test_a_vs_b(self, sequences):
         """A vs B: 3 differences (pos 4, 6, 9)."""
-        assert calculate_hamming_distance(sequences["A"], sequences["B"]) == 3
+        assert hamming_distance(sequences["A"], sequences["B"]) == 3
 
     def test_a_vs_c(self, sequences):
         """A vs C: 4 differences (pos 2, 5, 6, 10)."""
-        assert calculate_hamming_distance(sequences["A"], sequences["C"]) == 4
+        assert hamming_distance(sequences["A"], sequences["C"]) == 4
 
     def test_gaps_ignored(self):
         """Gaps are not counted as differences."""
-        assert calculate_hamming_distance("ATCG-T", "ATCGAT") == 0
-        assert calculate_hamming_distance("A-CG", "G-CG") == 1
+        assert hamming_distance("ATCG-T", "ATCGAT") == 0
+        assert hamming_distance("A-CG", "G-CG") == 1
 
     def test_n_ignored(self):
         """Ambiguous bases N are not counted as differences."""
-        assert calculate_hamming_distance("ATCGNT", "ATCGAT") == 0
+        assert hamming_distance("ATCGNT", "ATCGAT") == 0
 
 
 class TestGeneratePairs:
@@ -69,7 +70,7 @@ class TestBuildPairwiseContent:
         """Header distance equals direct Hamming between tip sequences."""
         for t1, t2 in [("A", "B"), ("A", "C"), ("B", "C")]:
             content, hamming = build_pairwise_content(t1, t2, sequences)
-            expected = calculate_hamming_distance(sequences[t1], sequences[t2])
+            expected = hamming_distance(sequences[t1], sequences[t2])
             assert hamming == expected
 
     def test_missing_sequence_returns_none(self, sequences):
