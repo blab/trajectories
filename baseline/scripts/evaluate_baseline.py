@@ -221,13 +221,13 @@ def extract_forwards_pairs(frames):
 
     For consecutive frames (frame_i, frame_i+1):
       source = frame_i sequence
-      N = frame_i+1 generation_token - frame_i generation_token (branch distance)
+      N = frame_i+1 generation_token (per-edge branch distance from frame_i)
       target = frame_i+1 sequence
     """
     for i in range(len(frames) - 1):
         source_name, source_token, source_seq = frames[i]
         target_name, target_token, target_seq = frames[i + 1]
-        n = target_token - source_token
+        n = target_token
         yield source_name, target_name, source_seq, target_seq, n
 
 
