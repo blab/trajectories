@@ -4,7 +4,7 @@
 
 Given a source sequence and a target sequence, the **truth set** is the list of exact mutations between them (e.g., A3T, G7C), with **N = |truth set|**. A model's **predicted set** is its list of mutations, with **M = |predicted set|**. A mutation is **correct** if it appears in both sets — same position, same nucleotide.
 
-$$\text{mutation\_accuracy} = \frac{\text{correct} - |M - N|}{N}$$
+$$\text{mutation accuracy} = \frac{\text{correct} - |M - N|}{N}$$
 
 where correct = |truth ∩ predicted|.
 
