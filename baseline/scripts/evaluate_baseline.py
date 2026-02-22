@@ -1,8 +1,13 @@
 """
 Baseline random-mutation predictor evaluation.
 
+For each source-target pair, generates a single random prediction by flipping
+N random positions in the source to a uniformly random different nucleotide
+(Jukes-Cantor model), then scores the prediction using mutation accuracy.
+Accuracy is aggregated across all pairs.
+
 Two modes:
-  Evaluate: read test shards, run Monte Carlo random-flip predictions, write detail TSV
+  Evaluate: read test shards, run baseline predictor, write detail TSV
   Summarize: aggregate detail TSVs into summary JSON
 
 Usage:
@@ -30,7 +35,6 @@ import zstandard as zstd
 from tqdm import tqdm
 
 VALID_BASES = set("ACGT")
-N_TRIALS = 100
 
 
 # ---------------------------------------------------------------------------
@@ -70,125 +74,62 @@ def parse_fasta_frames(content):
 
 
 # ---------------------------------------------------------------------------
-# Mutation helpers
+# Prediction and scoring
 # ---------------------------------------------------------------------------
 
-def find_mutation_positions(source, target):
-    """Return list of indices where source differs from target (both ACGT)."""
-    positions = []
-    for i in range(len(source)):
-        if source[i] in VALID_BASES and target[i] in VALID_BASES and source[i] != target[i]:
-            positions.append(i)
-    return positions
+def random_flip(seq, n, rng):
+    """Generate a random prediction by flipping n positions to a random different base.
 
-
-def count_valid_positions(source, target):
-    """Count positions where both source and target are ACGT."""
-    count = 0
-    for i in range(len(source)):
-        if source[i] in VALID_BASES and target[i] in VALID_BASES:
-            count += 1
-    return count
-
-
-def random_flip(seq, n, valid_positions, rng):
-    """Flip n random positions to a uniformly random different nucleotide.
-
-    Returns mutated sequence as a list of characters.
+    Selects n random ACGT positions in the source and flips each to one of
+    the 3 alternative nucleotides with equal probability (Jukes-Cantor model).
+    Returns the predicted sequence as a string.
     """
     bases = list("ACGT")
     mutated = list(seq)
+    valid_positions = [i for i in range(len(seq)) if seq[i] in VALID_BASES]
     if n == 0 or not valid_positions:
-        return mutated
+        return "".join(mutated)
     chosen = rng.sample(valid_positions, min(n, len(valid_positions)))
     for pos in chosen:
         original = mutated[pos]
         alternatives = [b for b in bases if b != original]
         mutated[pos] = rng.choice(alternatives)
-    return mutated
+    return "".join(mutated)
 
 
-def hamming_distance(seq_a, seq_b):
-    """Hamming distance counting only positions where both are ACGT."""
-    d = 0
-    for i in range(len(seq_a)):
-        a, b = seq_a[i], seq_b[i]
-        if a in VALID_BASES and b in VALID_BASES and a != b:
-            d += 1
-    return d
+def score_prediction(source, target, predicted):
+    """Score a predicted sequence against the true target.
 
-
-# ---------------------------------------------------------------------------
-# Monte Carlo evaluation
-# ---------------------------------------------------------------------------
-
-def evaluate_prediction(source, target, n_mutations, n_trials, rng):
-    """Run n_trials random-flip predictions and return (mean_D, mean_M, mean_accuracy).
-
-    mean_D: mean Hamming distance between prediction and target
-    mean_M: mean number of predicted mutations (positions where prediction != source)
-    mean_accuracy: mean mutation_accuracy = (correct - |M - N|) / N
+    Returns (N, L, M, D, mutation_accuracy) where:
+      N = true mutation count (source vs target, ACGT positions only)
+      L = number of positions where both source and target are ACGT
+      M = predicted mutation count (source vs predicted, ACGT positions only)
+      D = Hamming distance between predicted and target (ACGT positions only)
+      mutation_accuracy = (correct - |M - N|) / N, or None if N = 0
     """
-    source_list = list(source)
-    target_list = list(target)
+    N = 0
+    L = 0
+    M = 0
+    D = 0
+    correct = 0
 
-    # Valid positions in source for flipping
-    valid_positions = [i for i in range(len(source)) if source[i] in VALID_BASES]
+    for s, t, p in zip(source, target, predicted):
+        if s not in VALID_BASES or t not in VALID_BASES:
+            continue
+        L += 1
+        if s != t:
+            N += 1
+            if p == t:
+                correct += 1
+        if p in VALID_BASES and p != s:
+            M += 1
+        if p in VALID_BASES and p != t:
+            D += 1
 
-    # Real mutation positions (source != target, both ACGT)
-    mutation_positions = set(find_mutation_positions(source, target))
-    n_real_mutations = len(mutation_positions)
-
-    total_d = 0
-    total_m = 0
-    total_accuracy = 0
-
-    for _ in range(n_trials):
-        predicted = random_flip(source_list, n_mutations, valid_positions, rng)
-
-        # Hamming distance: prediction vs target (only valid positions)
-        d = 0
-        correct_mutations = 0
-        m_predicted = 0
-        for i in range(len(predicted)):
-            p, t, s = predicted[i], target_list[i], source_list[i]
-            if p in VALID_BASES and t in VALID_BASES:
-                if p != t:
-                    d += 1
-            # Count predicted mutations (positions where prediction != source)
-            if p in VALID_BASES and s in VALID_BASES and p != s:
-                m_predicted += 1
-            # Check if this mutation was correctly predicted
-            if i in mutation_positions and p == t:
-                correct_mutations += 1
-
-        total_d += d
-        total_m += m_predicted
-        if n_real_mutations > 0:
-            total_accuracy += (correct_mutations - abs(m_predicted - n_real_mutations)) / n_real_mutations
-
-    mean_d = total_d / n_trials
-    mean_m = total_m / n_trials
-    mean_accuracy = total_accuracy / n_trials if n_real_mutations > 0 else float("nan")
-    return mean_d, mean_m, mean_accuracy
-
-
-# ---------------------------------------------------------------------------
-# Analytical expectations
-# ---------------------------------------------------------------------------
-
-def expected_random_hamming(N, L):
-    """E[D] = 2N - (4/3)(N^2/L) for random Jukes-Cantor flipping."""
-    if L == 0:
-        return 0.0
-    return 2 * N - (4 / 3) * (N * N / L)
-
-
-def expected_random_accuracy(N, L):
-    """E[accuracy] = N/(3L) for random Jukes-Cantor flipping."""
-    if L == 0 or N == 0:
-        return 0.0
-    return N / (3 * L)
+    if N == 0:
+        return N, L, M, D, None
+    accuracy = (correct - abs(M - N)) / N
+    return N, L, M, D, accuracy
 
 
 # ---------------------------------------------------------------------------
@@ -248,9 +189,8 @@ def extract_pairwise_pair(frames):
 # ---------------------------------------------------------------------------
 
 def run_evaluate(args):
-    """Process shards and write detail TSV."""
-    rng = random.Random(42)
-
+    """Process shards: for each pair, generate one random prediction and score it."""
+    rng = random.Random(args.seed)
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
 
     # Count files for progress bar
@@ -268,8 +208,7 @@ def run_evaluate(args):
         writer = csv.writer(out, delimiter="\t")
         writer.writerow([
             "dataset", "trajectory", "source_node", "target_node",
-            "N", "L", "M_predicted", "D_predicted", "mutation_accuracy",
-            "D_analytical", "accuracy_analytical",
+            "N", "L", "M", "D", "mutation_accuracy",
         ])
 
         for filename, content in tqdm(
@@ -287,29 +226,15 @@ def run_evaluate(args):
                 pairs = [pair] if pair else []
 
             for source_name, target_name, source_seq, target_seq, n in pairs:
-                L = count_valid_positions(source_seq, target_seq)
-
-                if n <= 0:
-                    # No mutations to predict — D=0, M=0, accuracy is N/A
-                    writer.writerow([
-                        args.dataset, trajectory_name, source_name, target_name,
-                        0, L, 0.0, 0.0, "NA",
-                        0.0, "NA",
-                    ])
-                    continue
-
-                mean_d, mean_m, mean_acc = evaluate_prediction(
-                    source_seq, target_seq, n, N_TRIALS, rng,
+                predicted_seq = random_flip(source_seq, n, rng)
+                N, L, M, D, accuracy = score_prediction(
+                    source_seq, target_seq, predicted_seq,
                 )
-
-                d_analytical = expected_random_hamming(n, L)
-                acc_analytical = expected_random_accuracy(n, L)
 
                 writer.writerow([
                     args.dataset, trajectory_name, source_name, target_name,
-                    n, L,
-                    f"{mean_m:.4f}", f"{mean_d:.4f}", f"{mean_acc:.6f}",
-                    f"{d_analytical:.4f}", f"{acc_analytical:.6f}",
+                    N, L, M, D,
+                    f"{accuracy:.6f}" if accuracy is not None else "NA",
                 ])
 
 
@@ -352,7 +277,7 @@ def run_summarize(args):
             for row in rows:
                 n = int(row["N"])
                 n_values.append(n)
-                d = float(row["D_predicted"])
+                d = int(row["D"])
                 d_values.append(d)
 
                 acc_str = row["mutation_accuracy"]
@@ -431,6 +356,8 @@ def main():
     parser.add_argument("--dataset", help="Dataset name for TSV output")
     parser.add_argument("--output", required=True,
                         help="Output path (detail TSV or summary JSON)")
+    parser.add_argument("--seed", type=int, default=42,
+                        help="Random seed (default: 42)")
 
     # Summarize mode args
     parser.add_argument("--results-dir",

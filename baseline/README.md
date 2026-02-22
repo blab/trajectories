@@ -71,17 +71,15 @@ See `notes/mutation_accuracy_metric.md` for worked examples.
 
 For each source-target pair, the baseline:
 
-1. Reads N from the FASTA header
-2. Selects N random ACGT positions in the source sequence
-3. Flips each to a uniformly random different nucleotide (Jukes-Cantor model: each of the 3 alternatives is equally likely)
-4. Scores the prediction against the target using mutation accuracy
-5. Repeats for 100 Monte Carlo trials and reports the mean
+1. Reads N (mutation count) from the FASTA header
+2. Flips N random ACGT positions in the source to a uniformly random different nucleotide (Jukes-Cantor model: each of the 3 alternatives equally likely)
+3. Scores the single prediction against the target using mutation accuracy
 
-This establishes a lower bound: any useful model should score above the random baseline.
+One prediction per pair, no averaging. With thousands of pairs per dataset, the aggregate statistics are stable. This establishes a lower bound: any useful model should score above the random baseline.
 
 ## Porting to a real model
 
-To evaluate a model, replace step 2-3 above with the model's prediction. The evaluation loop is:
+To evaluate a model, iterate over test shard trajectories and score predictions against the held-out targets. The evaluation loop is:
 
 ```python
 for filename, content in iter_fasta_from_shards(shard_paths):
@@ -151,13 +149,11 @@ The evaluation writes a TSV with one row per source-target pair:
 | `trajectory` | Trajectory filename stem |
 | `source_node` | Source node name |
 | `target_node` | Target node name |
-| `N` | True mutation count (from header) |
+| `N` | True mutation count (source vs target, ACGT positions only) |
 | `L` | Number of positions where both source and target are ACGT |
-| `M_predicted` | Mean predicted mutation count across trials |
-| `D_predicted` | Mean Hamming distance between prediction and target |
-| `mutation_accuracy` | Mean mutation accuracy across trials (or `NA` if N=0) |
-| `D_analytical` | Expected Hamming distance under random model: `2N - (4/3)(N²/L)` |
-| `accuracy_analytical` | Expected accuracy under random model: `N/(3L)` |
+| `M` | Predicted mutation count (source vs prediction, ACGT positions only) |
+| `D` | Hamming distance between prediction and target (ACGT positions only) |
+| `mutation_accuracy` | `(correct - \|M - N\|) / N`, or `NA` if N=0 |
 
 ## Usage
 
