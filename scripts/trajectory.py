@@ -118,13 +118,24 @@ def format_sequence(seq, line_width=60):
     return '\n'.join(seq[i:i+line_width] for i in range(0, len(seq), line_width))
 
 
+def _hamming_no_gaps(seq1, seq2):
+    """Hamming distance ignoring positions where either sequence has a gap or N."""
+    d = 0
+    for c1, c2 in zip(seq1, seq2):
+        if c1 in '-N' or c2 in '-N':
+            continue
+        if c1 != c2:
+            d += 1
+    return d
+
+
 def build_trajectory_content(path, sequences, hamming_of):
     """
     Build trajectory FASTA content for a single tip.
 
     Path should be in root-to-tip order.
-    Each header includes the branch Hamming distance from the previous emitted node
-    (0 for root).
+    Each header includes the Hamming distance from the previous emitted node
+    (0 for root), computed directly between the emitted sequences.
     Skips intermediate nodes with zero branch distance.
 
     Returns:
@@ -135,7 +146,9 @@ def build_trajectory_content(path, sequences, hamming_of):
     cumulative_distance = 0
     last_node = path[-1] if path else None  # tip node
     frames_written = 0
-    last_emitted_branch_dist = 0
+    # Track the last two emitted sequences so collapse can revert properly
+    prev_emitted_seq = None
+    last_emitted_seq = None
 
     # Build content
     parts = []
@@ -155,18 +168,26 @@ def build_trajectory_content(path, sequences, hamming_of):
             if branch_dist == 0 and node == last_node and frames_written > 0:
                 parts.pop()
                 frames_written -= 1
-                branch_dist = last_emitted_branch_dist
-        else:
-            branch_dist = 0  # root
+                last_emitted_seq = prev_emitted_seq
 
         # Get sequence
         seq = sequences.get(node)
         if not seq:
             continue
 
+        # Compute header distance from the last emitted sequence directly,
+        # rather than using the tree-edge Hamming. Gap-ignoring Hamming is
+        # not additive along tree paths when gap patterns change at skipped
+        # or collapsed intermediate nodes.
+        if last_emitted_seq is not None:
+            emitted_dist = _hamming_no_gaps(last_emitted_seq, seq)
+        else:
+            emitted_dist = 0
+
         # Add FASTA entry
-        parts.append(f">{node}|{branch_dist}\n{format_sequence(seq)}\n")
-        last_emitted_branch_dist = branch_dist
+        parts.append(f">{node}|{emitted_dist}\n{format_sequence(seq)}\n")
+        prev_emitted_seq = last_emitted_seq
+        last_emitted_seq = seq
         frames_written += 1
 
     content = ''.join(parts)
