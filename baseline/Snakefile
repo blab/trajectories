@@ -1,0 +1,126 @@
+"""
+Baseline random-mutation predictor analysis.
+
+Consumes test shards from the main pipeline and evaluates a naive
+Jukes-Cantor random-flip predictor as a performance floor.
+
+Usage:
+    cd baseline && snakemake --cores 1
+    cd baseline && snakemake --cores 1 --config target_analyses='["spike-sm"]'
+"""
+
+import glob as globmod
+import os
+import json
+
+# ---------------------------------------------------------------------------
+# Dataset discovery: find datasets that have test shards
+# ---------------------------------------------------------------------------
+
+RESULTS_DIR = "../results"
+
+def discover_datasets():
+    """Find datasets with forwards-test shards in the main results directory."""
+    datasets = set()
+    for path in globmod.glob(os.path.join(RESULTS_DIR, "*/forwards-test-*.tar.zst")):
+        dataset = os.path.basename(os.path.dirname(path))
+        datasets.add(dataset)
+    return sorted(datasets)
+
+ALL_DATASETS = discover_datasets()
+
+# Default to small datasets; override via config
+DEFAULT_DATASETS = ["spike-xs"]
+
+if config.get("target_analyses"):
+    if isinstance(config["target_analyses"], str):
+        DATASETS = json.loads(config["target_analyses"])
+    else:
+        DATASETS = config["target_analyses"]
+else:
+    DATASETS = [d for d in DEFAULT_DATASETS if d in ALL_DATASETS]
+
+# ---------------------------------------------------------------------------
+# Helper: find shard paths for a dataset
+# ---------------------------------------------------------------------------
+
+def get_first_test_shard(dataset, trajectory_type):
+    """Return the first test shard path for a dataset and type."""
+    pattern = os.path.join(RESULTS_DIR, dataset, f"{trajectory_type}-test-*.tar.zst")
+    shards = sorted(globmod.glob(pattern))
+    return shards[0] if shards else None
+
+def get_sentinel(dataset, trajectory_type):
+    """Return the sentinel file path that indicates shards are ready."""
+    if trajectory_type == "forwards":
+        return os.path.join(RESULTS_DIR, dataset, ".trajectories.done")
+    else:
+        return os.path.join(RESULTS_DIR, dataset, ".pairwise.done")
+
+# ---------------------------------------------------------------------------
+# Rules
+# ---------------------------------------------------------------------------
+
+rule all:
+    input:
+        "results/summary.json",
+        "figures/accuracy_histogram.png"
+
+rule evaluate_forwards:
+    input:
+        sentinel = lambda wildcards: get_sentinel(wildcards.dataset, "forwards")
+    output:
+        detail = "results/{dataset}/forwards-detail.tsv"
+    params:
+        shard = lambda wildcards: get_first_test_shard(wildcards.dataset, "forwards")
+    shell:
+        """
+        python scripts/evaluate_baseline.py \
+            --shards {params.shard} \
+            --trajectory-type forwards \
+            --dataset {wildcards.dataset} \
+            --output {output.detail}
+        """
+
+rule evaluate_pairwise:
+    input:
+        sentinel = lambda wildcards: get_sentinel(wildcards.dataset, "pairwise")
+    output:
+        detail = "results/{dataset}/pairwise-detail.tsv"
+    params:
+        shard = lambda wildcards: get_first_test_shard(wildcards.dataset, "pairwise")
+    shell:
+        """
+        python scripts/evaluate_baseline.py \
+            --shards {params.shard} \
+            --trajectory-type pairwise \
+            --dataset {wildcards.dataset} \
+            --output {output.detail}
+        """
+
+rule summarize:
+    input:
+        forwards = expand("results/{dataset}/forwards-detail.tsv", dataset=DATASETS),
+        pairwise = expand("results/{dataset}/pairwise-detail.tsv", dataset=DATASETS)
+    output:
+        summary = "results/summary.json"
+    shell:
+        """
+        python scripts/evaluate_baseline.py \
+            --summarize \
+            --results-dir results \
+            --output {output.summary}
+        """
+
+rule plot:
+    input:
+        forwards = expand("results/{dataset}/forwards-detail.tsv", dataset=DATASETS),
+        pairwise = expand("results/{dataset}/pairwise-detail.tsv", dataset=DATASETS)
+    output:
+        figure = "figures/accuracy_histogram.png"
+    shell:
+        """
+        python scripts/plot_accuracy.py \
+            --results-dir results \
+            --output {output.figure}
+        """
