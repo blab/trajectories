@@ -5,6 +5,7 @@ Each trajectory contains sequences from root to tip with branch Hamming distance
 """
 
 import argparse
+import subprocess
 import sys
 sys.setrecursionlimit(100000)
 import csv
@@ -17,6 +18,25 @@ from tqdm import tqdm
 import zstandard as zstd
 
 from shard_writer import ShardWriter
+
+def _get_git_commit():
+    """Return short git commit hash, with '-dirty' suffix if working tree has changes."""
+    try:
+        commit = subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            stderr=subprocess.DEVNULL,
+        ).decode().strip()
+        try:
+            subprocess.check_call(
+                ["git", "diff", "--quiet", "HEAD"],
+                stderr=subprocess.DEVNULL,
+            )
+        except subprocess.CalledProcessError:
+            commit += "-dirty"
+        return commit
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return None
+
 
 # Pre-compile regex for filename sanitization
 UNSAFE_CHARS_RE = re.compile(r'[/\\:*?"<>| ]')
@@ -358,6 +378,7 @@ def main():
     if args.summary and args.dataset:
         # Build stats for this dataset
         dataset_summary = {
+            "git_commit": _get_git_commit(),
             "url": args.url,
             "num_tips": len(tips),
             "num_nodes": len(sequences),

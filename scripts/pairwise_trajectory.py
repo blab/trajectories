@@ -5,6 +5,7 @@ Each file contains two tip sequences with their Hamming distance in headers.
 """
 
 import argparse
+import subprocess
 import sys
 sys.setrecursionlimit(100000)
 import itertools
@@ -17,6 +18,25 @@ from tqdm import tqdm
 # Reuse utilities from trajectory.py
 from trajectory import sanitize_filename, parse_branches, load_sequences, find_tips
 from shard_writer import ShardWriter
+
+
+def _get_git_commit():
+    """Return short git commit hash, with '-dirty' suffix if working tree has changes."""
+    try:
+        commit = subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            stderr=subprocess.DEVNULL,
+        ).decode().strip()
+        try:
+            subprocess.check_call(
+                ["git", "diff", "--quiet", "HEAD"],
+                stderr=subprocess.DEVNULL,
+            )
+        except subprocess.CalledProcessError:
+            commit += "-dirty"
+        return commit
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return None
 
 
 def calculate_hamming_distance(seq1, seq2):
@@ -316,7 +336,8 @@ def main():
         if args.dataset not in summary:
             summary[args.dataset] = {}
 
-        # Add pairwise statistics
+        # Add git commit and pairwise statistics
+        summary[args.dataset]['git_commit'] = _get_git_commit()
         summary[args.dataset]['pairwise_train_pairs'] = len(train_distances)
         summary[args.dataset]['pairwise_test_pairs'] = len(test_distances)
         summary[args.dataset]['pairwise_test_clades'] = len(unique_clades)

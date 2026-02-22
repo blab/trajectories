@@ -217,6 +217,7 @@ A consolidated `results/summary.json` file contains statistics for all processed
 ```json
 {
   "spike-xs": {
+    "git_commit": "d7c62d4",
     "url": "nextstrain.org/groups/trajectories/spike-xs",
     "num_tips": 10195,
     "num_nodes": 19960,
