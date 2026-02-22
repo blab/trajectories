@@ -44,7 +44,12 @@ VALID_BASES = set("ACGT")
 def parse_fasta_frames(content):
     """Parse FASTA content into list of (name, generation_token, sequence).
 
-    Header format: >name|generation_token
+    Handles both header formats:
+      - Forwards: >name|branch_distance|direct_distance  (3 fields)
+      - Pairwise: >name|distance                         (2 fields)
+
+    In both cases, parts[1] is the branch/pairwise distance used as the
+    generation token (N for the prediction task).
     Sequences may be wrapped across multiple lines.
     """
     frames = []
@@ -60,7 +65,7 @@ def parse_fasta_frames(content):
             if current_name is not None:
                 frames.append((current_name, current_token, "".join(seq_parts)))
             header = line[1:]
-            parts = header.rsplit("|", 1)
+            parts = header.split("|")
             current_name = parts[0]
             current_token = int(parts[1])
             seq_parts = []

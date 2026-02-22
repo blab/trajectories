@@ -20,14 +20,21 @@ Node sequences:
 Pos: 1  2  3  4  5  6  7  8  9  10
 X:   A  T  C  G  A  T  C  G  A  T     (root)
 Y:   A  T  C  A  A  T  C  G  A  T     1 change from X (pos 4: G→A)
-A:   A  T  C  A  A  G  C  A  A  T     2 changes from Y (pos 6: T→G, pos 8: G→A)
+A:   A  T  C  G  A  G  C  G  A  T     2 changes from Y (pos 4: A→G reversion, pos 6: T→G)
 B:   A  T  C  A  A  T  C  G  G  T     1 change from Y (pos 9: A→G)
 C:   A  G  C  G  G  T  C  G  A  C     3 changes from X (pos 2: T→G, pos 5: A→G, pos 10: T→C)
 ```
 
+Note that the Y→A branch includes a **reversion**: position 4 mutated G→A on the X→Y branch, then reverted A→G on the Y→A branch, returning to the original root nucleotide.
+
 ## Forwards trajectories
 
-A forwards trajectory traces the evolutionary path from root to a single tip. Each entry in the FASTA file records a node along the path and its branch Hamming distance from the previous emitted node (0 for the root). The header format is `>{node_name}|{branch_hamming_distance}`. Intermediate nodes with zero branch distance are skipped.
+A forwards trajectory traces the evolutionary path from root to a single tip. Each entry in the FASTA file records a node along the path. The header format is `>{node_name}|{branch_hamming_distance}|{direct_hamming_distance}`, where:
+
+- **branch distance** is the Hamming distance from the previous emitted node (0 for the root)
+- **direct distance** is the Hamming distance from the start (root) node
+
+Intermediate nodes with zero branch distance are skipped.
 
 ### Example: trajectory for tip A
 
@@ -35,17 +42,17 @@ Path: X → Y → A
 
 File `A.fasta`:
 ```
->X|0
+>X|0|0
 ATCGATCGAT
->Y|1
+>Y|1|1
 ATCAATCGAT
->A|2
-ATCAAGCAAT
+>A|2|1
+ATCGAGCGAT
 ```
 
-- `X|0` — root, branch distance 0
-- `Y|1` — 1 mutation from X (X→Y distance is 1)
-- `A|2` — 2 mutations from Y (Y→A distance is 2)
+- `X|0|0` — root, branch distance 0, direct distance 0
+- `Y|1|1` — 1 mutation from X, 1 mutation from root X
+- `A|2|1` — 2 mutations from Y (pos 4 reversion, pos 6), but only 1 mutation from root X (pos 6). The direct distance (1) is less than the cumulative branch distance (1 + 2 = 3) because position 4 reverted to the root nucleotide.
 
 ### Example: trajectory for tip B
 
@@ -53,13 +60,15 @@ Path: X → Y → B
 
 File `B.fasta`:
 ```
->X|0
+>X|0|0
 ATCGATCGAT
->Y|1
+>Y|1|1
 ATCAATCGAT
->B|1
+>B|1|2
 ATCAATCGGT
 ```
+
+- `B|1|2` — 1 mutation from Y (pos 9), but 2 mutations from root X (pos 4, 9)
 
 ### Example: trajectory for tip C
 
@@ -67,13 +76,13 @@ Path: X → C
 
 File `C.fasta`:
 ```
->X|0
+>X|0|0
 ATCGATCGAT
->C|3
+>C|3|3
 AGCGGTCGAC
 ```
 
-Node Y does not appear because tip C descends directly from root X.
+Node Y does not appear because tip C descends directly from root X. For single-hop paths, branch distance and direct distance are always equal.
 
 ### File naming
 
@@ -87,17 +96,17 @@ A pairwise trajectory contains exactly two tip sequences. The first tip is label
 
 ```
 Pos: 1  2  3  4  5  6  7  8  9  10
-A:   A  T  C  A  A  G  C  A  A  T
+A:   A  T  C  G  A  G  C  G  A  T
 B:   A  T  C  A  A  T  C  G  G  T
-                    *     *  *
+              *     *        *
 ```
 
-Differences at positions 6, 8, 9 — Hamming distance of 3.
+Differences at positions 4, 6, 9 — Hamming distance of 3.
 
 File `A__B.fasta`:
 ```
 >A|0
-ATCAAGCAAT
+ATCGAGCGAT
 >B|3
 ATCAATCGGT
 ```
@@ -106,22 +115,22 @@ ATCAATCGGT
 
 ```
 Pos: 1  2  3  4  5  6  7  8  9  10
-A:   A  T  C  A  A  G  C  A  A  T
+A:   A  T  C  G  A  G  C  G  A  T
 C:   A  G  C  G  G  T  C  G  A  C
-        *     *  *  *     *     *
+        *        *  *           *
 ```
 
-Differences at positions 2, 4, 5, 6, 8, 10 — Hamming distance of 6.
+Differences at positions 2, 5, 6, 10 — Hamming distance of 4.
 
 File `A__C.fasta`:
 ```
 >A|0
-ATCAAGCAAT
->C|6
+ATCGAGCGAT
+>C|4
 AGCGGTCGAC
 ```
 
-Note that the pairwise Hamming distance between tips (computed directly from sequences) does not necessarily equal the sum of branch distances along the tree path connecting them, because mutations along the tree may involve reversions or convergent changes. For instance, A and C are separated by tree path A→Y→X→C with distance 2 + 1 + 3 = 6, which in this case happens to match the pairwise Hamming distance, but this is not guaranteed in general.
+Note that the pairwise Hamming distance between tips (computed directly from sequences) does not necessarily equal the sum of branch distances along the tree path connecting them, because mutations along the tree may involve reversions or convergent changes. For instance, A and C are separated by tree path A→Y→X→C with branch distances 2 + 1 + 3 = 6, but the pairwise Hamming distance is only 4, because the reversion at position 4 (which mutated on X→Y then reverted on Y→A) does not contribute to the pairwise distance.
 
 ### File naming
 

@@ -134,8 +134,9 @@ def build_trajectory_content(path, sequences, hamming_of):
     Build trajectory FASTA content for a single tip.
 
     Path should be in root-to-tip order.
-    Each header includes the Hamming distance from the previous emitted node
-    (0 for root), computed directly between the emitted sequences.
+    Each header includes the branch Hamming distance from the previous emitted
+    node and the direct Hamming distance from the start node:
+    ``>{node}|{branch_distance}|{direct_distance}``
     Skips intermediate nodes with zero branch distance.
 
     Returns:
@@ -149,6 +150,8 @@ def build_trajectory_content(path, sequences, hamming_of):
     # Track the last two emitted sequences so collapse can revert properly
     prev_emitted_seq = None
     last_emitted_seq = None
+    # First emitted sequence, used to compute direct Hamming distance
+    start_seq = None
 
     # Build content
     parts = []
@@ -184,8 +187,16 @@ def build_trajectory_content(path, sequences, hamming_of):
         else:
             emitted_dist = 0
 
+        # Set start_seq on the first emitted sequence (unaffected by
+        # skips or collapses — always the very first emitted sequence).
+        if start_seq is None:
+            start_seq = seq
+
+        # Direct Hamming distance from the start node
+        direct_dist = _hamming_no_gaps(start_seq, seq)
+
         # Add FASTA entry
-        parts.append(f">{node}|{emitted_dist}\n{format_sequence(seq)}\n")
+        parts.append(f">{node}|{emitted_dist}|{direct_dist}\n{format_sequence(seq)}\n")
         prev_emitted_seq = last_emitted_seq
         last_emitted_seq = seq
         frames_written += 1

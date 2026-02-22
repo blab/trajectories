@@ -7,12 +7,12 @@ class TestPairwiseHamming:
     """Test pairwise Hamming distance computation."""
 
     def test_a_vs_b(self, sequences):
-        """A vs B: 3 differences (pos 6, 8, 9)."""
+        """A vs B: 3 differences (pos 4, 6, 9)."""
         assert calculate_hamming_distance(sequences["A"], sequences["B"]) == 3
 
     def test_a_vs_c(self, sequences):
-        """A vs C: 6 differences (pos 2, 4, 5, 6, 8, 10)."""
-        assert calculate_hamming_distance(sequences["A"], sequences["C"]) == 6
+        """A vs C: 4 differences (pos 2, 5, 6, 10)."""
+        assert calculate_hamming_distance(sequences["A"], sequences["C"]) == 4
 
     def test_gaps_ignored(self):
         """Gaps are not counted as differences."""

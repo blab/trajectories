@@ -19,7 +19,7 @@ def sequences():
     return {
         "X": "ATCGATCGAT",
         "Y": "ATCAATCGAT",
-        "A": "ATCAAGCAAT",
+        "A": "ATCGAGCGAT",  # pos 4: A→G reversion, pos 6: T→G (2 changes from Y)
         "B": "ATCAATCGGT",
         "C": "AGCGGTCGAC",
     }

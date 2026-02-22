@@ -21,7 +21,7 @@ class TestHammingDistance:
         assert _hamming_no_gaps(sequences["X"], sequences["Y"]) == 1
 
     def test_worked_example_y_a(self, sequences):
-        """Y vs A: 2 differences (pos 6: T→G, pos 8: G→A)."""
+        """Y vs A: 2 differences (pos 4: A→G reversion, pos 6: T→G)."""
         assert calculate_hamming_distance(sequences["Y"], sequences["A"]) == 2
         assert _hamming_no_gaps(sequences["Y"], sequences["A"]) == 2
 
