@@ -188,11 +188,11 @@ class TestZeroDistanceSkipWithGaps:
         assert_direct_distance_invariant(content)
 
 
-class TestCollapse:
-    """Test collapse of zero-distance tip onto its parent."""
+class TestZeroDistanceTip:
+    """Test that zero-distance tips are relabeled (not emitted as extra frame)."""
 
-    def test_collapse_zero_distance_tip(self, sequences, hamming_of):
-        """Tip T with zero distance from Y replaces Y in output."""
+    def test_zero_distance_tip_relabeled(self, sequences, hamming_of):
+        """Tip T with zero distance from Y relabels Y's frame."""
         seqs = dict(sequences)
         seqs["T"] = sequences["Y"]  # identical to Y
         h = dict(hamming_of)
@@ -202,14 +202,13 @@ class TestCollapse:
         content, _, depth = build_trajectory_content(path, seqs, h)
         headers = parse_fasta_headers(content)
 
-        # Y should be replaced by T
         names = [name for name, _, _ in headers]
-        assert "Y" not in names
         assert names == ["X", "T"]
         assert depth == 2
+        assert headers == [("X", 0, 0), ("T", 1, 1)]
 
-    def test_collapse_preserves_header_invariant(self, sequences, hamming_of):
-        """Header invariants hold after collapsing a tip."""
+    def test_zero_distance_tip_preserves_header_invariant(self, sequences, hamming_of):
+        """Header invariants hold with zero-distance tip."""
         seqs = dict(sequences)
         seqs["T"] = sequences["Y"]
         h = dict(hamming_of)
@@ -220,8 +219,8 @@ class TestCollapse:
         assert_header_invariant(content)
         assert_direct_distance_invariant(content)
 
-    def test_collapse_with_gap_changes(self):
-        """Collapsed tip with different gap pattern gets correct header N."""
+    def test_zero_distance_tip_with_gap_changes(self):
+        """Zero-distance tip with different gap pattern relabels predecessor."""
         seqs = {
             "X": "ATCGATCGAT",
             "Y": "ATCAATCG-T",  # 1 ACGT diff from X, gap at pos 9
@@ -236,9 +235,42 @@ class TestCollapse:
         content, _, depth = build_trajectory_content(path, seqs, h)
         headers = parse_fasta_headers(content)
 
-        # Y replaced by T; header for T = hamming_distance(X, T) = 1
-        assert [name for name, _, _ in headers] == ["X", "T"]
-        assert headers[1][1] == hamming_distance(seqs["X"], seqs["T"])
+        names = [name for name, _, _ in headers]
+        assert names == ["X", "T"]
+        assert depth == 2
+        # T relabels Y's frame, so header has Y's distances
+        assert headers[1] == ("T", 1, 1)
+        assert_header_invariant(content)
+        assert_direct_distance_invariant(content)
+
+    def test_chain_of_zero_distance_to_tip(self):
+        """Chain of zero-distance nodes to tip: N1 relabeled as T.
+
+        N2, N3, and T are all zero-distance from N1, so they are skipped.
+        N1 is relabeled with the tip name T.
+        """
+        seqs = {
+            "R": "ATCGATCGAT",
+            "N1": "ATCAATCGAT",  # 1 diff from R
+            "N2": "ATCAATCGAT",  # 0 diff from N1 (intermediate, skipped)
+            "N3": "ATCAATCGAT",  # 0 diff from N2 (intermediate, skipped)
+            "T":  "ATCAATCGAT",  # 0 diff from N3 (tip, skipped & relabeled)
+        }
+        h = {
+            ("R", "N1"): 1,
+            ("N1", "N2"): 0,
+            ("N2", "N3"): 0,
+            ("N3", "T"): 0,
+        }
+
+        path = ["R", "N1", "N2", "N3", "T"]
+        content, _, depth = build_trajectory_content(path, seqs, h)
+        headers = parse_fasta_headers(content)
+
+        names = [name for name, _, _ in headers]
+        assert names == ["R", "T"]
+        assert depth == 2
+        assert headers == [("R", 0, 0), ("T", 1, 1)]
         assert_header_invariant(content)
         assert_direct_distance_invariant(content)
 
