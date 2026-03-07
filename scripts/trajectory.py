@@ -157,7 +157,8 @@ def build_trajectory_content(path, sequences, hamming_of):
     Each header includes the branch Hamming distance from the previous emitted
     node and the direct Hamming distance from the start node:
     ``>{node}|{branch_distance}|{direct_distance}``
-    Skips intermediate nodes with zero branch distance.
+    Skips intermediate nodes with zero branch distance; the tip is always
+    emitted.
 
     Returns:
         tuple: (content, tip_distance, path_depth) where content is the FASTA string,
@@ -165,10 +166,8 @@ def build_trajectory_content(path, sequences, hamming_of):
                number of frames written.
     """
     cumulative_distance = 0
-    last_node = path[-1] if path else None  # tip node
+    tip_node = path[-1] if path else None
     frames_written = 0
-    # Track the last two emitted sequences so collapse can revert properly
-    prev_emitted_seq = None
     last_emitted_seq = None
     # First emitted sequence, used to compute direct Hamming distance
     start_seq = None
@@ -182,16 +181,9 @@ def build_trajectory_content(path, sequences, hamming_of):
             branch_dist = hamming_of.get((parent, node), 0)
             cumulative_distance += branch_dist
 
-            # Skip if no distance increase (except for tip)
-            if branch_dist == 0 and node != last_node:
+            # Skip intermediate nodes with no distance increase (tip always emitted)
+            if branch_dist == 0 and node != tip_node:
                 continue
-
-            # Collapse zero-length final frame: if the tip has zero
-            # branch distance, replace the previous frame with the tip
-            if branch_dist == 0 and node == last_node and frames_written > 0:
-                parts.pop()
-                frames_written -= 1
-                last_emitted_seq = prev_emitted_seq
 
         # Get sequence
         seq = sequences.get(node)
@@ -201,14 +193,13 @@ def build_trajectory_content(path, sequences, hamming_of):
         # Compute header distance from the last emitted sequence directly,
         # rather than using the tree-edge Hamming. Gap-ignoring Hamming is
         # not additive along tree paths when gap patterns change at skipped
-        # or collapsed intermediate nodes.
+        # intermediate nodes.
         if last_emitted_seq is not None:
             emitted_dist = hamming_distance(last_emitted_seq, seq)
         else:
             emitted_dist = 0
 
-        # Set start_seq on the first emitted sequence (unaffected by
-        # skips or collapses — always the very first emitted sequence).
+        # Set start_seq on the first emitted sequence.
         if start_seq is None:
             start_seq = seq
 
@@ -217,7 +208,6 @@ def build_trajectory_content(path, sequences, hamming_of):
 
         # Add FASTA entry
         parts.append(f">{node}|{emitted_dist}|{direct_dist}\n{format_sequence(seq)}\n")
-        prev_emitted_seq = last_emitted_seq
         last_emitted_seq = seq
         frames_written += 1
 
@@ -231,7 +221,7 @@ def write_trajectory(path, sequences, hamming_of, output_path, compress=False, c
 
     Path should be in root-to-tip order.
     Each header includes the branch Hamming distance from the previous emitted node.
-    Skips intermediate nodes with zero branch distance.
+    Skips intermediate nodes with zero branch distance; the tip is always emitted.
 
     Returns:
         tuple: (tip_distance, path_depth) where tip_distance is cumulative

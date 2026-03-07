@@ -34,7 +34,7 @@ A forwards trajectory traces the evolutionary path from root to a single tip. Ea
 - **branch distance** is the Hamming distance from the previous emitted node (0 for the root)
 - **direct distance** is the Hamming distance from the start (root) node
 
-Intermediate nodes with zero branch distance are skipped.
+Intermediate nodes with zero branch distance are skipped; the tip is always emitted.
 
 ### Example: trajectory for tip A
 

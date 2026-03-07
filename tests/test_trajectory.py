@@ -188,11 +188,11 @@ class TestZeroDistanceSkipWithGaps:
         assert_direct_distance_invariant(content)
 
 
-class TestCollapse:
-    """Test collapse of zero-distance tip onto its parent."""
+class TestZeroDistanceTip:
+    """Test that zero-distance tips are emitted (not collapsed)."""
 
-    def test_collapse_zero_distance_tip(self, sequences, hamming_of):
-        """Tip T with zero distance from Y replaces Y in output."""
+    def test_zero_distance_tip_kept(self, sequences, hamming_of):
+        """Tip T with zero distance from Y is emitted alongside Y."""
         seqs = dict(sequences)
         seqs["T"] = sequences["Y"]  # identical to Y
         h = dict(hamming_of)
@@ -202,14 +202,13 @@ class TestCollapse:
         content, _, depth = build_trajectory_content(path, seqs, h)
         headers = parse_fasta_headers(content)
 
-        # Y should be replaced by T
         names = [name for name, _, _ in headers]
-        assert "Y" not in names
-        assert names == ["X", "T"]
-        assert depth == 2
+        assert names == ["X", "Y", "T"]
+        assert depth == 3
+        assert headers == [("X", 0, 0), ("Y", 1, 1), ("T", 0, 1)]
 
-    def test_collapse_preserves_header_invariant(self, sequences, hamming_of):
-        """Header invariants hold after collapsing a tip."""
+    def test_zero_distance_tip_preserves_header_invariant(self, sequences, hamming_of):
+        """Header invariants hold with zero-distance tip."""
         seqs = dict(sequences)
         seqs["T"] = sequences["Y"]
         h = dict(hamming_of)
@@ -220,8 +219,8 @@ class TestCollapse:
         assert_header_invariant(content)
         assert_direct_distance_invariant(content)
 
-    def test_collapse_with_gap_changes(self):
-        """Collapsed tip with different gap pattern gets correct header N."""
+    def test_zero_distance_tip_with_gap_changes(self):
+        """Zero-distance tip with different gap pattern gets correct header."""
         seqs = {
             "X": "ATCGATCGAT",
             "Y": "ATCAATCG-T",  # 1 ACGT diff from X, gap at pos 9
@@ -236,9 +235,45 @@ class TestCollapse:
         content, _, depth = build_trajectory_content(path, seqs, h)
         headers = parse_fasta_headers(content)
 
-        # Y replaced by T; header for T = hamming_distance(X, T) = 1
-        assert [name for name, _, _ in headers] == ["X", "T"]
-        assert headers[1][1] == hamming_distance(seqs["X"], seqs["T"])
+        names = [name for name, _, _ in headers]
+        assert names == ["X", "Y", "T"]
+        assert depth == 3
+        # T's branch dist is from Y (previous emitted), direct dist is from X
+        assert headers[2][1] == hamming_distance(seqs["Y"], seqs["T"])
+        assert headers[2][2] == hamming_distance(seqs["X"], seqs["T"])
+        assert_header_invariant(content)
+        assert_direct_distance_invariant(content)
+
+    def test_chain_of_zero_distance_to_tip(self):
+        """Non-zero node is preserved when followed by chain of zero-distance nodes to tip.
+
+        Regression test: the old collapse logic would pop the last emitted frame
+        when the tip had zero branch distance, but after skipping intermediate
+        zero-distance nodes, the popped frame was a meaningful upstream node.
+        """
+        seqs = {
+            "R": "ATCGATCGAT",
+            "N1": "ATCAATCGAT",  # 1 diff from R
+            "N2": "ATCAATCGAT",  # 0 diff from N1 (intermediate, skipped)
+            "N3": "ATCAATCGAT",  # 0 diff from N2 (intermediate, skipped)
+            "T":  "ATCAATCGAT",  # 0 diff from N3 (tip)
+        }
+        h = {
+            ("R", "N1"): 1,
+            ("N1", "N2"): 0,
+            ("N2", "N3"): 0,
+            ("N3", "T"): 0,
+        }
+
+        path = ["R", "N1", "N2", "N3", "T"]
+        content, _, depth = build_trajectory_content(path, seqs, h)
+        headers = parse_fasta_headers(content)
+
+        names = [name for name, _, _ in headers]
+        # N1 must be preserved; N2 and N3 are skipped intermediates; T is the tip
+        assert "N1" in names
+        assert names == ["R", "N1", "T"]
+        assert depth == 3
         assert_header_invariant(content)
         assert_direct_distance_invariant(content)
 
