@@ -157,8 +157,9 @@ def build_trajectory_content(path, sequences, hamming_of):
     Each header includes the branch Hamming distance from the previous emitted
     node and the direct Hamming distance from the start node:
     ``>{node}|{branch_distance}|{direct_distance}``
-    Skips intermediate nodes with zero branch distance; the tip is always
-    emitted.
+    Skips nodes with zero branch distance. If the tip is skipped, the last
+    emitted node is relabeled with the tip's name so the trajectory always
+    ends with the tip.
 
     Returns:
         tuple: (content, tip_distance, path_depth) where content is the FASTA string,
@@ -181,8 +182,8 @@ def build_trajectory_content(path, sequences, hamming_of):
             branch_dist = hamming_of.get((parent, node), 0)
             cumulative_distance += branch_dist
 
-            # Skip intermediate nodes with no distance increase (tip always emitted)
-            if branch_dist == 0 and node != tip_node:
+            # Skip nodes with no distance increase
+            if branch_dist == 0:
                 continue
 
         # Get sequence
@@ -211,6 +212,14 @@ def build_trajectory_content(path, sequences, hamming_of):
         last_emitted_seq = seq
         frames_written += 1
 
+    # Ensure the trajectory ends with the tip name. If the tip was
+    # skipped (zero branch distance), relabel the last emitted frame.
+    if parts and tip_node is not None:
+        last_header = parts[-1].split('\n', 1)[0]
+        last_name = last_header[1:].split('|')[0]
+        if last_name != tip_node:
+            parts[-1] = parts[-1].replace(f">{last_name}|", f">{tip_node}|", 1)
+
     content = ''.join(parts)
     return content, cumulative_distance, frames_written
 
@@ -221,7 +230,8 @@ def write_trajectory(path, sequences, hamming_of, output_path, compress=False, c
 
     Path should be in root-to-tip order.
     Each header includes the branch Hamming distance from the previous emitted node.
-    Skips intermediate nodes with zero branch distance; the tip is always emitted.
+    Skips nodes with zero branch distance. If the tip is skipped, the last
+    emitted node is relabeled with the tip's name.
 
     Returns:
         tuple: (tip_distance, path_depth) where tip_distance is cumulative

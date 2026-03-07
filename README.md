@@ -191,7 +191,7 @@ ATGTTCGTTTTT...
 ATGTTCGTTTTT...
 ```
 
-Where each header contains `>{node_name}|{branch_hamming_distance}|{direct_hamming_distance}` — the branch distance from the previous emitted node (0 for root) and the direct Hamming distance from the start node. All Hamming distances ignore positions where either sequence has a gap (`-`) or ambiguous base (`N`). Intermediate nodes with zero mutations are skipped; root and tip are always emitted.
+Where each header contains `>{node_name}|{branch_hamming_distance}|{direct_hamming_distance}` — the branch distance from the previous emitted node (0 for root) and the direct Hamming distance from the start node. All Hamming distances ignore positions where either sequence has a gap (`-`) or ambiguous base (`N`). Intermediate nodes with zero mutations are skipped. If the tip has zero branch distance from the last emitted node, the last emitted node is relabeled with the tip's name rather than adding a zero-distance frame.
 
 **Training trajectories** contain the full root-to-tip path. **Test trajectories** are truncated to start at the test clade boundary, ensuring they contain only evolutionary history unseen during training.
 

@@ -189,10 +189,10 @@ class TestZeroDistanceSkipWithGaps:
 
 
 class TestZeroDistanceTip:
-    """Test that zero-distance tips are emitted (not collapsed)."""
+    """Test that zero-distance tips are relabeled (not emitted as extra frame)."""
 
-    def test_zero_distance_tip_kept(self, sequences, hamming_of):
-        """Tip T with zero distance from Y is emitted alongside Y."""
+    def test_zero_distance_tip_relabeled(self, sequences, hamming_of):
+        """Tip T with zero distance from Y relabels Y's frame."""
         seqs = dict(sequences)
         seqs["T"] = sequences["Y"]  # identical to Y
         h = dict(hamming_of)
@@ -203,9 +203,9 @@ class TestZeroDistanceTip:
         headers = parse_fasta_headers(content)
 
         names = [name for name, _, _ in headers]
-        assert names == ["X", "Y", "T"]
-        assert depth == 3
-        assert headers == [("X", 0, 0), ("Y", 1, 1), ("T", 0, 1)]
+        assert names == ["X", "T"]
+        assert depth == 2
+        assert headers == [("X", 0, 0), ("T", 1, 1)]
 
     def test_zero_distance_tip_preserves_header_invariant(self, sequences, hamming_of):
         """Header invariants hold with zero-distance tip."""
@@ -220,7 +220,7 @@ class TestZeroDistanceTip:
         assert_direct_distance_invariant(content)
 
     def test_zero_distance_tip_with_gap_changes(self):
-        """Zero-distance tip with different gap pattern gets correct header."""
+        """Zero-distance tip with different gap pattern relabels predecessor."""
         seqs = {
             "X": "ATCGATCGAT",
             "Y": "ATCAATCG-T",  # 1 ACGT diff from X, gap at pos 9
@@ -236,27 +236,25 @@ class TestZeroDistanceTip:
         headers = parse_fasta_headers(content)
 
         names = [name for name, _, _ in headers]
-        assert names == ["X", "Y", "T"]
-        assert depth == 3
-        # T's branch dist is from Y (previous emitted), direct dist is from X
-        assert headers[2][1] == hamming_distance(seqs["Y"], seqs["T"])
-        assert headers[2][2] == hamming_distance(seqs["X"], seqs["T"])
+        assert names == ["X", "T"]
+        assert depth == 2
+        # T relabels Y's frame, so header has Y's distances
+        assert headers[1] == ("T", 1, 1)
         assert_header_invariant(content)
         assert_direct_distance_invariant(content)
 
     def test_chain_of_zero_distance_to_tip(self):
-        """Non-zero node is preserved when followed by chain of zero-distance nodes to tip.
+        """Chain of zero-distance nodes to tip: N1 relabeled as T.
 
-        Regression test: the old collapse logic would pop the last emitted frame
-        when the tip had zero branch distance, but after skipping intermediate
-        zero-distance nodes, the popped frame was a meaningful upstream node.
+        N2, N3, and T are all zero-distance from N1, so they are skipped.
+        N1 is relabeled with the tip name T.
         """
         seqs = {
             "R": "ATCGATCGAT",
             "N1": "ATCAATCGAT",  # 1 diff from R
             "N2": "ATCAATCGAT",  # 0 diff from N1 (intermediate, skipped)
             "N3": "ATCAATCGAT",  # 0 diff from N2 (intermediate, skipped)
-            "T":  "ATCAATCGAT",  # 0 diff from N3 (tip)
+            "T":  "ATCAATCGAT",  # 0 diff from N3 (tip, skipped & relabeled)
         }
         h = {
             ("R", "N1"): 1,
@@ -270,10 +268,9 @@ class TestZeroDistanceTip:
         headers = parse_fasta_headers(content)
 
         names = [name for name, _, _ in headers]
-        # N1 must be preserved; N2 and N3 are skipped intermediates; T is the tip
-        assert "N1" in names
-        assert names == ["R", "N1", "T"]
-        assert depth == 3
+        assert names == ["R", "T"]
+        assert depth == 2
+        assert headers == [("R", 0, 0), ("T", 1, 1)]
         assert_header_invariant(content)
         assert_direct_distance_invariant(content)
 
