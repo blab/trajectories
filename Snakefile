@@ -349,21 +349,26 @@ rule upload:
     input:
         expand("results/{analysis}/.trajectories.done", analysis=ANALYSES),
         expand("results/{analysis}/.pairwise.done", analysis=ANALYSES)
+    params:
+        analyses = ANALYSES
     shell:
         """
         python scripts/upload-to-s3.py \
             --upload-dir results \
-            --prefix trajectories
+            --prefix trajectories \
+            --analyses {params.analyses}
         """
 
 rule upload_rdrp:
     input:
         expand("results/{analysis}/.trajectories.done", analysis=RDRP_ANALYSES),
         expand("results/{analysis}/.pairwise.done", analysis=RDRP_ANALYSES)
+    params:
+        analyses = RDRP_ANALYSES
     shell:
         """
         python scripts/upload-to-s3.py \
             --upload-dir results \
             --prefix trajectories \
-            --filter '^rdrp-[a-z]+-xs$'
+            --analyses {params.analyses}
         """

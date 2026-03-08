@@ -71,6 +71,10 @@ def main():
         "--filter", default=None,
         help="Regex pattern to filter which datasets to upload (e.g., 'rdrp-.*-xs$' for main RdRp only)"
     )
+    parser.add_argument(
+        "--analyses", nargs="*", default=None,
+        help="Explicit list of analysis names to upload (takes precedence over --filter)"
+    )
     args = parser.parse_args()
 
     # Check required environment variables
@@ -89,17 +93,25 @@ def main():
     # Compile filter pattern if provided
     filter_pattern = re.compile(args.filter) if args.filter else None
 
-    # Find datasets to upload (apply filter if provided)
-    datasets_to_upload = []
-    for item in os.listdir(upload_dir):
-        item_path = os.path.join(upload_dir, item)
-        if os.path.isdir(item_path):
-            if filter_pattern and not filter_pattern.match(item):
-                continue
-            datasets_to_upload.append(item)
-
-    if filter_pattern:
-        print(f"Filter '{args.filter}' matched {len(datasets_to_upload)} dataset(s): {', '.join(sorted(datasets_to_upload))}")
+    # Find datasets to upload
+    if args.analyses is not None:
+        # Explicit list of analyses takes precedence
+        datasets_to_upload = [a for a in args.analyses if os.path.isdir(os.path.join(upload_dir, a))]
+        missing = [a for a in args.analyses if not os.path.isdir(os.path.join(upload_dir, a))]
+        if missing:
+            print(f"Warning: analysis directories not found: {', '.join(missing)}")
+        print(f"Uploading {len(datasets_to_upload)} specified analysis dataset(s): {', '.join(sorted(datasets_to_upload))}")
+    else:
+        # Fall back to directory scan with optional filter
+        datasets_to_upload = []
+        for item in os.listdir(upload_dir):
+            item_path = os.path.join(upload_dir, item)
+            if os.path.isdir(item_path):
+                if filter_pattern and not filter_pattern.match(item):
+                    continue
+                datasets_to_upload.append(item)
+        if filter_pattern:
+            print(f"Filter '{args.filter}' matched {len(datasets_to_upload)} dataset(s): {', '.join(sorted(datasets_to_upload))}")
 
     # Delete existing S3 objects for each dataset directory before uploading
     # This prevents stale files from accumulating when dataset tips change
@@ -118,7 +130,7 @@ def main():
     total_files = 0
     for dataset in datasets_to_upload:
         total_files += count_files(os.path.join(upload_dir, dataset))
-    # Also count root-level files (like summary.json) if no filter
+    # Also count root-level files (like summary.json) unless using --filter
     if not filter_pattern:
         for f in os.listdir(upload_dir):
             if os.path.isfile(os.path.join(upload_dir, f)) and f not in EXCLUDED_FILES:
@@ -128,7 +140,7 @@ def main():
 
     # Upload files from filtered datasets
     with tqdm(total=total_files, desc="Uploading") as pbar:
-        # Upload root-level files (like summary.json) only if no filter
+        # Upload root-level files (like summary.json) unless using --filter
         if not filter_pattern:
             for filename in os.listdir(upload_dir):
                 local_path = os.path.join(upload_dir, filename)
