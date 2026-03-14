@@ -10,6 +10,39 @@ import os
 import re
 import shutil
 
+
+def _file_gb(path):
+    """Return file size in GB, or 0 if the file doesn't exist yet."""
+    try:
+        return os.path.getsize(path) / 1024**3
+    except OSError:
+        return 0
+
+
+def _mem_gb(analysis, *filenames, multiplier=3):
+    """Estimate mem_gb from input file sizes within an analysis data dir.
+
+    Python dicts of sequences use ~2-3x the raw file size in memory.
+    """
+    total = sum(_file_gb(f"data/{analysis}/{f}") for f in filenames) * multiplier
+    return max(1, int(total) + 1)
+
+
+def _alignment_mem_gb(analysis):
+    """Estimate peak memory for alignment.py from JSON size and seq_length.
+
+    alignment.py reconstructs full sequences for every tree node (~2x tips).
+    Peak memory ≈ 3 * n_nodes * seq_length bytes (dict + mutable seqs).
+    n_nodes estimated from JSON size (each node ≈ 300 bytes in compact JSON).
+    """
+    json_bytes = _file_gb(f"data/{analysis}/auspice_raw.json") * 1024**3
+    if json_bytes == 0:
+        return 1
+    n_nodes_est = int(json_bytes / 300)
+    seq_length = config["analysis"].get(analysis, {}).get("seq_length", 5000)
+    peak_bytes = 3 * n_nodes_est * seq_length
+    return max(1, int(peak_bytes / 1024**3) + 1)
+
 # Helper function to detect UShER datasets
 def is_usher_dataset(analysis_name):
     """Check if a dataset uses UShER protobuf format instead of Auspice JSON."""
@@ -106,6 +139,8 @@ rule provision_alignment:
         auspice = "data/{analysis}/auspice_raw.json"
     output:
         alignment = "data/{analysis}/alignment.fasta"
+    resources:
+        mem_gb = lambda wc: _alignment_mem_gb(wc.analysis)
     params:
         gene = lambda wildcards: config["analysis"][wildcards.analysis]["gene"],
         trim_begin_arg = lambda wildcards: f"--trim-begin {config['analysis'][wildcards.analysis]['trim_begin']}" if "trim_begin" in config['analysis'][wildcards.analysis] else "",
@@ -132,6 +167,8 @@ rule provision_metadata:
         auspice = "data/{analysis}/auspice_raw.json"
     output:
         metadata = "data/{analysis}/metadata.tsv"
+    resources:
+        mem_gb = lambda wc: _mem_gb(wc.analysis, "auspice_raw.json")
     shell:
         """
         python scripts/metadata.py \
@@ -147,6 +184,8 @@ rule provision_branches:
         alignment = "data/{analysis}/alignment.fasta"
     output:
         branches = "data/{analysis}/branches_raw.tsv"
+    resources:
+        mem_gb = lambda wc: _mem_gb(wc.analysis, "auspice_raw.json", "alignment.fasta")
     shell:
         """
         python scripts/branches.py \
@@ -178,6 +217,8 @@ rule train_test_split:
         branches_raw = "data/{analysis}/branches_raw.tsv"
     output:
         branches = "data/{analysis}/branches.tsv"
+    resources:
+        mem_gb = lambda wc: _mem_gb(wc.analysis, "branches_raw.tsv")
     params:
         test_proportion = lambda wildcards: config["analysis"][wildcards.analysis].get("test_proportion", 0.1),
         mutations_back = lambda wildcards: config["analysis"][wildcards.analysis].get("mutations_back", 5),
@@ -205,6 +246,8 @@ rule label_auspice_json:
         branches = "data/{analysis}/branches.tsv"
     output:
         auspice = "data/{analysis}/auspice.json"
+    resources:
+        mem_gb = lambda wc: _mem_gb(wc.analysis, "auspice_raw.json")
     shell:
         """
         python scripts/label_auspice_json.py \
@@ -232,6 +275,8 @@ rule trajectories:
         alignment = "data/{analysis}/alignment.fasta"
     output:
         done = "results/{analysis}/.trajectories.done"
+    resources:
+        mem_gb = lambda wc: _mem_gb(wc.analysis, "alignment.fasta")
     params:
         output_dir = "results/{analysis}",
         summary = "results/summary.json",
@@ -258,6 +303,8 @@ rule pairwise:
         alignment = "data/{analysis}/alignment.fasta"
     output:
         done = "results/{analysis}/.pairwise.done"
+    resources:
+        mem_gb = lambda wc: _mem_gb(wc.analysis, "alignment.fasta")
     params:
         output_dir = "results/{analysis}",
         train_limit = lambda wildcards: config["analysis"][wildcards.analysis].get("pairwise_train_limit", 100000),
