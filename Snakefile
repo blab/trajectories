@@ -19,12 +19,14 @@ def _file_gb(path):
         return 0
 
 
-def _mem_gb(analysis, *filenames, multiplier=3):
+def _mem_gb(analysis, *filenames, multiplier=3, base=0):
     """Estimate mem_gb from input file sizes within an analysis data dir.
 
-    Python dicts of sequences use ~2-3x the raw file size in memory.
+    Default multiplier of 3 covers most rules (Python dicts use ~2-3x raw
+    file size). trajectory.py and pairwise need higher multipliers — they
+    hold full alignment + branch data in memory simultaneously.
     """
-    total = sum(_file_gb(f"data/{analysis}/{f}") for f in filenames) * multiplier
+    total = base + sum(_file_gb(f"data/{analysis}/{f}") for f in filenames) * multiplier
     return max(1, int(total) + 1)
 
 
@@ -276,7 +278,7 @@ rule trajectories:
     output:
         done = "results/{analysis}/.trajectories.done"
     resources:
-        mem_gb = lambda wc: _mem_gb(wc.analysis, "alignment.fasta")
+        mem_gb = lambda wc: _mem_gb(wc.analysis, "alignment.fasta", multiplier=10, base=5)
     params:
         output_dir = "results/{analysis}",
         summary = "results/summary.json",
@@ -304,7 +306,7 @@ rule pairwise:
     output:
         done = "results/{analysis}/.pairwise.done"
     resources:
-        mem_gb = lambda wc: _mem_gb(wc.analysis, "alignment.fasta")
+        mem_gb = lambda wc: _mem_gb(wc.analysis, "alignment.fasta", multiplier=6)
     params:
         output_dir = "results/{analysis}",
         train_limit = lambda wildcards: config["analysis"][wildcards.analysis].get("pairwise_train_limit", 100000),
