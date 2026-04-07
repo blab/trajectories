@@ -1,0 +1,473 @@
+analysis:
+  bac120-actinomycetota-PF00380.20:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/PF00380.20
+    gene: nuc
+    seq_length: 6450
+  bac120-actinomycetota-PF00410.20:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/PF00410.20
+    gene: nuc
+    seq_length: 1314
+  bac120-actinomycetota-PF00466.21:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/PF00466.21
+    gene: nuc
+    seq_length: 7467
+  bac120-actinomycetota-PF00687.22:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/PF00687.22
+    gene: nuc
+    seq_length: 1655
+  bac120-actinomycetota-PF01000.27:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/PF01000.27
+    gene: nuc
+    seq_length: 414
+  bac120-actinomycetota-PF01025.20:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/PF01025.20
+    gene: nuc
+    seq_length: 15670
+  bac120-actinomycetota-PF02576.18:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/PF02576.18
+    gene: nuc
+    seq_length: 12964
+  bac120-actinomycetota-PF03726.15:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/PF03726.15
+    gene: nuc
+    seq_length: 19748
+  bac120-actinomycetota-TIGR00006:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00006
+    gene: nuc
+    seq_length: 14114
+  bac120-actinomycetota-TIGR00019:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00019
+    gene: nuc
+    seq_length: 10382
+  bac120-actinomycetota-TIGR00020:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00020
+    gene: nuc
+    seq_length: 11150
+  bac120-actinomycetota-TIGR00029:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00029
+    gene: nuc
+    seq_length: 8982
+  bac120-actinomycetota-TIGR00037:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00037
+    gene: nuc
+    seq_length: 838
+  bac120-actinomycetota-TIGR00043:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00043
+    gene: nuc
+    seq_length: 10164
+  bac120-actinomycetota-TIGR00054:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00054
+    gene: nuc
+    seq_length: 21206
+  bac120-actinomycetota-TIGR00059:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00059
+    gene: nuc
+    seq_length: 11146
+  bac120-actinomycetota-TIGR00061:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00061
+    gene: nuc
+    seq_length: 5856
+  bac120-actinomycetota-TIGR00064:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00064
+    gene: nuc
+    seq_length: 30430
+  bac120-actinomycetota-TIGR00065:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00065
+    gene: nuc
+    seq_length: 14350
+  bac120-actinomycetota-TIGR00082:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00082
+    gene: nuc
+    seq_length: 9383
+  bac120-actinomycetota-TIGR00083:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00083
+    gene: nuc
+    seq_length: 21125
+  bac120-actinomycetota-TIGR00084:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00084
+    gene: nuc
+    seq_length: 6544
+  bac120-actinomycetota-TIGR00086:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00086
+    gene: nuc
+    seq_length: 4341
+  bac120-actinomycetota-TIGR00088:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00088
+    gene: nuc
+    seq_length: 21170
+  bac120-actinomycetota-TIGR00090:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00090
+    gene: nuc
+    seq_length: 10172
+  bac120-actinomycetota-TIGR00092:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00092
+    gene: nuc
+    seq_length: 10630
+  bac120-actinomycetota-TIGR00095:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00095
+    gene: nuc
+    seq_length: 12844
+  bac120-actinomycetota-TIGR00115:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00115
+    gene: nuc
+    seq_length: 16693
+  bac120-actinomycetota-TIGR00116:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00116
+    gene: nuc
+    seq_length: 2956
+  bac120-actinomycetota-TIGR00138:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00138
+    gene: nuc
+    seq_length: 17011
+  bac120-actinomycetota-TIGR00158:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00158
+    gene: nuc
+    seq_length: 3014
+  bac120-actinomycetota-TIGR00166:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00166
+    gene: nuc
+    seq_length: 6589
+  bac120-actinomycetota-TIGR00168:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00168
+    gene: nuc
+    seq_length: 11655
+  bac120-actinomycetota-TIGR00186:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00186
+    gene: nuc
+    seq_length: 10729
+  bac120-actinomycetota-TIGR00250:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00250
+    gene: nuc
+    seq_length: 18014
+  bac120-actinomycetota-TIGR00337:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00337
+    gene: nuc
+    seq_length: 18041
+  bac120-actinomycetota-TIGR00344:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00344
+    gene: nuc
+    seq_length: 13168
+  bac120-actinomycetota-TIGR00362:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00362
+    gene: nuc
+    seq_length: 36255
+  bac120-actinomycetota-TIGR00382:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00382
+    gene: nuc
+    seq_length: 13909
+  bac120-actinomycetota-TIGR00392:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00392
+    gene: nuc
+    seq_length: 36872
+  bac120-actinomycetota-TIGR00396:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00396
+    gene: nuc
+    seq_length: 20440
+  bac120-actinomycetota-TIGR00398:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00398
+    gene: nuc
+    seq_length: 14834
+  bac120-actinomycetota-TIGR00414:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00414
+    gene: nuc
+    seq_length: 6858
+  bac120-actinomycetota-TIGR00416:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00416
+    gene: nuc
+    seq_length: 16632
+  bac120-actinomycetota-TIGR00420:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00420
+    gene: nuc
+    seq_length: 28551
+  bac120-actinomycetota-TIGR00431:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00431
+    gene: nuc
+    seq_length: 26036
+  bac120-actinomycetota-TIGR00435:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00435
+    gene: nuc
+    seq_length: 15186
+  bac120-actinomycetota-TIGR00436:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00436
+    gene: nuc
+    seq_length: 20119
+  bac120-actinomycetota-TIGR00442:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00442
+    gene: nuc
+    seq_length: 14854
+  bac120-actinomycetota-TIGR00445:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00445
+    gene: nuc
+    seq_length: 7435
+  bac120-actinomycetota-TIGR00456:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00456
+    gene: nuc
+    seq_length: 21128
+  bac120-actinomycetota-TIGR00459:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00459
+    gene: nuc
+    seq_length: 11347
+  bac120-actinomycetota-TIGR00460:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00460
+    gene: nuc
+    seq_length: 17836
+  bac120-actinomycetota-TIGR00468:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00468
+    gene: nuc
+    seq_length: 11325
+  bac120-actinomycetota-TIGR00472:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00472
+    gene: nuc
+    seq_length: 27518
+  bac120-actinomycetota-TIGR00483:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00483
+    gene: nuc
+    seq_length: 1404
+  bac120-actinomycetota-TIGR00487:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00487
+    gene: nuc
+    seq_length: 23905
+  bac120-actinomycetota-TIGR00496:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00496
+    gene: nuc
+    seq_length: 2742
+  bac120-actinomycetota-TIGR00539:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00539
+    gene: nuc
+    seq_length: 17108
+  bac120-actinomycetota-TIGR00593:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00593
+    gene: nuc
+    seq_length: 28545
+  bac120-actinomycetota-TIGR00615:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00615
+    gene: nuc
+    seq_length: 6381
+  bac120-actinomycetota-TIGR00631:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00631
+    gene: nuc
+    seq_length: 10314
+  bac120-actinomycetota-TIGR00634:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00634
+    gene: nuc
+    seq_length: 27451
+  bac120-actinomycetota-TIGR00635:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00635
+    gene: nuc
+    seq_length: 11972
+  bac120-actinomycetota-TIGR00663:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00663
+    gene: nuc
+    seq_length: 11657
+  bac120-actinomycetota-TIGR00717:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00717
+    gene: nuc
+    seq_length: 8571
+  bac120-actinomycetota-TIGR00755:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00755
+    gene: nuc
+    seq_length: 28654
+  bac120-actinomycetota-TIGR00810:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00810
+    gene: nuc
+    seq_length: 5029
+  bac120-actinomycetota-TIGR00922:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00922
+    gene: nuc
+    seq_length: 14292
+  bac120-actinomycetota-TIGR00928:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00928
+    gene: nuc
+    seq_length: 16707
+  bac120-actinomycetota-TIGR00959:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00959
+    gene: nuc
+    seq_length: 16909
+  bac120-actinomycetota-TIGR00963:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00963
+    gene: nuc
+    seq_length: 26024
+  bac120-actinomycetota-TIGR00964:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00964
+    gene: nuc
+    seq_length: 6332
+  bac120-actinomycetota-TIGR00967:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR00967
+    gene: nuc
+    seq_length: 5976
+  bac120-actinomycetota-TIGR01009:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01009
+    gene: nuc
+    seq_length: 8248
+  bac120-actinomycetota-TIGR01011:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01011
+    gene: nuc
+    seq_length: 22258
+  bac120-actinomycetota-TIGR01017:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01017
+    gene: nuc
+    seq_length: 2666
+  bac120-actinomycetota-TIGR01018:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01018
+    gene: nuc
+    seq_length: 482
+  bac120-actinomycetota-TIGR01021:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01021
+    gene: nuc
+    seq_length: 5067
+  bac120-actinomycetota-TIGR01029:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01029
+    gene: nuc
+    seq_length: 3297
+  bac120-actinomycetota-TIGR01032:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01032
+    gene: nuc
+    seq_length: 3460
+  bac120-actinomycetota-TIGR01039:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01039
+    gene: nuc
+    seq_length: 15614
+  bac120-actinomycetota-TIGR01044:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01044
+    gene: nuc
+    seq_length: 4498
+  bac120-actinomycetota-TIGR01059:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01059
+    gene: nuc
+    seq_length: 10561
+  bac120-actinomycetota-TIGR01063:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01063
+    gene: nuc
+    seq_length: 18338
+  bac120-actinomycetota-TIGR01066:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01066
+    gene: nuc
+    seq_length: 6343
+  bac120-actinomycetota-TIGR01071:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01071
+    gene: nuc
+    seq_length: 7281
+  bac120-actinomycetota-TIGR01079:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01079
+    gene: nuc
+    seq_length: 3270
+  bac120-actinomycetota-TIGR01082:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01082
+    gene: nuc
+    seq_length: 32589
+  bac120-actinomycetota-TIGR01128:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01128
+    gene: nuc
+    seq_length: 34270
+  bac120-actinomycetota-TIGR01146:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01146
+    gene: nuc
+    seq_length: 5620
+  bac120-actinomycetota-TIGR01164:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01164
+    gene: nuc
+    seq_length: 1326
+  bac120-actinomycetota-TIGR01169:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01169
+    gene: nuc
+    seq_length: 6567
+  bac120-actinomycetota-TIGR01171:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01171
+    gene: nuc
+    seq_length: 3132
+  bac120-actinomycetota-TIGR01302:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01302
+    gene: nuc
+    seq_length: 8735
+  bac120-actinomycetota-TIGR01391:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01391
+    gene: nuc
+    seq_length: 28588
+  bac120-actinomycetota-TIGR01393:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01393
+    gene: nuc
+    seq_length: 11831
+  bac120-actinomycetota-TIGR01394:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01394
+    gene: nuc
+    seq_length: 13900
+  bac120-actinomycetota-TIGR01510:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01510
+    gene: nuc
+    seq_length: 7826
+  bac120-actinomycetota-TIGR01632:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01632
+    gene: nuc
+    seq_length: 2835
+  bac120-actinomycetota-TIGR01951:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01951
+    gene: nuc
+    seq_length: 11617
+  bac120-actinomycetota-TIGR01953:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR01953
+    gene: nuc
+    seq_length: 9986
+  bac120-actinomycetota-TIGR02012:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR02012
+    gene: nuc
+    seq_length: 25715
+  bac120-actinomycetota-TIGR02013:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR02013
+    gene: nuc
+    seq_length: 13725
+  bac120-actinomycetota-TIGR02027:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR02027
+    gene: nuc
+    seq_length: 4993
+  bac120-actinomycetota-TIGR02075:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR02075
+    gene: nuc
+    seq_length: 5015
+  bac120-actinomycetota-TIGR02191:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR02191
+    gene: nuc
+    seq_length: 13684
+  bac120-actinomycetota-TIGR02273:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR02273
+    gene: nuc
+    seq_length: 12419
+  bac120-actinomycetota-TIGR02350:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR02350
+    gene: nuc
+    seq_length: 9900
+  bac120-actinomycetota-TIGR02386:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR02386
+    gene: nuc
+    seq_length: 20914
+  bac120-actinomycetota-TIGR02729:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR02729
+    gene: nuc
+    seq_length: 16543
+  bac120-actinomycetota-TIGR03263:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR03263
+    gene: nuc
+    seq_length: 8685
+  bac120-actinomycetota-TIGR03594:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR03594
+    gene: nuc
+    seq_length: 17222
+  bac120-actinomycetota-TIGR03625:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR03625
+    gene: nuc
+    seq_length: 4095
+  bac120-actinomycetota-TIGR03632:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR03632
+    gene: nuc
+    seq_length: 1497
+  bac120-actinomycetota-TIGR03654:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR03654
+    gene: nuc
+    seq_length: 4595
+  bac120-actinomycetota-TIGR03723:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR03723
+    gene: nuc
+    seq_length: 23738
+  bac120-actinomycetota-TIGR03953:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/actinomycetota/TIGR03953
+    gene: nuc
+    seq_length: 7362

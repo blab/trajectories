@@ -1,0 +1,489 @@
+analysis:
+  bac120-bacillota-PF00380.20:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/PF00380.20
+    gene: nuc
+    seq_length: 2174
+  bac120-bacillota-PF00410.20:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/PF00410.20
+    gene: nuc
+    seq_length: 1423
+  bac120-bacillota-PF00466.21:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/PF00466.21
+    gene: nuc
+    seq_length: 8868
+  bac120-bacillota-PF00687.22:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/PF00687.22
+    gene: nuc
+    seq_length: 1119
+  bac120-bacillota-PF01025.20:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/PF01025.20
+    gene: nuc
+    seq_length: 22326
+  bac120-bacillota-PF02576.18:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/PF02576.18
+    gene: nuc
+    seq_length: 12144
+  bac120-bacillota-PF03726.15:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/PF03726.15
+    gene: nuc
+    seq_length: 17182
+  bac120-bacillota-PF04919.13:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/PF04919.13
+    gene: nuc
+    seq_length: 9270
+  bac120-bacillota-TIGR00006:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00006
+    gene: nuc
+    seq_length: 14953
+  bac120-bacillota-TIGR00019:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00019
+    gene: nuc
+    seq_length: 7181
+  bac120-bacillota-TIGR00020:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00020
+    gene: nuc
+    seq_length: 13124
+  bac120-bacillota-TIGR00029:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00029
+    gene: nuc
+    seq_length: 4288
+  bac120-bacillota-TIGR00043:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00043
+    gene: nuc
+    seq_length: 24121
+  bac120-bacillota-TIGR00054:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00054
+    gene: nuc
+    seq_length: 7956
+  bac120-bacillota-TIGR00059:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00059
+    gene: nuc
+    seq_length: 5902
+  bac120-bacillota-TIGR00061:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00061
+    gene: nuc
+    seq_length: 3831
+  bac120-bacillota-TIGR00064:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00064
+    gene: nuc
+    seq_length: 8018
+  bac120-bacillota-TIGR00065:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00065
+    gene: nuc
+    seq_length: 17415
+  bac120-bacillota-TIGR00082:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00082
+    gene: nuc
+    seq_length: 9774
+  bac120-bacillota-TIGR00083:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00083
+    gene: nuc
+    seq_length: 29095
+  bac120-bacillota-TIGR00084:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00084
+    gene: nuc
+    seq_length: 14698
+  bac120-bacillota-TIGR00086:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00086
+    gene: nuc
+    seq_length: 8701
+  bac120-bacillota-TIGR00088:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00088
+    gene: nuc
+    seq_length: 29264
+  bac120-bacillota-TIGR00090:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00090
+    gene: nuc
+    seq_length: 15696
+  bac120-bacillota-TIGR00092:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00092
+    gene: nuc
+    seq_length: 7059
+  bac120-bacillota-TIGR00095:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00095
+    gene: nuc
+    seq_length: 17430
+  bac120-bacillota-TIGR00115:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00115
+    gene: nuc
+    seq_length: 17915
+  bac120-bacillota-TIGR00116:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00116
+    gene: nuc
+    seq_length: 15202
+  bac120-bacillota-TIGR00138:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00138
+    gene: nuc
+    seq_length: 12424
+  bac120-bacillota-TIGR00158:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00158
+    gene: nuc
+    seq_length: 11398
+  bac120-bacillota-TIGR00166:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00166
+    gene: nuc
+    seq_length: 3960
+  bac120-bacillota-TIGR00168:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00168
+    gene: nuc
+    seq_length: 11169
+  bac120-bacillota-TIGR00186:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00186
+    gene: nuc
+    seq_length: 25097
+  bac120-bacillota-TIGR00194:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00194
+    gene: nuc
+    seq_length: 36459
+  bac120-bacillota-TIGR00250:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00250
+    gene: nuc
+    seq_length: 9438
+  bac120-bacillota-TIGR00337:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00337
+    gene: nuc
+    seq_length: 8633
+  bac120-bacillota-TIGR00344:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00344
+    gene: nuc
+    seq_length: 25158
+  bac120-bacillota-TIGR00362:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00362
+    gene: nuc
+    seq_length: 28837
+  bac120-bacillota-TIGR00382:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00382
+    gene: nuc
+    seq_length: 32770
+  bac120-bacillota-TIGR00392:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00392
+    gene: nuc
+    seq_length: 38692
+  bac120-bacillota-TIGR00396:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00396
+    gene: nuc
+    seq_length: 19906
+  bac120-bacillota-TIGR00398:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00398
+    gene: nuc
+    seq_length: 24004
+  bac120-bacillota-TIGR00414:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00414
+    gene: nuc
+    seq_length: 8182
+  bac120-bacillota-TIGR00416:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00416
+    gene: nuc
+    seq_length: 19216
+  bac120-bacillota-TIGR00420:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00420
+    gene: nuc
+    seq_length: 19751
+  bac120-bacillota-TIGR00431:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00431
+    gene: nuc
+    seq_length: 27458
+  bac120-bacillota-TIGR00435:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00435
+    gene: nuc
+    seq_length: 25749
+  bac120-bacillota-TIGR00436:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00436
+    gene: nuc
+    seq_length: 15438
+  bac120-bacillota-TIGR00442:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00442
+    gene: nuc
+    seq_length: 26722
+  bac120-bacillota-TIGR00445:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00445
+    gene: nuc
+    seq_length: 15964
+  bac120-bacillota-TIGR00456:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00456
+    gene: nuc
+    seq_length: 30574
+  bac120-bacillota-TIGR00459:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00459
+    gene: nuc
+    seq_length: 15734
+  bac120-bacillota-TIGR00460:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00460
+    gene: nuc
+    seq_length: 22465
+  bac120-bacillota-TIGR00468:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00468
+    gene: nuc
+    seq_length: 13487
+  bac120-bacillota-TIGR00472:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00472
+    gene: nuc
+    seq_length: 35808
+  bac120-bacillota-TIGR00487:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00487
+    gene: nuc
+    seq_length: 16555
+  bac120-bacillota-TIGR00496:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00496
+    gene: nuc
+    seq_length: 3507
+  bac120-bacillota-TIGR00539:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00539
+    gene: nuc
+    seq_length: 34811
+  bac120-bacillota-TIGR00580:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00580
+    gene: nuc
+    seq_length: 57195
+  bac120-bacillota-TIGR00593:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00593
+    gene: nuc
+    seq_length: 47018
+  bac120-bacillota-TIGR00615:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00615
+    gene: nuc
+    seq_length: 3481
+  bac120-bacillota-TIGR00631:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00631
+    gene: nuc
+    seq_length: 21726
+  bac120-bacillota-TIGR00634:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00634
+    gene: nuc
+    seq_length: 35038
+  bac120-bacillota-TIGR00635:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00635
+    gene: nuc
+    seq_length: 11191
+  bac120-bacillota-TIGR00643:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00643
+    gene: nuc
+    seq_length: 46012
+  bac120-bacillota-TIGR00663:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00663
+    gene: nuc
+    seq_length: 18984
+  bac120-bacillota-TIGR00717:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00717
+    gene: nuc
+    seq_length: 9569
+  bac120-bacillota-TIGR00755:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00755
+    gene: nuc
+    seq_length: 17734
+  bac120-bacillota-TIGR00810:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00810
+    gene: nuc
+    seq_length: 6929
+  bac120-bacillota-TIGR00922:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00922
+    gene: nuc
+    seq_length: 9133
+  bac120-bacillota-TIGR00928:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00928
+    gene: nuc
+    seq_length: 15798
+  bac120-bacillota-TIGR00959:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00959
+    gene: nuc
+    seq_length: 11719
+  bac120-bacillota-TIGR00963:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00963
+    gene: nuc
+    seq_length: 37564
+  bac120-bacillota-TIGR00964:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00964
+    gene: nuc
+    seq_length: 9311
+  bac120-bacillota-TIGR00967:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR00967
+    gene: nuc
+    seq_length: 14858
+  bac120-bacillota-TIGR01009:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01009
+    gene: nuc
+    seq_length: 8598
+  bac120-bacillota-TIGR01011:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01011
+    gene: nuc
+    seq_length: 7994
+  bac120-bacillota-TIGR01017:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01017
+    gene: nuc
+    seq_length: 4967
+  bac120-bacillota-TIGR01021:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01021
+    gene: nuc
+    seq_length: 2707
+  bac120-bacillota-TIGR01029:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01029
+    gene: nuc
+    seq_length: 3230
+  bac120-bacillota-TIGR01032:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01032
+    gene: nuc
+    seq_length: 2583
+  bac120-bacillota-TIGR01039:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01039
+    gene: nuc
+    seq_length: 6865
+  bac120-bacillota-TIGR01044:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01044
+    gene: nuc
+    seq_length: 3877
+  bac120-bacillota-TIGR01059:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01059
+    gene: nuc
+    seq_length: 19261
+  bac120-bacillota-TIGR01063:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01063
+    gene: nuc
+    seq_length: 28398
+  bac120-bacillota-TIGR01066:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01066
+    gene: nuc
+    seq_length: 2642
+  bac120-bacillota-TIGR01071:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01071
+    gene: nuc
+    seq_length: 1813
+  bac120-bacillota-TIGR01079:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01079
+    gene: nuc
+    seq_length: 5564
+  bac120-bacillota-TIGR01082:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01082
+    gene: nuc
+    seq_length: 26041
+  bac120-bacillota-TIGR01087:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01087
+    gene: nuc
+    seq_length: 29987
+  bac120-bacillota-TIGR01128:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01128
+    gene: nuc
+    seq_length: 14115
+  bac120-bacillota-TIGR01146:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01146
+    gene: nuc
+    seq_length: 15638
+  bac120-bacillota-TIGR01164:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01164
+    gene: nuc
+    seq_length: 1691
+  bac120-bacillota-TIGR01169:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01169
+    gene: nuc
+    seq_length: 2823
+  bac120-bacillota-TIGR01171:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01171
+    gene: nuc
+    seq_length: 2758
+  bac120-bacillota-TIGR01302:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01302
+    gene: nuc
+    seq_length: 16009
+  bac120-bacillota-TIGR01391:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01391
+    gene: nuc
+    seq_length: 13631
+  bac120-bacillota-TIGR01393:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01393
+    gene: nuc
+    seq_length: 10277
+  bac120-bacillota-TIGR01394:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01394
+    gene: nuc
+    seq_length: 11909
+  bac120-bacillota-TIGR01510:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01510
+    gene: nuc
+    seq_length: 15381
+  bac120-bacillota-TIGR01632:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01632
+    gene: nuc
+    seq_length: 2144
+  bac120-bacillota-TIGR01951:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01951
+    gene: nuc
+    seq_length: 29440
+  bac120-bacillota-TIGR01953:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR01953
+    gene: nuc
+    seq_length: 29121
+  bac120-bacillota-TIGR02012:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR02012
+    gene: nuc
+    seq_length: 15207
+  bac120-bacillota-TIGR02013:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR02013
+    gene: nuc
+    seq_length: 10368
+  bac120-bacillota-TIGR02027:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR02027
+    gene: nuc
+    seq_length: 9246
+  bac120-bacillota-TIGR02075:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR02075
+    gene: nuc
+    seq_length: 7542
+  bac120-bacillota-TIGR02191:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR02191
+    gene: nuc
+    seq_length: 18535
+  bac120-bacillota-TIGR02273:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR02273
+    gene: nuc
+    seq_length: 12090
+  bac120-bacillota-TIGR02350:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR02350
+    gene: nuc
+    seq_length: 10833
+  bac120-bacillota-TIGR02386:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR02386
+    gene: nuc
+    seq_length: 45992
+  bac120-bacillota-TIGR02397:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR02397
+    gene: nuc
+    seq_length: 13350
+  bac120-bacillota-TIGR02432:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR02432
+    gene: nuc
+    seq_length: 25966
+  bac120-bacillota-TIGR02729:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR02729
+    gene: nuc
+    seq_length: 12829
+  bac120-bacillota-TIGR03263:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR03263
+    gene: nuc
+    seq_length: 8877
+  bac120-bacillota-TIGR03594:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR03594
+    gene: nuc
+    seq_length: 7654
+  bac120-bacillota-TIGR03625:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR03625
+    gene: nuc
+    seq_length: 4690
+  bac120-bacillota-TIGR03632:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR03632
+    gene: nuc
+    seq_length: 1805
+  bac120-bacillota-TIGR03654:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR03654
+    gene: nuc
+    seq_length: 1832
+  bac120-bacillota-TIGR03723:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR03723
+    gene: nuc
+    seq_length: 14918
+  bac120-bacillota-TIGR03725:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR03725
+    gene: nuc
+    seq_length: 34935
+  bac120-bacillota-TIGR03953:
+    dataset: https://nextstrain.org/groups/trajectories-private/bac120/bacillota/TIGR03953
+    gene: nuc
+    seq_length: 2035
