@@ -182,7 +182,7 @@ def trim_path_gaps(path, sequences):
         return sequences  # nothing to trim
 
     keep_idx = np.nonzero(path_mask)[0]
-    trimmed = dict(sequences)
+    trimmed = {}
     for node in path:
         s = sequences.get(node)
         if not s:
