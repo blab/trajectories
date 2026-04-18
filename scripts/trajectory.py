@@ -140,13 +140,11 @@ def format_sequence(seq, line_width=60):
 
 def hamming_distance(seq1, seq2):
     """Hamming distance ignoring positions where either sequence has a gap or N."""
-    d = 0
-    for c1, c2 in zip(seq1, seq2):
-        if c1 in '-N' or c2 in '-N':
-            continue
-        if c1 != c2:
-            d += 1
-    return d
+    import numpy as np
+    a = np.frombuffer(str(seq1).encode("ascii"), dtype=np.uint8)
+    b = np.frombuffer(str(seq2).encode("ascii"), dtype=np.uint8)
+    valid = (a != ord("-")) & (a != ord("N")) & (b != ord("-")) & (b != ord("N"))
+    return int(((a != b) & valid).sum())
 
 
 def trim_path_gaps(path, sequences):

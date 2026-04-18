@@ -63,22 +63,16 @@ def annotate_parents_for_tree(tree):
 
 def calculate_hamming_distance(seq1, seq2):
     """Calculate Hamming distance between two sequences."""
+    import numpy as np
     if len(seq1) != len(seq2):
         print(f"Warning: Sequences have different lengths ({len(seq1)} vs {len(seq2)})")
         min_len = min(len(seq1), len(seq2))
         seq1 = seq1[:min_len]
         seq2 = seq2[:min_len]
-
-    # Count differences, ignoring gaps and ambiguous bases
-    distance = 0
-    for c1, c2 in zip(seq1, seq2):
-        # Skip if either position has gap or ambiguous base
-        if c1 in '-N' or c2 in '-N':
-            continue
-        if c1 != c2:
-            distance += 1
-
-    return distance
+    a = np.frombuffer(str(seq1).encode("ascii"), dtype=np.uint8)
+    b = np.frombuffer(str(seq2).encode("ascii"), dtype=np.uint8)
+    valid = (a != ord("-")) & (a != ord("N")) & (b != ord("-")) & (b != ord("N"))
+    return int(((a != b) & valid).sum())
 
 def extract_branches_with_hamming(tree, sequences):
     """
