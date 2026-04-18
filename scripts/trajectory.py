@@ -162,28 +162,34 @@ def trim_path_gaps(path, sequences):
     Hamming distances are unchanged (all-'-' columns contribute 0 to Hamming).
 
     Returns a new dict with trimmed sequences for just the nodes on this path.
+    Uses numpy for fast column reduction.
     """
-    path_seqs = [sequences[n] for n in path if n in sequences and sequences[n]]
+    import numpy as np
+
+    path_seqs = [str(sequences[n]) for n in path if n in sequences and sequences[n]]
     if not path_seqs:
         return sequences
     L = len(path_seqs[0])
-    # For each column, keep it if ANY node on this path has a real base
-    keep = bytearray(L)
+
+    # OR together the "has-a-base" bitmaps across all nodes on the path.
+    # Keep columns where at least one node has a real base (not '-' or 'N').
+    path_mask = np.zeros(L, dtype=bool)
     for s in path_seqs:
-        s_str = str(s)
-        for i, c in enumerate(s_str):
-            if c not in '-N':
-                keep[i] = 1
-    keep_idx = [i for i in range(L) if keep[i]]
-    if len(keep_idx) == L:
+        arr = np.frombuffer(s.encode("ascii"), dtype=np.uint8)
+        path_mask |= (arr != ord("-")) & (arr != ord("N"))
+
+    if path_mask.all():
         return sequences  # nothing to trim
+
+    keep_idx = np.nonzero(path_mask)[0]
     trimmed = {}
     for node, s in sequences.items():
         if not s:
             trimmed[node] = s
             continue
-        s_str = str(s)
-        trimmed[node] = type(s)(''.join(s_str[i] for i in keep_idx))
+        arr = np.frombuffer(str(s).encode("ascii"), dtype=np.uint8)
+        new_str = arr[keep_idx].tobytes().decode("ascii")
+        trimmed[node] = type(s)(new_str)
     return trimmed
 
 

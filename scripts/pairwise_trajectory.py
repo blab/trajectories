@@ -171,16 +171,18 @@ def trim_pair_gaps(seq1, seq2):
     A real indel event (one tip has a base, the other has '-') is preserved.
     Hamming distance is unchanged (all-gap columns contribute 0).
     """
-    s1 = str(seq1)
-    s2 = str(seq2)
+    import numpy as np
+    s1, s2 = str(seq1), str(seq2)
     if len(s1) != len(s2):
         return seq1, seq2  # safety: mismatched lengths, leave untouched
-    keep_idx = [i for i, (a, b) in enumerate(zip(s1, s2))
-                if (a not in '-N') or (b not in '-N')]
-    if len(keep_idx) == len(s1):
+    a1 = np.frombuffer(s1.encode("ascii"), dtype=np.uint8)
+    a2 = np.frombuffer(s2.encode("ascii"), dtype=np.uint8)
+    has_base = ((a1 != ord("-")) & (a1 != ord("N"))) | ((a2 != ord("-")) & (a2 != ord("N")))
+    if has_base.all():
         return seq1, seq2
-    t1 = ''.join(s1[i] for i in keep_idx)
-    t2 = ''.join(s2[i] for i in keep_idx)
+    keep_idx = np.nonzero(has_base)[0]
+    t1 = a1[keep_idx].tobytes().decode("ascii")
+    t2 = a2[keep_idx].tobytes().decode("ascii")
     return type(seq1)(t1), type(seq2)(t2)
 
 
