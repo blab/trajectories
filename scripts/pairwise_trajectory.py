@@ -162,6 +162,28 @@ def generate_test_pairs_by_clade(clade_membership, limit=None, seed=42):
     return pairs
 
 
+def trim_pair_gaps(seq1, seq2):
+    """
+    Drop columns where both sequences have '-' or 'N'.
+
+    These are alignment columns where OTHER lineages had insertions — they
+    carry no signal for this pair and only bloat the sequence length.
+    A real indel event (one tip has a base, the other has '-') is preserved.
+    Hamming distance is unchanged (all-gap columns contribute 0).
+    """
+    s1 = str(seq1)
+    s2 = str(seq2)
+    if len(s1) != len(s2):
+        return seq1, seq2  # safety: mismatched lengths, leave untouched
+    keep_idx = [i for i, (a, b) in enumerate(zip(s1, s2))
+                if (a not in '-N') or (b not in '-N')]
+    if len(keep_idx) == len(s1):
+        return seq1, seq2
+    t1 = ''.join(s1[i] for i in keep_idx)
+    t2 = ''.join(s2[i] for i in keep_idx)
+    return type(seq1)(t1), type(seq2)(t2)
+
+
 def build_pairwise_content(tip1, tip2, sequences):
     """
     Build pairwise FASTA content as a string.
@@ -169,6 +191,10 @@ def build_pairwise_content(tip1, tip2, sequences):
     Header format matches forwards trajectories: >{name}|{branch_dist}|{direct_dist}.
     First sequence gets |0|0, second gets |{hamming}|{hamming} (branch and direct
     are always identical for pairwise since there are only two frames).
+
+    Alignment columns where both tips have '-'/'N' are dropped (per-pair trim)
+    since they're unrelated lineages' insertions, not part of this pair's biology.
+
     Returns tuple of (content, hamming_distance), or (None, None) if sequences missing.
     """
     seq1 = sequences.get(tip1, '')
@@ -176,6 +202,9 @@ def build_pairwise_content(tip1, tip2, sequences):
 
     if not seq1 or not seq2:
         return None, None
+
+    # Per-pair gap trim
+    seq1, seq2 = trim_pair_gaps(seq1, seq2)
 
     hamming = hamming_distance(seq1, seq2)
 
