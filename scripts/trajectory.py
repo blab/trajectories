@@ -182,10 +182,10 @@ def trim_path_gaps(path, sequences):
         return sequences  # nothing to trim
 
     keep_idx = np.nonzero(path_mask)[0]
-    trimmed = {}
-    for node, s in sequences.items():
+    trimmed = dict(sequences)
+    for node in path:
+        s = sequences.get(node)
         if not s:
-            trimmed[node] = s
             continue
         arr = np.frombuffer(str(s).encode("ascii"), dtype=np.uint8)
         new_str = arr[keep_idx].tobytes().decode("ascii")
