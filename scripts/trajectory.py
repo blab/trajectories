@@ -13,6 +13,7 @@ import json
 import os
 import re
 import statistics
+import numpy as np
 from Bio import SeqIO
 from tqdm import tqdm
 import zstandard as zstd
@@ -140,7 +141,6 @@ def format_sequence(seq, line_width=60):
 
 def hamming_distance(seq1, seq2):
     """Hamming distance ignoring positions where either sequence has a gap or N."""
-    import numpy as np
     a = np.frombuffer(str(seq1).encode("ascii"), dtype=np.uint8)
     b = np.frombuffer(str(seq2).encode("ascii"), dtype=np.uint8)
     valid = (a != ord("-")) & (a != ord("N")) & (b != ord("-")) & (b != ord("N"))
@@ -162,8 +162,6 @@ def trim_path_gaps(path, sequences):
     Returns a new dict with trimmed sequences for just the nodes on this path.
     Uses numpy for fast column reduction.
     """
-    import numpy as np
-
     path_seqs = [str(sequences[n]) for n in path if n in sequences and sequences[n]]
     if not path_seqs:
         return sequences

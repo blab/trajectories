@@ -12,6 +12,7 @@ import json
 import os
 import random
 import statistics
+import numpy as np
 from tqdm import tqdm
 
 # Reuse utilities from trajectory.py
@@ -171,7 +172,6 @@ def trim_pair_gaps(seq1, seq2):
     A real indel event (one tip has a base, the other has '-') is preserved.
     Hamming distance is unchanged (all-gap columns contribute 0).
     """
-    import numpy as np
     s1, s2 = str(seq1), str(seq2)
     if len(s1) != len(s2):
         return seq1, seq2  # safety: mismatched lengths, leave untouched

@@ -11,6 +11,7 @@ import json
 import sys
 
 sys.setrecursionlimit(100000)
+import numpy as np
 import Bio.Phylo
 from Bio import SeqIO
 from tqdm import tqdm
@@ -63,7 +64,6 @@ def annotate_parents_for_tree(tree):
 
 def calculate_hamming_distance(seq1, seq2):
     """Calculate Hamming distance between two sequences."""
-    import numpy as np
     if len(seq1) != len(seq2):
         print(f"Warning: Sequences have different lengths ({len(seq1)} vs {len(seq2)})")
         min_len = min(len(seq1), len(seq2))
