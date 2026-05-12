@@ -55,11 +55,11 @@ Running `snakemake` with no target defaults to `results`.
 
 To provision specific datasets, use the `target_analyses` config:
 ```
-# Provision spike-xs dataset only
-snakemake --cores 1 -p results --config target_analyses='["spike-xs"]'
+# Provision cytb-xs dataset only
+snakemake --cores 1 -p results --config target_analyses='["cytb-xs"]'
 
 # Provision multiple datasets
-snakemake --cores 1 -p results --config target_analyses='["spike-xs","cytb-xs"]'
+snakemake --cores 1 -p results --config target_analyses='["cytb-xs","n450-xs"]'
 ```
 
 ## Available datasets
@@ -68,9 +68,7 @@ The following datasets are pre-configured and can be used with the above command
 
 - `cytb-xs`: [Mammalian cytochrome B sequences](https://nextstrain.org/groups/trajectories/cytb-xs) (5059 sequences x 1140 nucleotides)
 - `n450-xs`: [Measles N450 sequences](https://nextstrain.org/groups/trajectories/n450-xs) (2429 sequences x 450 nucleotides)
-- `spike-xs`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/trajectories/spike-xs) (10,195 sequences x 2055 nucleotides)
-- `spike-sm`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/trajectories/spike-sm) (34,707 sequences x 2055 nucleotides)
-- `spike-lg`: SARS-CoV-2 full spike from [UShER](https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2/) (~8M sequences x 2055 nucleotides)
+- `spike-lg`: SARS-CoV-2 full spike from [Viridian](https://www.nature.com/articles/s41592-025-02947-1) global tree (~4.5M sequences x 2055 nucleotides)
 - `flu-h3-xs`: [H3N2 HA1 sequences](https://nextstrain.org/groups/trajectories/flu-h3-xs) (10,263 sequences x 987 nucleotides)
 
 **RdRp datasets (local):**
@@ -107,13 +105,13 @@ Dataset names include a size suffix indicating the number of tips:
 
 Some large datasets use UShER mutation-annotated trees (protobuf format) instead of Auspice JSON. These datasets have a `usher_pb` field in the config instead of `dataset`. The workflow automatically detects and processes them differently:
 
-1. Downloads the protobuf file from UCSC
+1. Downloads the protobuf file
 2. Uses `matUtils extract` to get tree structure and mutations
 3. Fetches reference sequence from NCBI
 4. Reconstructs all node sequences by applying mutations from root
 5. Applies train/test split using tree structure
 
-The `spike-lg` dataset is an example, processing the full SARS-CoV-2 UShER tree (~6M genomes). By default it subsamples to 10,000 sequences for testing. To process the full tree, remove the `subsample` line from the config.
+The `spike-lg` dataset uses the [Viridian](https://www.nature.com/articles/s41592-025-02947-1) global SARS-CoV-2 tree (~4.5M genomes), which produces cleaner sequences than the standard UShER tree due to its amplicon-aware consensus calling pipeline. By default it processes all sequences. To subsample for testing, add a `subsample` line to the config.
 
 ## Train/test split
 
@@ -146,7 +144,7 @@ The main output is sharded tar.zst archives in `results/{dataset}/`:
 
 ```
 results/
-├── spike-xs/
+├── cytb-xs/
 │   ├── forwards-train-000.tar.zst
 │   ├── forwards-test-000.tar.zst
 │   ├── pairwise-train-000.tar.zst
@@ -165,16 +163,16 @@ To inspect shard contents:
 
 ```bash
 # List files in a shard
-zstd -d -c results/spike-xs/forwards-train-000.tar.zst | tar -tf -
+zstd -d -c results/cytb-xs/forwards-train-000.tar.zst | tar -tf -
 
 # View first trajectory
-zstd -d -c results/spike-xs/forwards-train-000.tar.zst | tar -xOf - | head -50
+zstd -d -c results/cytb-xs/forwards-train-000.tar.zst | tar -xOf - | head -50
 
 # Extract a specific file
-zstd -d -c results/spike-xs/forwards-train-000.tar.zst | tar -xOf - SomeFile.fasta
+zstd -d -c results/cytb-xs/forwards-train-000.tar.zst | tar -xOf - SomeFile.fasta
 
 # Extract all files to current directory
-zstd -d -c results/spike-xs/forwards-train-000.tar.zst | tar -xf -
+zstd -d -c results/cytb-xs/forwards-train-000.tar.zst | tar -xf -
 ```
 
 See [notes/data_format.md](notes/data_format.md) for a detailed worked example with a small tree illustrating both trajectory formats.
@@ -217,9 +215,9 @@ A consolidated `results/summary.json` file contains statistics for all processed
 
 ```json
 {
-  "spike-xs": {
+  "cytb-xs": {
     "git_commit": "d7c62d4",
-    "url": "nextstrain.org/groups/trajectories/spike-xs",
+    "url": "nextstrain.org/groups/trajectories/cytb-xs",
     "num_tips": 10195,
     "num_nodes": 19960,
     "sequence_length": 2055,
@@ -237,7 +235,6 @@ A consolidated `results/summary.json` file contains statistics for all processed
     "pairwise_test_hamming": { "min": 0, "max": 45, "mean": 12.3 }
   },
   "cytb-xs": { ... },
-  "spike-sm": { ... },
   "n450-xs": { ... }
 }
 ```

@@ -9,24 +9,12 @@ analysis:
     dataset: https://nextstrain.org/groups/trajectories/n450-xs
     gene: nuc
     seq_length: 450
-  spike-xs:
-    dataset: https://nextstrain.org/groups/trajectories/spike-xs
-    gene: nuc
-    trim_begin: 21563
-    trim_end: 23617
-    seq_length: 2055 # spike s1
   flu-h3-xs:
     dataset: https://nextstrain.org/groups/trajectories/flu-h3-xs
     gene: nuc
     trim_begin: 49
     trim_end: 1035
     seq_length: 987 # HA1
-  spike-sm:
-    dataset: https://nextstrain.org/groups/trajectories/spike-sm
-    gene: nuc
-    trim_begin: 21563
-    trim_end: 23617
-    seq_length: 2055 # spike s1
   rdrp-paramyxoviridae-xs:
     dataset: https://nextstrain.org/groups/trajectories-private/rdrp-paramyxoviridae-xs
     gene: nuc
@@ -40,7 +28,7 @@ analysis:
     gene: nuc
     seq_length: 1386
   spike-lg:
-    usher_pb: "https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2/2026/02/21/public-2026-02-21.all.masked.pb.gz"
+    usher_pb: "https://ndownloader.figshare.com/files/49691037"
     gene: nuc
     trim_begin: 21563
     trim_end: 23617
