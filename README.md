@@ -70,7 +70,7 @@ The following datasets are pre-configured and can be used with the above command
 - `n450-xs`: [Measles N450 sequences](https://nextstrain.org/groups/trajectories/n450-xs) (2429 sequences x 450 nucleotides)
 - `spike-xs`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/trajectories/spike-xs) (10,195 sequences x 2055 nucleotides)
 - `spike-sm`: [SARS-CoV-2 spike S1 sequences](https://nextstrain.org/groups/trajectories/spike-sm) (34,707 sequences x 2055 nucleotides)
-- `spike-lg`: SARS-CoV-2 full spike from [UShER](https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2/) (~8M sequences x 2055 nucleotides)
+- `spike-lg`: SARS-CoV-2 full spike from [Viridian](https://www.nature.com/articles/s41592-025-02947-1) global tree (~4.5M sequences x 2055 nucleotides)
 - `flu-h3-xs`: [H3N2 HA1 sequences](https://nextstrain.org/groups/trajectories/flu-h3-xs) (10,263 sequences x 987 nucleotides)
 
 **RdRp datasets (local):**
@@ -107,13 +107,13 @@ Dataset names include a size suffix indicating the number of tips:
 
 Some large datasets use UShER mutation-annotated trees (protobuf format) instead of Auspice JSON. These datasets have a `usher_pb` field in the config instead of `dataset`. The workflow automatically detects and processes them differently:
 
-1. Downloads the protobuf file from UCSC
+1. Downloads the protobuf file
 2. Uses `matUtils extract` to get tree structure and mutations
 3. Fetches reference sequence from NCBI
 4. Reconstructs all node sequences by applying mutations from root
 5. Applies train/test split using tree structure
 
-The `spike-lg` dataset is an example, processing the full SARS-CoV-2 UShER tree (~6M genomes). By default it subsamples to 10,000 sequences for testing. To process the full tree, remove the `subsample` line from the config.
+The `spike-lg` dataset uses the [Viridian](https://www.nature.com/articles/s41592-025-02947-1) global SARS-CoV-2 tree (~4.5M genomes), which produces cleaner sequences than the standard UShER tree due to its amplicon-aware consensus calling pipeline. By default it processes all sequences. To subsample for testing, add a `subsample` line to the config.
 
 ## Train/test split
 
