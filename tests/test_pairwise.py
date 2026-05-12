@@ -61,7 +61,7 @@ class TestBuildPairwiseContent:
 
     def test_basic_content(self, sequences):
         """First tip gets |0|0, second gets |{hamming}|{hamming}."""
-        content, hamming = build_pairwise_content("A", "B", sequences)
+        content, hamming, _ = build_pairwise_content("A", "B", sequences)
         assert hamming == 3
         assert content.startswith(">A|0|0\n")
         assert ">B|3|3\n" in content
@@ -69,19 +69,19 @@ class TestBuildPairwiseContent:
     def test_header_matches_direct_hamming(self, sequences):
         """Header distance equals direct Hamming between tip sequences."""
         for t1, t2 in [("A", "B"), ("A", "C"), ("B", "C")]:
-            content, hamming = build_pairwise_content(t1, t2, sequences)
+            content, hamming, _ = build_pairwise_content(t1, t2, sequences)
             expected = hamming_distance(sequences[t1], sequences[t2])
             assert hamming == expected
 
     def test_missing_sequence_returns_none(self, sequences):
         """Missing sequence returns (None, None)."""
-        content, hamming = build_pairwise_content("A", "missing", sequences)
+        content, hamming, _ = build_pairwise_content("A", "missing", sequences)
         assert content is None
         assert hamming is None
 
     def test_sequences_in_output(self, sequences):
         """Output contains the actual tip sequences."""
-        content, _ = build_pairwise_content("A", "B", sequences)
+        content, _, _ = build_pairwise_content("A", "B", sequences)
         # 10-char sequences won't be line-wrapped at 60
         assert sequences["A"] in content
         assert sequences["B"] in content

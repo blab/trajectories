@@ -1,6 +1,7 @@
 biopython
 boto3
 nextstrain-augur
+numpy
 pulp<3.0
 requests
 snakemake
