@@ -203,7 +203,7 @@ def build_pairwise_content(tip1, tip2, sequences):
     seq2 = sequences.get(tip2, '')
 
     if not seq1 or not seq2:
-        return None, None
+        return None, None, None
 
     # Per-pair gap trim
     seq1, seq2 = trim_pair_gaps(seq1, seq2)
@@ -214,7 +214,7 @@ def build_pairwise_content(tip1, tip2, sequences):
     parts.append(f">{tip1}|0|0\n{format_sequence(seq1)}\n")
     parts.append(f">{tip2}|{hamming}|{hamming}\n{format_sequence(seq2)}\n")
 
-    return ''.join(parts), hamming
+    return ''.join(parts), hamming, len(seq1)
 
 
 def write_pairwise_fasta(tip1, tip2, sequences, output_path):
@@ -224,7 +224,7 @@ def write_pairwise_fasta(tip1, tip2, sequences, output_path):
     First sequence gets |0, second gets |{hamming_distance}.
     Returns the Hamming distance, or None if sequences missing.
     """
-    content, hamming = build_pairwise_content(tip1, tip2, sequences)
+    content, hamming, _ = build_pairwise_content(tip1, tip2, sequences)
     if content is None:
         return None
 
@@ -273,6 +273,7 @@ def main():
     # Generate train pairs
     train_pairs = generate_pairs(train_tips_list, args.train_limit, args.seed)
     train_distances = []
+    trimmed_lengths = []
 
     # Generate test pairs (within clades only)
     clade_membership = get_clade_membership(test_tips_list, parent_of, train_test_of)
@@ -293,20 +294,22 @@ def main():
             safe1 = sanitize_filename(tip1)
             safe2 = sanitize_filename(tip2)
             filename = f"{safe1}__{safe2}.fasta"
-            content, dist = build_pairwise_content(tip1, tip2, sequences)
+            content, dist, trimmed_len = build_pairwise_content(tip1, tip2, sequences)
             if content is not None:
                 train_writer.add(filename, content)
                 train_distances.append(dist)
+                trimmed_lengths.append(trimmed_len)
 
         # Process test pairs
         for tip1, tip2 in tqdm(test_pairs, desc="Test pairs"):
             safe1 = sanitize_filename(tip1)
             safe2 = sanitize_filename(tip2)
             filename = f"{safe1}__{safe2}.fasta"
-            content, dist = build_pairwise_content(tip1, tip2, sequences)
+            content, dist, trimmed_len = build_pairwise_content(tip1, tip2, sequences)
             if content is not None:
                 test_writer.add(filename, content)
                 test_distances.append(dist)
+                trimmed_lengths.append(trimmed_len)
 
     # Report results
     train_shards, train_files, train_bytes = train_writer.stats
@@ -333,6 +336,13 @@ def main():
         summary[args.dataset]['pairwise_train_pairs'] = len(train_distances)
         summary[args.dataset]['pairwise_test_pairs'] = len(test_distances)
         summary[args.dataset]['pairwise_test_clades'] = len(unique_clades)
+
+        if trimmed_lengths:
+            summary[args.dataset]['pairwise_trimmed_length'] = {
+                'min': min(trimmed_lengths),
+                'max': max(trimmed_lengths),
+                'mean': round(statistics.mean(trimmed_lengths), 2)
+            }
 
         if train_distances:
             summary[args.dataset]['pairwise_train_hamming'] = {

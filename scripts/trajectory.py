@@ -268,7 +268,8 @@ def build_trajectory_content(path, sequences, hamming_of):
             parts[-1] = parts[-1].replace(f">{last_name}|", f">{tip_node}|", 1)
 
     content = ''.join(parts)
-    return content, cumulative_distance, frames_written
+    trimmed_seq_length = len(start_seq) if start_seq else 0
+    return content, cumulative_distance, frames_written, trimmed_seq_length
 
 
 def write_trajectory(path, sequences, hamming_of, output_path, compress=False, compressor=None):
@@ -284,7 +285,7 @@ def write_trajectory(path, sequences, hamming_of, output_path, compress=False, c
         tuple: (tip_distance, path_depth) where tip_distance is cumulative
                Hamming distance from root and path_depth is number of frames written.
     """
-    content, cumulative_distance, frames_written = build_trajectory_content(
+    content, cumulative_distance, frames_written, _ = build_trajectory_content(
         path, sequences, hamming_of
     )
 
@@ -349,8 +350,8 @@ def main():
     tips = find_tips(parent_of)
     print(f"Found {len(tips)} tips")
 
-    # Get sequence length from first sequence
-    seq_length = len(next(iter(sequences.values()))) if sequences else 0
+    # Get alignment length from first sequence (before per-trajectory trimming)
+    alignment_length = len(next(iter(sequences.values()))) if sequences else 0
 
     # Compute branch statistics
     branch_distances = list(hamming_of.values())
@@ -362,6 +363,7 @@ def main():
     # Process each tip and collect statistics
     tip_distances = []
     path_depths = []
+    trimmed_lengths = []
     train_tips = 0
     test_tips = 0
 
@@ -396,7 +398,7 @@ def main():
                 writer = train_writer
 
             # Build trajectory content and collect stats
-            content, tip_dist, path_depth = build_trajectory_content(
+            content, tip_dist, path_depth, trimmed_len = build_trajectory_content(
                 path, sequences, hamming_of
             )
 
@@ -413,6 +415,7 @@ def main():
             writer.add(filename, content)
             tip_distances.append(tip_dist)
             path_depths.append(path_depth)
+            trimmed_lengths.append(trimmed_len)
 
     # Report results
     train_shards, train_files, train_bytes = train_writer.stats
@@ -429,7 +432,12 @@ def main():
             "url": args.url,
             "num_tips": len(tips),
             "num_nodes": len(sequences),
-            "sequence_length": seq_length,
+            "alignment_length": alignment_length,
+            "trimmed_length": {
+                "min": min(trimmed_lengths),
+                "max": max(trimmed_lengths),
+                "mean": round(statistics.mean(trimmed_lengths), 2)
+            },
             "hamming_from_root": {
                 "min": min(tip_distances),
                 "max": max(tip_distances),

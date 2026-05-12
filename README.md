@@ -222,7 +222,8 @@ A consolidated `results/summary.json` file contains statistics for all processed
     "url": "nextstrain.org/groups/trajectories/spike-xs",
     "num_tips": 10195,
     "num_nodes": 19960,
-    "sequence_length": 2055,
+    "alignment_length": 2055,
+    "trimmed_length": { "min": 2055, "max": 2055, "mean": 2055.0 },
     "hamming_from_root": { "min": 0, "max": 80, "mean": 27.18 },
     "path_depth": { "min": 1, "max": 24, "mean": 10.57 },
     "total_branches": 19959,
@@ -233,6 +234,7 @@ A consolidated `results/summary.json` file contains statistics for all processed
     "pairwise_train_pairs": 100000,
     "pairwise_test_pairs": 8500,
     "pairwise_test_clades": 25,
+    "pairwise_trimmed_length": { "min": 2055, "max": 2055, "mean": 2055.0 },
     "pairwise_train_hamming": { "min": 0, "max": 80, "mean": 35.2 },
     "pairwise_test_hamming": { "min": 0, "max": 45, "mean": 12.3 }
   },
@@ -242,7 +244,7 @@ A consolidated `results/summary.json` file contains statistics for all processed
 }
 ```
 
-Each dataset entry is added or updated when its trajectories are generated. The `train_tips` and `test_tips` fields indicate the number of forwards trajectories in each split. The `pairwise_*` fields show pairwise pair counts, number of test clades, and Hamming distance statistics.
+Each dataset entry is added or updated when its trajectories are generated. `alignment_length` is the full alignment width; `trimmed_length` shows the per-trajectory length after dropping columns that are all-gap on each path (identical to `alignment_length` for viral datasets with no insertions, shorter for diverse-phylum alignments). The `train_tips` and `test_tips` fields indicate the number of forwards trajectories in each split. The `pairwise_*` fields show pairwise pair counts, number of test clades, trimmed lengths, and Hamming distance statistics.
 
 # License
 
