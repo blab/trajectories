@@ -197,7 +197,8 @@ def build_pairwise_content(tip1, tip2, sequences):
     Alignment columns where both tips have '-'/'N' are dropped (per-pair trim)
     since they're unrelated lineages' insertions, not part of this pair's biology.
 
-    Returns tuple of (content, hamming_distance), or (None, None) if sequences missing.
+    Returns tuple of (content, hamming_distance, trimmed_length), or
+    (None, None, None) if sequences missing.
     """
     seq1 = sequences.get(tip1, '')
     seq2 = sequences.get(tip2, '')
