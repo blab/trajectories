@@ -12,6 +12,13 @@ If a gene is specified, the sequences will be the AA sequence of that gene
 at that node. If 'nuc' is specified, the whole genome nucleotide sequence
 at the node will be output. (this is default if no gene is specified).
 The FASTA header is the node's name in the tree.
+
+Sequence reconstruction is linear in the total number of mutations. A single
+depth-first traversal carries the parent sequence down to each child and
+applies only that child's own branch mutations -- the parent already encodes
+every ancestral mutation. A mutable buffer is mutated on descent and undone
+on ascent, so the same node sequence is produced as re-walking the full
+root->node path, but in O(total mutations) instead of O(nodes * depth).
 """
 import argparse
 import sys
@@ -25,26 +32,67 @@ from Bio.Seq import MutableSeq
 from Bio.SeqRecord import SeqRecord
 from tqdm import tqdm
 
-def apply_muts_to_root(root_seq, list_of_muts):
-    """
-    Apply a list of mutations to the root sequence
-    to find the sequence at a given node. The list of mutations
-    is ordered from root to node, so multiple mutations at the
-    same site will correctly overwrite each other
-    """
-    # make the root sequence mutable
-    root_plus_muts = MutableSeq(root_seq)
 
-    # apply all mutations to root sequence
-    for mut in list_of_muts:
-        # subtract 1 to deal with biological numbering vs python
-        mut_site = int(mut[1:-1])-1
-        # get the nucleotide that the site was mutated to
-        mutation = mut[-1]
-        # apply mutation
-        root_plus_muts[mut_site] = mutation
+def reconstruct_all_sequences(tree, root_seq, gene):
+    """
+    Reconstruct the sequence of every node in the tree in a single pass.
 
-    return root_plus_muts
+    Walks the tree once with an explicit stack (no recursion -- trees can be
+    very deep) carrying one mutable sequence buffer. Descending into a node
+    applies that node's own branch mutations; ascending undoes them, exactly
+    restoring the parent state. For every node this yields the root sequence
+    with every mutation on the root->node path applied in root->tip order
+    (a later mutation at the same site overwrites an earlier one) -- identical
+    to flattening tree.get_path(node) and applying each mutation to the root.
+
+    Returns a dict mapping each Bio.Phylo clade object to its sequence string.
+    """
+    # make the root sequence mutable; this single buffer is reused for every node
+    buf = MutableSeq(root_seq)
+    sequences = {}
+
+    # The root keeps the given root sequence unchanged: its own branch_attrs
+    # are never applied (tree.get_path() excludes the root in the original).
+    sequences[tree.root] = str(buf)
+
+    # Stack entries are ("descend", node) or ("ascend", undo_list).
+    stack = [("descend", child) for child in reversed(tree.root.clades)]
+
+    pbar = tqdm(desc="Reconstructing sequences", unit="node")
+    while stack:
+        kind, payload = stack.pop()
+
+        if kind == "ascend":
+            # Revert this node's mutations, last-applied first, so that
+            # repeated mutations at the same site unwind to the exact
+            # parent base.
+            for site, old_base in reversed(payload):
+                buf[site] = old_base
+            continue
+
+        node = payload
+        # Apply only this node's own branch mutations to the parent sequence.
+        muts = node.branch_attrs['mutations'].get(gene, [])
+        undo = []
+        for mut in muts:
+            # subtract 1 to deal with biological numbering vs python
+            mut_site = int(mut[1:-1]) - 1
+            # get the nucleotide that the site was mutated to
+            mutation = mut[-1]
+            # record the pre-change base so the descent can be undone exactly
+            undo.append((mut_site, buf[mut_site]))
+            # apply mutation
+            buf[mut_site] = mutation
+        sequences[node] = str(buf)
+
+        # The undo runs only after the whole subtree below this node is done.
+        stack.append(("ascend", undo))
+        for child in reversed(node.clades):
+            stack.append(("descend", child))
+        pbar.update(1)
+    pbar.close()
+
+    return sequences
 
 
 if __name__ == '__main__':
@@ -99,6 +147,9 @@ if __name__ == '__main__':
     # Convert tree JSON to Bio.phylo format
     tree = json_to_tree(auspice_json)
 
+    # Reconstruct every node's sequence in a single linear traversal
+    sequences = reconstruct_all_sequences(tree, root_seq, args.gene)
+
     # Initialize list to store sequence records for each node
     sequence_records = []
 
@@ -107,15 +158,10 @@ if __name__ == '__main__':
 
     for node in tqdm(nodes, desc="Processing nodes", unit="node"):
 
-        # Get path back to the root
-        path = tree.get_path(node)
-
-        # Get all mutations relative to root
-        muts = [branch.branch_attrs['mutations'].get(args.gene, []) for branch in path]
-        # Flatten the list of mutations
-        muts = [item for sublist in muts for item in sublist]
-        # Get sequence at node
-        node_seq = apply_muts_to_root(root_seq, muts)
+        # Get sequence at node (precomputed in the linear traversal above).
+        # pop() frees each reconstructed sequence as soon as it is consumed,
+        # so the dict and the output records are not both fully held at once.
+        node_seq = sequences.pop(node)
         # Strip trailing stop codons
         stripped_seq = Seq(str(node_seq).rstrip('*'))
         # Apply trimming if specified
