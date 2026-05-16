@@ -21,10 +21,12 @@ on ascent, so the same node sequence is produced as re-walking the full
 root->node path, but in O(total mutations) instead of O(nodes * depth).
 """
 import argparse
-import sys
-sys.setrecursionlimit(100000)
 import json
 import os
+# augur sets the Python recursion limit on import, from the AUGUR_RECURSION_LIMIT
+# env var (default 10000). json_to_tree() below recurses to tree depth, so it
+# relies on that -- set AUGUR_RECURSION_LIMIT for very deep trees. No manual
+# sys.setrecursionlimit() here: it would just be overwritten by this import.
 from augur.utils import json_to_tree
 from Bio import SeqIO
 from Bio.Seq import Seq
