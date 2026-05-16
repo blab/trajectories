@@ -98,6 +98,35 @@ def load_sequences(alignment_path):
     return sequences
 
 
+def load_div_map(auspice_path):
+    """
+    Load the auspice JSON and build a {node_name: div} map from node_attrs.div.
+
+    ``div`` is the auspice tree divergence (cumulative subs/site augur
+    computed; root ~0). Walks the whole ``tree`` object. The parsed JSON is
+    freed before returning so only the compact float map is retained.
+    """
+    with open(auspice_path) as f:
+        auspice = json.load(f)
+
+    div_map = {}
+    stack = [auspice.get("tree")]
+    while stack:
+        node = stack.pop()
+        if not node:
+            continue
+        name = node.get("name")
+        node_attrs = node.get("node_attrs") or {}
+        div = node_attrs.get("div")
+        if name is not None and div is not None:
+            div_map[name] = float(div)
+        children = node.get("children")
+        if children:
+            stack.extend(children)
+
+    return div_map
+
+
 def find_tips(parent_of):
     """
     Find tip nodes (nodes that are children but never parents).
@@ -191,7 +220,7 @@ def trim_path_gaps(path, sequences):
 
 def build_trajectory_content(path, sequences, hamming_of,
                              max_divergence=None, min_nodes=3,
-                             alignment_length=None):
+                             div_map=None):
     """
     Build trajectory FASTA content for a single tip.
 
@@ -210,18 +239,16 @@ def build_trajectory_content(path, sequences, hamming_of,
     Divergence-based basal truncation (when ``max_divergence`` is set):
         The basal end of the trajectory is truncated so the most-basal kept
         node ``A_k`` satisfies ``divergence(A_k -> tip) <= max_divergence``,
-        where ``divergence`` is the sum of the per-branch substitution counts
-        (the gap-ignoring Hamming distances written in the headers) along the
-        kept subpath, divided by ``L``. ``L`` is the marker's alignment column
-        count -- ``alignment_length`` if supplied (the untrimmed
-        ``alignment.fasta`` width, a per-marker constant), otherwise it falls
-        back to the original (untrimmed) sequence length for this path.
-        Walking from the tip toward the root, ancestors are dropped once the
-        cumulative subs / ``L`` would exceed the threshold. A minimum-length
-        guard keeps at least ``min_nodes`` emitted frames even if that exceeds
-        the divergence cutoff (training requires >= 3 nodes per path). When
+        where ``divergence(ancestor -> tip) = div[tip] - div[ancestor]`` and
+        ``div`` is the auspice tree divergence (``node_attrs.div``, cumulative
+        subs/site augur computed, root ~0) passed in via ``div_map``.
+        Walking from the tip toward the root, ancestors are dropped once
+        ``div[tip] - div[ancestor]`` would exceed the threshold. ``min_nodes``
+        is a DROP FILTER, not an extend guard: if the truncated trajectory has
+        fewer than ``min_nodes`` emitted frames the whole trajectory is
+        dropped (the path is NEVER extended basally past the cutoff). When
         ``max_divergence`` is None, the full root-to-tip path is emitted
-        (fully backward-compatible).
+        (fully backward-compatible) and no drop filter applies.
 
     Returns:
         tuple: (content, tip_distance, path_depth, trimmed_seq_length) where
@@ -229,16 +256,13 @@ def build_trajectory_content(path, sequences, hamming_of,
                tree-edge Hamming distance from the (possibly truncated) origin,
                path_depth is the number of frames written, and
                trimmed_seq_length is the per-trajectory trimmed column count.
+               When ``max_divergence`` is set and the divergence-truncated
+               trajectory has fewer than ``min_nodes`` frames, the trajectory
+               is dropped (content ""). path_depth is -1 when the drop is
+               attributable to truncation -- the untruncated trajectory would
+               have been emitted (>= 2 frames and >= min_nodes) -- and 0 when
+               the trajectory was too short to emit regardless of truncation.
     """
-    # L for divergence: the marker's alignment.fasta column count (per-marker
-    # constant). Capture the untrimmed length before per-trajectory trimming.
-    if max_divergence is not None and alignment_length is None:
-        for n in path:
-            s = sequences.get(n)
-            if s:
-                alignment_length = len(s)
-                break
-
     # Per-trajectory gap trim: drop columns that are always gap on this path
     sequences = trim_path_gaps(path, sequences)
 
@@ -276,34 +300,48 @@ def build_trajectory_content(path, sequences, hamming_of,
         frames.append((node, emitted_dist, branch_dist, seq))
         last_emitted_seq = seq
 
-    # Divergence-based basal truncation. L is the marker's alignment column
-    # count (per-marker constant), divergence = sum(emitted_dist) / L.
+    # Divergence-based basal truncation. divergence(ancestor -> tip) is the
+    # auspice tree divergence difference div[tip] - div[ancestor]; div is
+    # cumulative-from-root subs/site so the difference is path divergence.
     if max_divergence is not None and frames:
-        L = alignment_length or 0
-        # Walk from the tip toward the root accumulating per-branch subs.
-        # frames[j][1] is the subs ON THE BRANCH ENTERING frame j (from
-        # frame j-1), so it contributes to divergence(A -> tip) for any
-        # ancestor A at or above frame j-1.
-        cumulative_subs = 0
+        div_map = div_map or {}
+        div_tip = div_map.get(tip_node)
+        # Number of emittable frames BEFORE truncation. A tip is only counted
+        # as a divergence drop if it would otherwise have been emitted -- the
+        # untruncated trajectory had >= 2 frames (the emit threshold). Tips
+        # already below 2 frames are skipped regardless of --max-divergence,
+        # so truncation is not their cause.
+        n_untruncated = len(frames)
+        # Walk from the tip toward the root; keep the most-basal frame whose
+        # node is still within max_divergence of the tip.
         # start_idx = index of the most-basal kept frame.
         start_idx = len(frames) - 1
-        for j in range(len(frames) - 1, 0, -1):
-            cumulative_subs += frames[j][1]
-            if L > 0 and (cumulative_subs / L) > max_divergence:
-                # Including frame j-1 exceeds the threshold; stop at frame j.
+        if div_tip is not None:
+            for j in range(len(frames) - 1, -1, -1):
+                node_j = frames[j][0]
+                div_j = div_map.get(node_j)
+                if div_j is None:
+                    # No divergence for this node: stop, do not include it.
+                    break
+                if (div_tip - div_j) > max_divergence:
+                    # Including frame j exceeds the threshold; stop above it.
+                    break
                 start_idx = j
-                break
-            start_idx = j - 1
-        # Minimum-length guard: keep at least min_nodes frames.
-        max_start = max(0, len(frames) - min_nodes)
-        if start_idx > max_start:
-            start_idx = max_start
         frames = frames[start_idx:]
+        # min_nodes is a DROP FILTER: if fewer than min_nodes frames remain
+        # after truncation, drop the whole trajectory (never extend basally).
+        # path_depth is returned as -1 to mark a divergence drop -- but only
+        # when the untruncated trajectory would have been emitted (>= 2
+        # frames); otherwise path_depth 0 lets the normal "< 2 frames" skip
+        # handle it (truncation is not the cause of those drops).
+        if len(frames) < min_nodes:
+            if n_untruncated >= 2:
+                return "", 0, -1, 0
+            return "", 0, 0, 0
         # The most-basal kept frame is the new origin: zero its branch dists
         # so the |0|0 header and cumulative tip_distance start fresh there.
-        if frames:
-            node0, _, _, seq0 = frames[0]
-            frames[0] = (node0, 0, 0, seq0)
+        node0, _, _, seq0 = frames[0]
+        frames[0] = (node0, 0, 0, seq0)
 
     # Second pass: emit FASTA. cumulative_distance is the tree-edge Hamming
     # sum (matches the original, unchanged when max_divergence is None).
@@ -332,7 +370,7 @@ def build_trajectory_content(path, sequences, hamming_of,
 
 def write_trajectory(path, sequences, hamming_of, output_path, compress=False,
                      compressor=None, max_divergence=None, min_nodes=3,
-                     alignment_length=None):
+                     div_map=None):
     """
     Write trajectory FASTA file for a single tip.
 
@@ -347,7 +385,7 @@ def write_trajectory(path, sequences, hamming_of, output_path, compress=False,
     """
     content, cumulative_distance, frames_written, _ = build_trajectory_content(
         path, sequences, hamming_of, max_divergence=max_divergence,
-        min_nodes=min_nodes, alignment_length=alignment_length
+        min_nodes=min_nodes, div_map=div_map
     )
 
     # Write to file (compressed or plain)
@@ -399,18 +437,27 @@ def main():
         help="Dataset source URL (included in summary JSON)"
     )
     parser.add_argument(
+        "--auspice",
+        help="Path to the auspice JSON (required when --max-divergence is "
+             "set). Used to read node_attrs.div, the auspice tree divergence."
+    )
+    parser.add_argument(
         "--max-divergence", type=float, default=None,
         help="If set, truncate each trajectory's basal end so the most-basal "
-             "kept node is within this cumulative divergence (substitutions "
-             "per site) of the tip. Unset = full root-to-tip path."
+             "kept node is within this auspice tree divergence "
+             "(node_attrs.div, cumulative subs/site) of the tip. "
+             "Unset = full root-to-tip path. Requires --auspice."
     )
     parser.add_argument(
         "--min-nodes", type=int, default=3,
-        help="Minimum number of nodes per trajectory; overrides "
-             "--max-divergence when the divergence cutoff yields fewer "
-             "nodes (default: 3)"
+        help="Minimum number of nodes per trajectory. When --max-divergence "
+             "is set this is a DROP FILTER: trajectories with fewer than "
+             "this many nodes after truncation are dropped entirely (default: 3)"
     )
     args = parser.parse_args()
+
+    if args.max_divergence is not None and not args.auspice:
+        parser.error("--auspice is required when --max-divergence is set")
 
     # Parse input files
     print("Loading branches...")
@@ -418,6 +465,13 @@ def main():
 
     print("Loading sequences...")
     sequences = load_sequences(args.alignment)
+
+    # Load auspice divergence map for divergence-based truncation.
+    div_map = None
+    if args.max_divergence is not None:
+        print(f"Loading auspice divergence map from {args.auspice}...")
+        div_map = load_div_map(args.auspice)
+        print(f"Loaded div for {len(div_map)} nodes")
 
     # Find tips
     tips = find_tips(parent_of)
@@ -439,6 +493,7 @@ def main():
     trimmed_lengths = []
     train_tips = 0
     test_tips = 0
+    dropped_tips = 0
 
     print(f"Writing trajectory shards (shard_size={args.shard_size})...")
 
@@ -474,8 +529,15 @@ def main():
             content, tip_dist, path_depth, trimmed_len = build_trajectory_content(
                 path, sequences, hamming_of,
                 max_divergence=args.max_divergence, min_nodes=args.min_nodes,
-                alignment_length=alignment_length
+                div_map=div_map
             )
+
+            # Divergence drop filter: when --max-divergence is set, a tip
+            # whose truncated trajectory has < min_nodes frames is dropped
+            # (build_trajectory_content signals this with path_depth == -1).
+            if path_depth == -1:
+                dropped_tips += 1
+                continue
 
             # Skip trajectories with fewer than 2 sequences
             if path_depth < 2:
@@ -498,9 +560,23 @@ def main():
 
     print(f"Done! Wrote {train_tips} train trajectories ({train_shards} shards, {train_bytes / 1024 / 1024:.1f} MB)")
     print(f"      Wrote {test_tips} test trajectories ({test_shards} shards, {test_bytes / 1024 / 1024:.1f} MB)")
+    if args.max_divergence is not None:
+        print(f"      Dropped {dropped_tips} tips "
+              f"(< {args.min_nodes} nodes within divergence {args.max_divergence})")
 
     # Write summary statistics if requested
     if args.summary and args.dataset:
+        # min/max/mean over a list, tolerant of an empty list (e.g. when the
+        # divergence drop filter dropped every tip for this marker).
+        def _stats(values):
+            if not values:
+                return {"min": 0, "max": 0, "mean": 0}
+            return {
+                "min": min(values),
+                "max": max(values),
+                "mean": round(statistics.mean(values), 2),
+            }
+
         # Build stats for this dataset
         dataset_summary = {
             "git_commit": get_git_commit(),
@@ -508,21 +584,9 @@ def main():
             "num_tips": len(tips),
             "num_nodes": len(sequences),
             "alignment_length": alignment_length,
-            "trimmed_length": {
-                "min": min(trimmed_lengths),
-                "max": max(trimmed_lengths),
-                "mean": round(statistics.mean(trimmed_lengths), 2)
-            },
-            "hamming_from_root": {
-                "min": min(tip_distances),
-                "max": max(tip_distances),
-                "mean": round(statistics.mean(tip_distances), 2)
-            },
-            "path_depth": {
-                "min": min(path_depths),
-                "max": max(path_depths),
-                "mean": round(statistics.mean(path_depths), 2)
-            },
+            "trimmed_length": _stats(trimmed_lengths),
+            "hamming_from_root": _stats(tip_distances),
+            "path_depth": _stats(path_depths),
             "total_branches": len(branch_distances),
             "zero_distance_branches": zero_distance_branches,
             "per_branch_hamming": {
@@ -536,6 +600,12 @@ def main():
         if has_train_test:
             dataset_summary["train_tips"] = train_tips
             dataset_summary["test_tips"] = test_tips
+
+        # Record divergence-truncation drop count when active
+        if args.max_divergence is not None:
+            dataset_summary["max_divergence"] = args.max_divergence
+            dataset_summary["min_nodes"] = args.min_nodes
+            dataset_summary["dropped_tips"] = dropped_tips
 
         # Load existing summary or start fresh
         if os.path.exists(args.summary):

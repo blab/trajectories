@@ -274,7 +274,8 @@ rule sample:
 rule trajectories:
     input:
         branches = "data/{analysis}/branches.tsv",
-        alignment = "data/{analysis}/alignment.fasta"
+        alignment = "data/{analysis}/alignment.fasta",
+        auspice = "data/{analysis}/auspice_raw.json"
     output:
         done = "results/{analysis}/.trajectories.done"
     resources:
@@ -284,18 +285,28 @@ rule trajectories:
         summary = "results/summary.json",
         url = lambda wildcards: config["analysis"][wildcards.analysis].get("dataset", config["analysis"][wildcards.analysis].get("usher_pb", "")),
         shard_size = lambda wildcards: config["analysis"][wildcards.analysis].get("shard_size", 10000),
-        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42)
+        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42),
+        max_divergence_flag = lambda wildcards: (
+            "--max-divergence %s" % config["analysis"][wildcards.analysis]["max_divergence"]
+            if config["analysis"][wildcards.analysis].get("max_divergence") is not None else ""
+        ),
+        min_nodes_flag = lambda wildcards: (
+            "--min-nodes %s" % config["analysis"][wildcards.analysis]["min_nodes"]
+            if config["analysis"][wildcards.analysis].get("min_nodes") is not None else ""
+        )
     shell:
         """
         python scripts/trajectory.py \
             --branches {input.branches:q} \
             --alignment {input.alignment:q} \
+            --auspice {input.auspice:q} \
             --output-dir {params.output_dir:q} \
             --shard-size {params.shard_size} \
             --seed {params.seed} \
             --summary {params.summary:q} \
             --dataset {wildcards.analysis} \
-            --url {params.url:q}
+            --url {params.url:q} \
+            {params.max_divergence_flag} {params.min_nodes_flag}
         touch {output.done}
         """
 
