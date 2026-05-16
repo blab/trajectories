@@ -307,3 +307,85 @@ class TestEdgeCases:
         assert "A" in names
         assert_header_invariant(content)
         assert_direct_distance_invariant(content)
+
+
+
+class TestDivergenceTruncation:
+    """Test the --max-divergence basal-end truncation.
+
+    Path X->Y->A: emitted per-branch n_subs are X|0, Y|1, A|2 (gap-ignoring
+    Hamming between consecutive emitted sequences). L = 10 (alignment width).
+    divergence(ancestor -> tip) = sum of n_subs along the kept subpath / L.
+      full path A:  (1 + 2) / 10 = 0.30
+      Y -> A only:        2 / 10 = 0.20
+    """
+
+    def test_unset_is_full_path(self, sequences, hamming_of):
+        """max_divergence=None emits the full root-to-tip path (default)."""
+        path = ["X", "Y", "A"]
+        content, _, depth, _ = build_trajectory_content(
+            path, sequences, hamming_of)
+        headers = parse_fasta_headers(content)
+        assert [h[0] for h in headers] == ["X", "Y", "A"]
+        assert depth == 3
+
+    def test_shallow_tip_no_truncation(self, sequences, hamming_of):
+        """A loose threshold (>= full-path divergence) leaves the path whole."""
+        path = ["X", "Y", "A"]
+        content, _, depth, _ = build_trajectory_content(
+            path, sequences, hamming_of,
+            max_divergence=0.5, min_nodes=3, alignment_length=10)
+        headers = parse_fasta_headers(content)
+        assert [h[0] for h in headers] == ["X", "Y", "A"]
+        assert depth == 3
+        assert headers[0] == ("X", 0, 0)
+
+    def test_truncates_basal_end(self, sequences, hamming_of):
+        """A tight threshold drops the basal node(s), keeping the tip side.
+
+        max_divergence=0.25: divergence(Y->A)=0.20 OK, divergence(X->A)=0.30
+        exceeds -> X is dropped. min_nodes=2 so the guard does not intervene.
+        """
+        path = ["X", "Y", "A"]
+        content, tip_dist, depth, _ = build_trajectory_content(
+            path, sequences, hamming_of,
+            max_divergence=0.25, min_nodes=2, alignment_length=10)
+        headers = parse_fasta_headers(content)
+        assert [h[0] for h in headers] == ["Y", "A"]
+        assert depth == 2
+        # New origin Y is reset to |0|0; A keeps its per-branch n_subs (2).
+        assert headers[0] == ("Y", 0, 0)
+        assert headers[1][1] == 2
+        # tip_dist is the tree-edge cumulative from the new origin.
+        assert tip_dist == hamming_of[("Y", "A")]
+        assert_header_invariant(content)
+        assert_direct_distance_invariant(content)
+
+    def test_min_nodes_overrides_divergence(self, sequences, hamming_of):
+        """min_nodes extends the path basally past the divergence cutoff."""
+        path = ["X", "Y", "A"]
+        # Same tight threshold, but min_nodes=3 forces X back in.
+        content, _, depth, _ = build_trajectory_content(
+            path, sequences, hamming_of,
+            max_divergence=0.25, min_nodes=3, alignment_length=10)
+        headers = parse_fasta_headers(content)
+        assert [h[0] for h in headers] == ["X", "Y", "A"]
+        assert depth == 3
+        assert headers[0] == ("X", 0, 0)
+
+    def test_truncated_is_suffix_of_full(self, sequences, hamming_of):
+        """The truncated node list is a contiguous suffix of the full path."""
+        path = ["X", "Y", "A"]
+        full, _, _, _ = build_trajectory_content(path, sequences, hamming_of)
+        trunc, _, _, _ = build_trajectory_content(
+            path, sequences, hamming_of,
+            max_divergence=0.25, min_nodes=2, alignment_length=10)
+        full_nodes = [h[0] for h in parse_fasta_headers(full)]
+        trunc_nodes = [h[0] for h in parse_fasta_headers(trunc)]
+        k = len(trunc_nodes)
+        assert trunc_nodes == full_nodes[-k:]
+        # Sequences of kept nodes are unchanged.
+        full_seqs = dict(parse_fasta_sequences(full))
+        trunc_seqs = dict(parse_fasta_sequences(trunc))
+        for node in trunc_nodes:
+            assert trunc_seqs[node] == full_seqs[node]

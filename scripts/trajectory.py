@@ -189,7 +189,9 @@ def trim_path_gaps(path, sequences):
     return trimmed
 
 
-def build_trajectory_content(path, sequences, hamming_of):
+def build_trajectory_content(path, sequences, hamming_of,
+                             max_divergence=None, min_nodes=3,
+                             alignment_length=None):
     """
     Build trajectory FASTA content for a single tip.
 
@@ -205,58 +207,114 @@ def build_trajectory_content(path, sequences, hamming_of):
     dropped (per-trajectory trim), so trajectories only contain positions
     biologically relevant to this lineage.
 
+    Divergence-based basal truncation (when ``max_divergence`` is set):
+        The basal end of the trajectory is truncated so the most-basal kept
+        node ``A_k`` satisfies ``divergence(A_k -> tip) <= max_divergence``,
+        where ``divergence`` is the sum of the per-branch substitution counts
+        (the gap-ignoring Hamming distances written in the headers) along the
+        kept subpath, divided by ``L``. ``L`` is the marker's alignment column
+        count -- ``alignment_length`` if supplied (the untrimmed
+        ``alignment.fasta`` width, a per-marker constant), otherwise it falls
+        back to the original (untrimmed) sequence length for this path.
+        Walking from the tip toward the root, ancestors are dropped once the
+        cumulative subs / ``L`` would exceed the threshold. A minimum-length
+        guard keeps at least ``min_nodes`` emitted frames even if that exceeds
+        the divergence cutoff (training requires >= 3 nodes per path). When
+        ``max_divergence`` is None, the full root-to-tip path is emitted
+        (fully backward-compatible).
+
     Returns:
-        tuple: (content, tip_distance, path_depth) where content is the FASTA string,
-               tip_distance is cumulative Hamming distance from root, and path_depth is
-               number of frames written.
+        tuple: (content, tip_distance, path_depth, trimmed_seq_length) where
+               content is the FASTA string, tip_distance is the cumulative
+               tree-edge Hamming distance from the (possibly truncated) origin,
+               path_depth is the number of frames written, and
+               trimmed_seq_length is the per-trajectory trimmed column count.
     """
+    # L for divergence: the marker's alignment.fasta column count (per-marker
+    # constant). Capture the untrimmed length before per-trajectory trimming.
+    if max_divergence is not None and alignment_length is None:
+        for n in path:
+            s = sequences.get(n)
+            if s:
+                alignment_length = len(s)
+                break
+
     # Per-trajectory gap trim: drop columns that are always gap on this path
     sequences = trim_path_gaps(path, sequences)
 
-    cumulative_distance = 0
     tip_node = path[-1] if path else None
-    frames_written = 0
-    last_emitted_seq = None
-    # First emitted sequence, used to compute direct Hamming distance
-    start_seq = None
 
-    # Build content
-    parts = []
+    # First pass: collect every emitted frame as
+    # (node, emitted_dist, branch_dist, seq).
+    #   emitted_dist - gap-ignoring Hamming from the previous emitted node
+    #                  (the per-branch substitution count in the header)
+    #   branch_dist  - the tree-edge Hamming from hamming_of; cumulative
+    #                  tip_distance is the sum of these (unchanged from the
+    #                  original behaviour) so the summary JSON is stable.
+    frames = []
+    last_emitted_seq = None
     for i, node in enumerate(path):
-        # Calculate cumulative distance
+        branch_dist = 0
         if i > 0:
             parent = path[i - 1]
             branch_dist = hamming_of.get((parent, node), 0)
-            cumulative_distance += branch_dist
-
-            # Skip nodes with no distance increase
+            # Skip nodes with no tree-edge distance increase
             if branch_dist == 0:
                 continue
 
-        # Get sequence
         seq = sequences.get(node)
         if not seq:
             continue
 
-        # Compute header distance from the last emitted sequence directly,
-        # rather than using the tree-edge Hamming. Gap-ignoring Hamming is
-        # not additive along tree paths when gap patterns change at skipped
-        # intermediate nodes.
+        # Header distance computed directly from the last emitted sequence;
+        # gap-ignoring Hamming is not additive across skipped intermediates.
         if last_emitted_seq is not None:
             emitted_dist = hamming_distance(last_emitted_seq, seq)
         else:
             emitted_dist = 0
 
-        # Set start_seq on the first emitted sequence.
-        if start_seq is None:
-            start_seq = seq
-
-        # Direct Hamming distance from the start node
-        direct_dist = hamming_distance(start_seq, seq)
-
-        # Add FASTA entry
-        parts.append(f">{node}|{emitted_dist}|{direct_dist}\n{format_sequence(seq)}\n")
+        frames.append((node, emitted_dist, branch_dist, seq))
         last_emitted_seq = seq
+
+    # Divergence-based basal truncation. L is the marker's alignment column
+    # count (per-marker constant), divergence = sum(emitted_dist) / L.
+    if max_divergence is not None and frames:
+        L = alignment_length or 0
+        # Walk from the tip toward the root accumulating per-branch subs.
+        # frames[j][1] is the subs ON THE BRANCH ENTERING frame j (from
+        # frame j-1), so it contributes to divergence(A -> tip) for any
+        # ancestor A at or above frame j-1.
+        cumulative_subs = 0
+        # start_idx = index of the most-basal kept frame.
+        start_idx = len(frames) - 1
+        for j in range(len(frames) - 1, 0, -1):
+            cumulative_subs += frames[j][1]
+            if L > 0 and (cumulative_subs / L) > max_divergence:
+                # Including frame j-1 exceeds the threshold; stop at frame j.
+                start_idx = j
+                break
+            start_idx = j - 1
+        # Minimum-length guard: keep at least min_nodes frames.
+        max_start = max(0, len(frames) - min_nodes)
+        if start_idx > max_start:
+            start_idx = max_start
+        frames = frames[start_idx:]
+        # The most-basal kept frame is the new origin: zero its branch dists
+        # so the |0|0 header and cumulative tip_distance start fresh there.
+        if frames:
+            node0, _, _, seq0 = frames[0]
+            frames[0] = (node0, 0, 0, seq0)
+
+    # Second pass: emit FASTA. cumulative_distance is the tree-edge Hamming
+    # sum (matches the original, unchanged when max_divergence is None).
+    cumulative_distance = 0
+    frames_written = 0
+    start_seq = frames[0][3] if frames else None
+    parts = []
+    for node, emitted_dist, branch_dist, seq in frames:
+        cumulative_distance += branch_dist
+        direct_dist = hamming_distance(start_seq, seq)
+        parts.append(f">{node}|{emitted_dist}|{direct_dist}\n{format_sequence(seq)}\n")
         frames_written += 1
 
     # Ensure the trajectory ends with the tip name. If the tip was
@@ -272,7 +330,9 @@ def build_trajectory_content(path, sequences, hamming_of):
     return content, cumulative_distance, frames_written, trimmed_seq_length
 
 
-def write_trajectory(path, sequences, hamming_of, output_path, compress=False, compressor=None):
+def write_trajectory(path, sequences, hamming_of, output_path, compress=False,
+                     compressor=None, max_divergence=None, min_nodes=3,
+                     alignment_length=None):
     """
     Write trajectory FASTA file for a single tip.
 
@@ -286,7 +346,8 @@ def write_trajectory(path, sequences, hamming_of, output_path, compress=False, c
                Hamming distance from root and path_depth is number of frames written.
     """
     content, cumulative_distance, frames_written, _ = build_trajectory_content(
-        path, sequences, hamming_of
+        path, sequences, hamming_of, max_divergence=max_divergence,
+        min_nodes=min_nodes, alignment_length=alignment_length
     )
 
     # Write to file (compressed or plain)
@@ -336,6 +397,18 @@ def main():
     parser.add_argument(
         "--url",
         help="Dataset source URL (included in summary JSON)"
+    )
+    parser.add_argument(
+        "--max-divergence", type=float, default=None,
+        help="If set, truncate each trajectory's basal end so the most-basal "
+             "kept node is within this cumulative divergence (substitutions "
+             "per site) of the tip. Unset = full root-to-tip path."
+    )
+    parser.add_argument(
+        "--min-nodes", type=int, default=3,
+        help="Minimum number of nodes per trajectory; overrides "
+             "--max-divergence when the divergence cutoff yields fewer "
+             "nodes (default: 3)"
     )
     args = parser.parse_args()
 
@@ -399,7 +472,9 @@ def main():
 
             # Build trajectory content and collect stats
             content, tip_dist, path_depth, trimmed_len = build_trajectory_content(
-                path, sequences, hamming_of
+                path, sequences, hamming_of,
+                max_divergence=args.max_divergence, min_nodes=args.min_nodes,
+                alignment_length=alignment_length
             )
 
             # Skip trajectories with fewer than 2 sequences
