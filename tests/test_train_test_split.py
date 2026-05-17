@@ -11,11 +11,11 @@ from train_test_split import (
 
 def make_branches_dict(parent_of, hamming_of):
     """Convert fixture dicts to the branches_dict format
-    expected by train_test_split: child -> (parent, hamming, train_test)."""
+    expected by train_test_split: child -> (parent, hamming, div, train_test)."""
     branches = {}
     for child, parent in parent_of.items():
         hamming = hamming_of.get((parent, child), 0)
-        branches[child] = (parent, hamming, "")
+        branches[child] = (parent, hamming, "", "")
     return branches
 
 
@@ -71,7 +71,7 @@ class TestIterativeTestSelection:
                 for _ in range(2):
                     node_id += 1
                     child = f"node_{node_id}"
-                    branches[child] = (parent, 2, "")
+                    branches[child] = (parent, 2, "", "")
                     next_layer.append(child)
             # Stop when the next layer would be leaves with enough tips
             if len(next_layer) >= n_tips:

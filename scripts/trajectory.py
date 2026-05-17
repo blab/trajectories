@@ -58,16 +58,19 @@ def sanitize_filename(name):
 
 def parse_branches(branches_path):
     """
-    Parse branches.tsv to build parent-child relationships, hamming distances, and train/test labels.
+    Parse branches.tsv to build parent-child relationships, hamming distances,
+    per-branch divergence, and train/test labels.
 
     Returns:
         parent_of: dict mapping child -> parent
         hamming_of: dict mapping (parent, child) -> hamming distance
         train_test_of: dict mapping node -> train/test label
+        div_of: dict mapping (parent, child) -> per-branch divergence (float)
     """
     parent_of = {}
     hamming_of = {}
     train_test_of = {}
+    div_of = {}
 
     with open(branches_path, 'r') as f:
         reader = csv.DictReader(f, delimiter='\t')
@@ -75,6 +78,7 @@ def parse_branches(branches_path):
             parent = row['parent']
             child = row['child']
             hamming = row['hamming']
+            div = row.get('div', '')
             train_test = row.get('train_test', '')
 
             parent_of[child] = parent
@@ -84,10 +88,13 @@ def parse_branches(branches_path):
             else:
                 hamming_of[(parent, child)] = 0
 
+            if div:
+                div_of[(parent, child)] = float(div)
+
             if train_test:
                 train_test_of[child] = train_test
 
-    return parent_of, hamming_of, train_test_of
+    return parent_of, hamming_of, train_test_of, div_of
 
 
 def load_sequences(alignment_path):
@@ -97,34 +104,6 @@ def load_sequences(alignment_path):
         sequences[record.id] = str(record.seq)
     return sequences
 
-
-def load_div_map(auspice_path):
-    """
-    Load the auspice JSON and build a {node_name: div} map from node_attrs.div.
-
-    ``div`` is the auspice tree divergence (cumulative subs/site augur
-    computed; root ~0). Walks the whole ``tree`` object. The parsed JSON is
-    freed before returning so only the compact float map is retained.
-    """
-    with open(auspice_path) as f:
-        auspice = json.load(f)
-
-    div_map = {}
-    stack = [auspice.get("tree")]
-    while stack:
-        node = stack.pop()
-        if not node:
-            continue
-        name = node.get("name")
-        node_attrs = node.get("node_attrs") or {}
-        div = node_attrs.get("div")
-        if name is not None and div is not None:
-            div_map[name] = float(div)
-        children = node.get("children")
-        if children:
-            stack.extend(children)
-
-    return div_map
 
 
 def find_tips(parent_of):
@@ -220,7 +199,7 @@ def trim_path_gaps(path, sequences):
 
 def build_trajectory_content(path, sequences, hamming_of,
                              max_divergence=None, min_nodes=3,
-                             div_map=None):
+                             div_of=None):
     """
     Build trajectory FASTA content for a single tip.
 
@@ -238,17 +217,15 @@ def build_trajectory_content(path, sequences, hamming_of,
 
     Divergence-based basal truncation (when ``max_divergence`` is set):
         The basal end of the trajectory is truncated so the most-basal kept
-        node ``A_k`` satisfies ``divergence(A_k -> tip) <= max_divergence``,
-        where ``divergence(ancestor -> tip) = div[tip] - div[ancestor]`` and
-        ``div`` is the auspice tree divergence (``node_attrs.div``, cumulative
-        subs/site augur computed, root ~0) passed in via ``div_map``.
-        Walking from the tip toward the root, ancestors are dropped once
-        ``div[tip] - div[ancestor]`` would exceed the threshold. ``min_nodes``
-        is a DROP FILTER, not an extend guard: if the truncated trajectory has
-        fewer than ``min_nodes`` emitted frames the whole trajectory is
-        dropped (the path is NEVER extended basally past the cutoff). When
-        ``max_divergence`` is None, the full root-to-tip path is emitted
-        (fully backward-compatible) and no drop filter applies.
+        node ``A_k`` satisfies ``cumulative_div(A_k -> tip) <= max_divergence``,
+        where cumulative divergence is the sum of per-branch div values along
+        the path (from ``div_of``). Walking from the tip toward the root,
+        ancestors are dropped once cumulative divergence would exceed the
+        threshold. ``min_nodes`` is a DROP FILTER, not an extend guard: if the
+        truncated trajectory has fewer than ``min_nodes`` emitted frames the
+        whole trajectory is dropped (the path is NEVER extended basally past
+        the cutoff). When ``max_divergence`` is None, the full root-to-tip
+        path is emitted (fully backward-compatible) and no drop filter applies.
 
     Returns:
         tuple: (content, tip_distance, path_depth, trimmed_seq_length) where
@@ -300,12 +277,18 @@ def build_trajectory_content(path, sequences, hamming_of,
         frames.append((node, emitted_dist, branch_dist, seq))
         last_emitted_seq = seq
 
-    # Divergence-based basal truncation. divergence(ancestor -> tip) is the
-    # auspice tree divergence difference div[tip] - div[ancestor]; div is
-    # cumulative-from-root subs/site so the difference is path divergence.
+    # Divergence-based basal truncation. Accumulate per-branch div along the
+    # path to get cumulative divergence at each node, then walk backward from
+    # the tip dropping ancestors whose cumulative distance exceeds the cutoff.
     if max_divergence is not None and frames:
-        div_map = div_map or {}
-        div_tip = div_map.get(tip_node)
+        div_of = div_of or {}
+        cum_div = {}
+        running = 0.0
+        cum_div[path[0]] = 0.0
+        for i in range(1, len(path)):
+            running += div_of.get((path[i - 1], path[i]), 0.0)
+            cum_div[path[i]] = running
+        div_tip = cum_div.get(tip_node)
         # Number of emittable frames BEFORE truncation. A tip is only counted
         # as a divergence drop if it would otherwise have been emitted -- the
         # untruncated trajectory had >= 2 frames (the emit threshold). Tips
@@ -319,12 +302,10 @@ def build_trajectory_content(path, sequences, hamming_of,
         if div_tip is not None:
             for j in range(len(frames) - 1, -1, -1):
                 node_j = frames[j][0]
-                div_j = div_map.get(node_j)
+                div_j = cum_div.get(node_j)
                 if div_j is None:
-                    # No divergence for this node: stop, do not include it.
                     break
                 if (div_tip - div_j) > max_divergence:
-                    # Including frame j exceeds the threshold; stop above it.
                     break
                 start_idx = j
         frames = frames[start_idx:]
@@ -370,7 +351,7 @@ def build_trajectory_content(path, sequences, hamming_of,
 
 def write_trajectory(path, sequences, hamming_of, output_path, compress=False,
                      compressor=None, max_divergence=None, min_nodes=3,
-                     div_map=None):
+                     div_of=None):
     """
     Write trajectory FASTA file for a single tip.
 
@@ -385,7 +366,7 @@ def write_trajectory(path, sequences, hamming_of, output_path, compress=False,
     """
     content, cumulative_distance, frames_written, _ = build_trajectory_content(
         path, sequences, hamming_of, max_divergence=max_divergence,
-        min_nodes=min_nodes, div_map=div_map
+        min_nodes=min_nodes, div_of=div_of
     )
 
     # Write to file (compressed or plain)
@@ -437,16 +418,11 @@ def main():
         help="Dataset source URL (included in summary JSON)"
     )
     parser.add_argument(
-        "--auspice",
-        help="Path to the auspice JSON (required when --max-divergence is "
-             "set). Used to read node_attrs.div, the auspice tree divergence."
-    )
-    parser.add_argument(
         "--max-divergence", type=float, default=None,
         help="If set, truncate each trajectory's basal end so the most-basal "
-             "kept node is within this auspice tree divergence "
-             "(node_attrs.div, cumulative subs/site) of the tip. "
-             "Unset = full root-to-tip path. Requires --auspice."
+             "kept node is within this divergence (cumulative subs/site from "
+             "the div column of branches.tsv) of the tip. "
+             "Unset = full root-to-tip path."
     )
     parser.add_argument(
         "--min-nodes", type=int, default=3,
@@ -456,22 +432,12 @@ def main():
     )
     args = parser.parse_args()
 
-    if args.max_divergence is not None and not args.auspice:
-        parser.error("--auspice is required when --max-divergence is set")
-
     # Parse input files
     print("Loading branches...")
-    parent_of, hamming_of, train_test_of = parse_branches(args.branches)
+    parent_of, hamming_of, train_test_of, div_of = parse_branches(args.branches)
 
     print("Loading sequences...")
     sequences = load_sequences(args.alignment)
-
-    # Load auspice divergence map for divergence-based truncation.
-    div_map = None
-    if args.max_divergence is not None:
-        print(f"Loading auspice divergence map from {args.auspice}...")
-        div_map = load_div_map(args.auspice)
-        print(f"Loaded div for {len(div_map)} nodes")
 
     # Find tips
     tips = find_tips(parent_of)
@@ -529,7 +495,7 @@ def main():
             content, tip_dist, path_depth, trimmed_len = build_trajectory_content(
                 path, sequences, hamming_of,
                 max_divergence=args.max_divergence, min_nodes=args.min_nodes,
-                div_map=div_map
+                div_of=div_of
             )
 
             # Divergence drop filter: when --max-divergence is set, a tip

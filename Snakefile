@@ -274,8 +274,7 @@ rule sample:
 rule trajectories:
     input:
         branches = "data/{analysis}/branches.tsv",
-        alignment = "data/{analysis}/alignment.fasta",
-        auspice = "data/{analysis}/auspice_raw.json"
+        alignment = "data/{analysis}/alignment.fasta"
     output:
         done = "results/{analysis}/.trajectories.done"
     resources:
@@ -299,7 +298,6 @@ rule trajectories:
         python scripts/trajectory.py \
             --branches {input.branches:q} \
             --alignment {input.alignment:q} \
-            --auspice {input.auspice:q} \
             --output-dir {params.output_dir:q} \
             --shard-size {params.shard_size} \
             --seed {params.seed} \

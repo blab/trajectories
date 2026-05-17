@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Extract parent-child relationships from Auspice JSON tree with Hamming distances.
-Creates TSV file with columns: parent, child, hamming
+Creates TSV file with columns: parent, child, hamming, div
 
 Train/test labels are added by a separate train_test_split step.
 """
@@ -76,14 +76,15 @@ def calculate_hamming_distance(seq1, seq2):
 
 def extract_branches_with_hamming(tree, sequences):
     """
-    Extract parent-child relationships with Hamming distances.
+    Extract parent-child relationships with Hamming distances and divergence.
 
     Args:
         tree: Bio.Phylo tree
         sequences: Dictionary mapping sequence IDs to sequences
 
     Returns:
-        List of (parent, child, hamming) tuples
+        List of (parent, child, hamming, div) tuples where div is the
+        per-branch divergence (child_div - parent_div from node_attrs.div).
     """
     branches = []
 
@@ -105,7 +106,17 @@ def extract_branches_with_hamming(tree, sequences):
                 # One or both sequences missing (common for internal nodes)
                 hamming = -1  # Flag for missing sequence(s)
 
-            branches.append((parent_name, child_name, hamming))
+            # Per-branch divergence: child_div - parent_div
+            child_attrs = getattr(node, 'node_attrs', None) or {}
+            parent_attrs = getattr(node.parent, 'node_attrs', None) or {}
+            child_div = child_attrs.get("div")
+            parent_div = parent_attrs.get("div")
+            if child_div is not None and parent_div is not None:
+                div = child_div - parent_div
+            else:
+                div = None
+
+            branches.append((parent_name, child_name, hamming, div))
 
     return branches
 
@@ -145,7 +156,7 @@ def main():
 
     # Keep all branches, including those with missing sequences
     valid_branches = branches
-    missing_branches = sum(1 for _, _, h in branches if h == -1)
+    missing_branches = sum(1 for _, _, h, _ in branches if h == -1)
 
     print(f"Found {len(branches)} total branches")
     if missing_branches > 0:
@@ -155,18 +166,19 @@ def main():
     print(f"Writing to {args.output}...")
     with open(args.output, 'w') as f:
         # Write header (no train_test - that's added by train_test_split)
-        f.write("parent\tchild\thamming\n")
+        f.write("parent\tchild\thamming\tdiv\n")
 
         # Write branches
-        for parent, child, hamming in valid_branches:
+        for parent, child, hamming, div in valid_branches:
             # Use '?' for missing sequences (hamming = -1)
             hamming_str = '?' if hamming == -1 else str(hamming)
-            f.write(f"{parent}\t{child}\t{hamming_str}\n")
+            div_str = '' if div is None else str(div)
+            f.write(f"{parent}\t{child}\t{hamming_str}\t{div_str}\n")
 
     # Print statistics
     if valid_branches:
         # Only compute statistics for branches with valid hamming values
-        hamming_values = [h for _, _, h in valid_branches if h >= 0]
+        hamming_values = [h for _, _, h, _ in valid_branches if h >= 0]
 
         if hamming_values:
             print(f"\nHamming distance statistics (for branches with sequences):")

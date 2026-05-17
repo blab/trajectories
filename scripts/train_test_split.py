@@ -23,7 +23,7 @@ def build_tree_from_branches(branches_dict):
     Build tree structure from branches dictionary.
 
     Args:
-        branches_dict: dict mapping child -> (parent, hamming, train_test)
+        branches_dict: dict mapping child -> (parent, hamming, div, train_test)
 
     Returns:
         children: dict mapping node_name -> list of child names
@@ -36,7 +36,7 @@ def build_tree_from_branches(branches_dict):
     all_nodes = set()
     child_nodes = set()
 
-    for child, (parent, _, _) in branches_dict.items():
+    for child, (parent, _, _, _) in branches_dict.items():
         parents[child] = parent
         children[parent].append(child)
         all_nodes.add(parent)
@@ -107,7 +107,7 @@ def get_clade_with_early_exit(children, node, all_tips_set, max_tips=None):
 def count_branch_mutations(branches_dict, node):
     """Count mutations on branch leading to this node (using Hamming distance)."""
     if node in branches_dict:
-        _, hamming, _ = branches_dict[node]
+        _, hamming, _, _ = branches_dict[node]
         return hamming if hamming != "?" else 0
     return 0
 
@@ -213,7 +213,7 @@ def iterative_test_selection(
 
 def load_branches_raw(branches_path):
     """
-    Load branches_raw.tsv and return dict mapping child -> (parent, hamming, train_test).
+    Load branches_raw.tsv and return dict mapping child -> (parent, hamming, div, train_test).
     """
     branches = {}
 
@@ -238,9 +238,10 @@ def load_branches_raw(branches_path):
             except ValueError:
                 hamming = "?"
 
-            train_test = parts[3] if len(parts) > 3 else ""
+            div = parts[3] if len(parts) > 3 else ""
+            train_test = parts[4] if len(parts) > 4 else ""
 
-            branches[child] = (parent, hamming, train_test)
+            branches[child] = (parent, hamming, div, train_test)
 
     return branches
 
@@ -250,12 +251,12 @@ def write_branches_with_split(branches_raw, test_nodes, output_path):
     print(f"Writing branches with train/test labels to {output_path}...")
 
     with open(output_path, "w") as f:
-        f.write("parent\tchild\thamming\ttrain_test\n")
+        f.write("parent\tchild\thamming\tdiv\ttrain_test\n")
 
-        for child, (parent, hamming, _) in tqdm(branches_raw.items(), desc="Writing branches"):
+        for child, (parent, hamming, div, _) in tqdm(branches_raw.items(), desc="Writing branches"):
             label = "test" if child in test_nodes else "train"
             hamming_str = "?" if hamming == "?" else str(hamming)
-            f.write(f"{parent}\t{child}\t{hamming_str}\t{label}\n")
+            f.write(f"{parent}\t{child}\t{hamming_str}\t{div}\t{label}\n")
 
 
 def main():

@@ -313,20 +313,17 @@ class TestEdgeCases:
 class TestDivergenceTruncation:
     """Test the --max-divergence basal-end truncation.
 
-    Divergence is the auspice tree divergence (node_attrs.div), cumulative
-    subs/site from root. divergence(ancestor -> tip) = div[tip] - div[ancestor].
-
-    Path X->Y->A with div_map:
-      div[X] = 0.00  (root)
-      div[Y] = 0.10
-      div[A] = 0.30  (tip)
+    Per-branch divergence for path X->Y->A:
+      div(X->Y) = 0.10
+      div(Y->A) = 0.20
+    Cumulative: X=0.00, Y=0.10, A=0.30
     so divergence(Y -> A) = 0.20, divergence(X -> A) = 0.30.
 
     min_nodes is a DROP FILTER (not an extend guard): a truncated trajectory
     with fewer than min_nodes frames is dropped (content "", depth 0).
     """
 
-    DIV_MAP = {"X": 0.00, "Y": 0.10, "A": 0.30}
+    DIV_OF = {("X", "Y"): 0.10, ("Y", "A"): 0.20}
 
     def test_unset_is_full_path(self, sequences, hamming_of):
         """max_divergence=None emits the full root-to-tip path (default)."""
@@ -342,7 +339,7 @@ class TestDivergenceTruncation:
         path = ["X", "Y", "A"]
         content, _, depth, _ = build_trajectory_content(
             path, sequences, hamming_of,
-            max_divergence=0.5, min_nodes=3, div_map=self.DIV_MAP)
+            max_divergence=0.5, min_nodes=3, div_of=self.DIV_OF)
         headers = parse_fasta_headers(content)
         assert [h[0] for h in headers] == ["X", "Y", "A"]
         assert depth == 3
@@ -357,7 +354,7 @@ class TestDivergenceTruncation:
         path = ["X", "Y", "A"]
         content, tip_dist, depth, _ = build_trajectory_content(
             path, sequences, hamming_of,
-            max_divergence=0.25, min_nodes=2, div_map=self.DIV_MAP)
+            max_divergence=0.25, min_nodes=2, div_of=self.DIV_OF)
         headers = parse_fasta_headers(content)
         assert [h[0] for h in headers] == ["Y", "A"]
         assert depth == 2
@@ -380,7 +377,7 @@ class TestDivergenceTruncation:
         path = ["X", "Y", "A"]
         content, tip_dist, depth, trimmed = build_trajectory_content(
             path, sequences, hamming_of,
-            max_divergence=0.25, min_nodes=3, div_map=self.DIV_MAP)
+            max_divergence=0.25, min_nodes=3, div_of=self.DIV_OF)
         assert content == ""
         assert depth == -1
         assert tip_dist == 0
@@ -392,7 +389,7 @@ class TestDivergenceTruncation:
         full, _, _, _ = build_trajectory_content(path, sequences, hamming_of)
         trunc, _, _, _ = build_trajectory_content(
             path, sequences, hamming_of,
-            max_divergence=0.25, min_nodes=2, div_map=self.DIV_MAP)
+            max_divergence=0.25, min_nodes=2, div_of=self.DIV_OF)
         full_nodes = [h[0] for h in parse_fasta_headers(full)]
         trunc_nodes = [h[0] for h in parse_fasta_headers(trunc)]
         k = len(trunc_nodes)
@@ -412,6 +409,6 @@ class TestDivergenceTruncation:
         path = ["X", "Y", "A"]
         content, _, depth, _ = build_trajectory_content(
             path, sequences, hamming_of,
-            max_divergence=0.25, min_nodes=2, div_map=self.DIV_MAP)
+            max_divergence=0.25, min_nodes=2, div_of=self.DIV_OF)
         nodes = [h[0] for h in parse_fasta_headers(content)]
         assert "X" not in nodes
