@@ -1,0 +1,19 @@
+s3_prefix: trellis-trajectories
+
+analysis:
+  trellis-18aa-AAEC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AAEC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HTLT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HTLT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MSYL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MSYL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QQCE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QQCE
+    gene: nuc
+    seq_length: 54

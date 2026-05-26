@@ -1,3 +1,5 @@
+s3_prefix: trajectories
+
 analysis:
   cytb-xs:
     dataset: https://nextstrain.org/groups/trajectories/cytb-xs

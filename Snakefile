@@ -1,11 +1,10 @@
 configfile: "defaults/config.yaml"
 
-# Auto-load bac120 phylum configs
-import glob
-for _cfg in sorted(glob.glob("defaults/bac120-*.yaml")):
-    configfile: _cfg
+# Additional dataset configs (bac120-*.yaml, trellis.yaml, odb-fungi.yaml)
+# are opt-in via --configfile defaults/{name}.yaml on the command line.
 
 # Auto-discover rdrp subtrees (only if include_subtrees=true)
+import glob
 import os
 import re
 import shutil
@@ -399,12 +398,13 @@ rule upload:
         expand("results/{analysis}/.trajectories.done", analysis=ANALYSES),
         expand("results/{analysis}/.pairwise.done", analysis=ANALYSES)
     params:
-        analyses = ANALYSES
+        analyses = ANALYSES,
+        s3_prefix = config.get("s3_prefix", "trajectories")
     shell:
         """
         python scripts/upload-to-s3.py \
             --upload-dir results \
-            --prefix trajectories \
+            --prefix {params.s3_prefix} \
             --analyses {params.analyses}
         """
 
@@ -413,11 +413,12 @@ rule upload_rdrp:
         expand("results/{analysis}/.trajectories.done", analysis=RDRP_ANALYSES),
         expand("results/{analysis}/.pairwise.done", analysis=RDRP_ANALYSES)
     params:
-        analyses = RDRP_ANALYSES
+        analyses = RDRP_ANALYSES,
+        s3_prefix = config.get("s3_prefix", "trajectories")
     shell:
         """
         python scripts/upload-to-s3.py \
             --upload-dir results \
-            --prefix trajectories \
+            --prefix {params.s3_prefix} \
             --analyses {params.analyses}
         """

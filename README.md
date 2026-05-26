@@ -49,7 +49,19 @@ snakemake --cores 1 -p results   # Generate trajectory shards
 snakemake --cores 1 -p upload    # Upload results to S3
 ```
 
-Running `snakemake` with no target defaults to `results`.
+Running `snakemake` with no target defaults to `results`. With no `--configfile` flag, only the base datasets in `defaults/config.yaml` are loaded (cytb-xs, n450-xs, flu-h3-xs, rdrp-*, spike-lg). Additional datasets (bac120 phyla, trellis, odb-fungi) live in separate config files and are opt-in.
+
+## Dataset config files
+
+Pre-defined dataset bundles live in `defaults/`. Select one with `--configfile`:
+
+```
+snakemake --configfile defaults/bac120-cyano.yaml --cores 1 -p results
+snakemake --configfile defaults/trellis.yaml --cores 1 -p results
+snakemake --configfile defaults/odb-fungi.yaml --cores 1 -p results
+```
+
+Multiple `--configfile` flags can be stacked; later files override earlier keys. Each dataset config can also set its own `s3_prefix` (e.g. `defaults/trellis.yaml` uploads to `s3://{bucket}/trellis-trajectories/` to keep phylogenetic outputs separate from the base `trajectories/` prefix).
 
 ## Dataset-specific outputs
 
@@ -86,7 +98,7 @@ This adds datasets like `rdrp-paramyxoviridae-xs_001`, `rdrp-flaviviridae-xs_001
 
 **bac120 marker gene datasets:**
 
-Bacterial marker gene datasets from the [GTDB bac120](https://gtdb.ecogenomic.org/) set are configured in separate per-phylum YAML files in `defaults/` that are auto-loaded by the Snakefile via glob. Currently available:
+Bacterial marker gene datasets from the [GTDB bac120](https://gtdb.ecogenomic.org/) set are configured in separate per-phylum YAML files in `defaults/`. Select one explicitly with `--configfile defaults/bac120-{phylum}.yaml`. Currently available:
 
 - `defaults/bac120-cyano.yaml` — 123 Cyanobacteria marker genes (~2,500 genomes per marker, 389–11,348 nucleotides)
 - `defaults/bac120-bacteroidota.yaml` — 124 Bacteroidota marker genes (~22,000 genomes per marker, 658–41,943 nucleotides)
@@ -125,7 +137,7 @@ The `upload` target uploads trajectory shards to S3:
 snakemake --cores 1 -p upload
 ```
 
-This uploads `results/` to `s3://{bucket}/trajectories/`. Requires `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` environment variables to be set.
+This uploads `results/` to `s3://{bucket}/{s3_prefix}/`, where `s3_prefix` defaults to `trajectories` (set in `defaults/config.yaml`) and can be overridden per dataset config (e.g. `defaults/trellis.yaml` sets `s3_prefix: trellis-trajectories`). Requires `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` environment variables to be set.
 
 # Outputs
 
