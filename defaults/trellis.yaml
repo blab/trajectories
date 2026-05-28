@@ -1,19 +1,3804 @@
 s3_prefix: trellis-trajectories
+trajectory_mode: forwards
 
 analysis:
   trellis-18aa-AAEC-phylo:
     dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AAEC
     gene: nuc
     seq_length: 54
+  trellis-18aa-AAFV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AAFV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ACGF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ACGF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ADCT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ADCT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ADCV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ADCV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ADFD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ADFD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ADGA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ADGA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ADMT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ADMT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ADQY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ADQY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AEGH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AEGH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AFNA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AFNA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AFVC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AFVC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AGCN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AGCN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AGCR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AGCR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AHAY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AHAY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AHKK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AHKK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AHMW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AHMW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AKYK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AKYK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ANRN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ANRN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-APKV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/APKV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AQDQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AQDQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ARCR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ARCR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ARLL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ARLL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ARTY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ARTY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ASAF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ASAF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ASHM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ASHM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ASHQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ASHQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ASLR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ASLR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ASYL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ASYL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ATDE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ATDE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ATRM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ATRM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ATWE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ATWE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AVTT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AVTT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AWCA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AWCA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AWCV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AWCV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AWMK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AWMK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AWWF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AWWF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AYAM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AYAM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AYDM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AYDM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-AYEN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/AYEN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CAHQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CAHQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CCIF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CCIF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CCKW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CCKW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CCVT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CCVT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CDLP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CDLP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CEHI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CEHI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CEKS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CEKS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CESP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CESP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CFDS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CFDS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CFNC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CFNC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CFYR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CFYR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CGQE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CGQE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CGRH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CGRH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CHLW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CHLW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CHRY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CHRY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CHYN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CHYN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CIQY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CIQY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CKEF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CKEF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CKKC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CKKC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CKVS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CKVS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CLLG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CLLG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CLML-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CLML
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CLPY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CLPY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CLSE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CLSE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CLTL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CLTL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CLYK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CLYK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CNEF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CNEF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CNIN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CNIN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CNSH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CNSH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CNWT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CNWT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CPHF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CPHF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CQYT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CQYT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CRQR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CRQR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CSPC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CSPC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CSQK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CSQK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CSYC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CSYC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CTAQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CTAQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CTCP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CTCP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CTDC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CTDC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CVEM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CVEM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CVKE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CVKE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CVKM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CVKM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CWIL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CWIL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CWNK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CWNK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CYCC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CYCC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CYFQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CYFQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-CYKV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/CYKV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DAAL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DAAL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DAME-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DAME
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DAWY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DAWY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DCKL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DCKL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DCQR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DCQR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DCRC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DCRC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DDGY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DDGY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DDIT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DDIT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DDQM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DDQM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DDYD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DDYD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DEDN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DEDN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DGCQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DGCQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DGFQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DGFQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DGGD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DGGD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DGHQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DGHQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DGMH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DGMH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DGMV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DGMV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DHDC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DHDC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DIHR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DIHR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DILR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DILR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DIQY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DIQY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DIWK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DIWK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DKDD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DKDD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DKIA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DKIA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DKRG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DKRG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DKWM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DKWM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DLDK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DLDK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DLPL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DLPL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DLRF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DLRF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DMGL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DMGL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DMLH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DMLH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DNAN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DNAN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DNCP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DNCP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DNMI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DNMI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DPFV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DPFV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DPTD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DPTD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DQRQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DQRQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DQYV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DQYV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DRAI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DRAI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DSEW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DSEW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DTFK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DTFK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DTNW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DTNW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DVDN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DVDN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DVEH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DVEH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DVIH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DVIH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DWTD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DWTD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DWVM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DWVM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DYEK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DYEK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-DYHH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/DYHH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EAGD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EAGD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ECMW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ECMW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EDIC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EDIC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EDIV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EDIV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EDLM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EDLM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EEAT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EEAT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EEHV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EEHV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EEKL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EEKL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EENK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EENK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EFFW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EFFW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EGEL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EGEL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EGNE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EGNE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EGTR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EGTR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EGVA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EGVA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EHEG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EHEG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EHIP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EHIP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EHLN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EHLN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EHQD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EHQD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EIFE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EIFE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EKCE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EKCE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EKFT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EKFT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EKMN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EKMN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EKMP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EKMP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EKTF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EKTF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EKWI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EKWI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ELFV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ELFV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EMNP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EMNP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ENDQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ENDQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ENHD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ENHD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ENSC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ENSC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ENWW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ENWW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ENYY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ENYY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EPEG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EPEG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EQEQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EQEQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ERAF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ERAF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ERMP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ERMP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ERPG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ERPG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ERTE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ERTE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ESCT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ESCT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ESRI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ESRI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ETKN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ETKN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EVCR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EVCR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EVRS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EVRS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EVSF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EVSF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EVSP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EVSP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EVYY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EVYY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EWFY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EWFY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EWPH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EWPH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EWQW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EWQW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EWRT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EWRT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EWTP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EWTP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EYCL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EYCL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EYEC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EYEC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EYGH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EYGH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EYKL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EYKL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-EYVR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/EYVR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FACI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FACI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FCIQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FCIQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FCNK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FCNK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FCQT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FCQT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FDQS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FDQS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FDSD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FDSD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FEYD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FEYD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FFHL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FFHL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FGCD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FGCD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FGDG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FGDG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FGES-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FGES
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FGLV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FGLV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FGSW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FGSW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FHFP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FHFP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FHID-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FHID
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FHMT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FHMT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FHQP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FHQP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FHWK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FHWK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FLFL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FLFL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FLHI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FLHI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FMFY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FMFY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FMGQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FMGQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FMIY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FMIY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FMMS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FMMS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FNMT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FNMT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FNQT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FNQT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FQLD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FQLD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FQPD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FQPD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FRAD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FRAD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FRMH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FRMH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FRRT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FRRT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FSHM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FSHM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FSNR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FSNR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FTCF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FTCF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FTNM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FTNM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FTTY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FTTY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FTYG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FTYG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FVRD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FVRD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FVRG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FVRG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FWMH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FWMH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FWMK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FWMK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FWMT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FWMT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FYHT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FYHT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FYKY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FYKY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-FYYI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/FYYI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GAAI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GAAI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GAWA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GAWA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GDAQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GDAQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GDNV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GDNV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GEQE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GEQE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GFDC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GFDC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GFMK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GFMK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GFQT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GFQT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GFYR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GFYR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GGFW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GGFW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GGGQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GGGQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GIEI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GIEI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GKYY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GKYY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GLEK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GLEK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GLLM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GLLM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GLMF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GLMF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GLQL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GLQL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GLYN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GLYN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GPKW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GPKW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GPSA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GPSA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GQGM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GQGM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GQMA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GQMA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GQVG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GQVG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GQWA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GQWA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GQWT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GQWT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GQYT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GQYT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GSDT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GSDT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GSGR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GSGR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GSLE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GSLE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GSNS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GSNS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GTGS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GTGS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GTNM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GTNM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GTQW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GTQW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GVNE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GVNE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GVRR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GVRR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GWKT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GWKT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GYLM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GYLM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GYPC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GYPC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GYPS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GYPS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-GYYI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/GYYI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HADC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HADC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HAQF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HAQF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HAVH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HAVH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HDDI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HDDI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HDHY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HDHY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HDIE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HDIE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HDPW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HDPW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HDQQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HDQQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HEFW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HEFW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HEGA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HEGA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HEHQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HEHQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HEYD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HEYD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HFGE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HFGE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HFNQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HFNQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HGLF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HGLF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HGQG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HGQG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HHKQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HHKQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HHWD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HHWD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HIEE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HIEE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HIFC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HIFC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HKEP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HKEP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HKGS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HKGS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HLML-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HLML
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HLMS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HLMS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HMGC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HMGC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HMIM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HMIM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HMQM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HMQM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HNGP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HNGP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HPKM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HPKM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HPNN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HPNN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HPRV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HPRV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HQQN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HQQN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HREV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HREV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HRTH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HRTH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HSDM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HSDM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HSHV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HSHV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HTAK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HTAK
+    gene: nuc
+    seq_length: 54
   trellis-18aa-HTLT-phylo:
     dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HTLT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HWST-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HWST
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HYFK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HYFK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-HYNG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/HYNG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IAAF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IAAF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IAAH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IAAH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IAHK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IAHK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IARE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IARE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IAWF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IAWF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ICSE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ICSE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IDAK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IDAK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IDET-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IDET
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IDEW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IDEW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IDID-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IDID
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IDNV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IDNV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IEWC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IEWC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IFNH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IFNH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IGET-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IGET
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IGHM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IGHM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IISD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IISD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IKAP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IKAP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IKEW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IKEW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ILAD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ILAD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ILLA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ILLA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IMKK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IMKK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IMQT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IMQT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IMTK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IMTK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-INIH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/INIH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-INMR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/INMR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-INRV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/INRV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IPDR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IPDR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IRMG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IRMG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IRWM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IRWM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ISMR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ISMR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ISPL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ISPL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ITAV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ITAV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-ITIR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/ITIR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IWGM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IWGM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IWLQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IWLQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IWRI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IWRI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IWTW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IWTW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IYAV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IYAV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IYNL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IYNL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-IYVA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/IYVA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KAFK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KAFK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KAHY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KAHY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KALF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KALF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KAYM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KAYM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KCTT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KCTT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KDEV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KDEV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KDGV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KDGV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KDSW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KDSW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KDYF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KDYF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KEPH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KEPH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KEVT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KEVT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KFDC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KFDC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KFDK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KFDK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KFPF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KFPF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KFPW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KFPW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KFYG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KFYG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KFYH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KFYH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KHQK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KHQK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KHWI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KHWI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KHYN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KHYN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KIEQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KIEQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KIMR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KIMR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KIVC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KIVC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KKQR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KKQR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KKTP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KKTP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KKVY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KKVY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KLDF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KLDF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KLEK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KLEK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KLPS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KLPS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KLRV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KLRV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KLSS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KLSS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KMQL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KMQL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KNMQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KNMQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KPEP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KPEP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KPTH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KPTH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KPVW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KPVW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KPYK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KPYK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KQHY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KQHY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KQNE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KQNE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KQQL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KQQL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KRDP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KRDP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KRLA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KRLA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KRRL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KRRL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KRSL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KRSL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KSDL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KSDL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KSEF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KSEF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KSKH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KSKH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KTGF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KTGF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KTHE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KTHE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KTMY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KTMY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KVCQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KVCQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KVEA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KVEA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KVMH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KVMH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KVTW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KVTW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KWEN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KWEN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KWHF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KWHF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KWHN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KWHN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KWQC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KWQC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KWVC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KWVC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KYDY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KYDY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-KYFC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/KYFC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LAGV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LAGV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LALL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LALL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LAMA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LAMA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LANN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LANN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LANS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LANS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LCQQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LCQQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LDIY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LDIY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LDMA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LDMA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LDQH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LDQH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LDQL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LDQL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LDVS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LDVS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LEDV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LEDV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LEHQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LEHQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LFCN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LFCN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LFHM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LFHM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LFKK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LFKK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LGSY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LGSY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LHTV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LHTV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LIFK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LIFK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LKEI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LKEI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LKGD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LKGD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LKLN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LKLN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LLDF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LLDF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LLQM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LLQM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LLVI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LLVI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LLWE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LLWE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LMKD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LMKD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LNAQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LNAQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LNIK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LNIK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LQRK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LQRK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LRGS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LRGS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LRKE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LRKE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LSCC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LSCC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LSDT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LSDT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LSNV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LSNV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LTIY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LTIY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LTPV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LTPV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LVCD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LVCD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LVGL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LVGL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LWFL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LWFL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LYAR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LYAR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LYGE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LYGE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-LYQA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/LYQA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MACL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MACL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MAHW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MAHW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MALE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MALE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MAMK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MAMK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MCAF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MCAF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MCCP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MCCP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MCFA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MCFA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MCHE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MCHE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MCVV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MCVV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MDAI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MDAI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MDDN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MDDN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MDHN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MDHN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MDKE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MDKE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MDTL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MDTL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MECD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MECD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MECG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MECG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MELV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MELV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MERQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MERQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MFNR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MFNR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MGFH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MGFH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MGYW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MGYW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MHCP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MHCP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MHNE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MHNE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MHWY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MHWY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MIHG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MIHG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MIRH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MIRH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MISQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MISQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MIYM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MIYM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MKLF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MKLF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MLCP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MLCP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MLFN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MLFN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MLNE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MLNE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MLRM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MLRM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MMAM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MMAM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MMKS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MMKS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MMQE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MMQE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MNVI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MNVI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MPEE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MPEE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MPFK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MPFK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MPFP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MPFP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MPLE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MPLE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MPRQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MPRQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MQHY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MQHY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MQTI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MQTI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MRCF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MRCF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MRMP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MRMP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MRSN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MRSN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MRTK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MRTK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MRYI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MRYI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MSDP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MSDP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MSGP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MSGP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MSPD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MSPD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MSPI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MSPI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MSWN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MSWN
     gene: nuc
     seq_length: 54
   trellis-18aa-MSYL-phylo:
     dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MSYL
     gene: nuc
     seq_length: 54
+  trellis-18aa-MTVP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MTVP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MVFR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MVFR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MVYK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MVYK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MWHL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MWHL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MWIA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MWIA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MYCY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MYCY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MYMA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MYMA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-MYRP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/MYRP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NAHL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NAHL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NAKG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NAKG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NAPK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NAPK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NAYK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NAYK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NCKD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NCKD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NCMW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NCMW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NDCY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NDCY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NELH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NELH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NFWL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NFWL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NGHS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NGHS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NIQK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NIQK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NLLL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NLLL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NLTM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NLTM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NLYM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NLYM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NLYP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NLYP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NLYY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NLYY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NMRW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NMRW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NPKQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NPKQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NPLW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NPLW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NQMV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NQMV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NQPH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NQPH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NQYV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NQYV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NRMP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NRMP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NSLT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NSLT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NSPP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NSPP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NSRK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NSRK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NVRH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NVRH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NWCI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NWCI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NWHM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NWHM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NWML-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NWML
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NYAL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NYAL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NYGG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NYGG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-NYNN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/NYNN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PAHD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PAHD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PAHK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PAHK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PAWQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PAWQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PCQV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PCQV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PCSK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PCSK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PDDI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PDDI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PDWS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PDWS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PEQK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PEQK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PFHI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PFHI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PFLQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PFLQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PGFE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PGFE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PGGK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PGGK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PGHG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PGHG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PGPG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PGPG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PGPM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PGPM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PGSK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PGSK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PHTC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PHTC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PIGA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PIGA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PIKM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PIKM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PIPH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PIPH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PIYC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PIYC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PKSP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PKSP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PKVL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PKVL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PLLC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PLLC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PNGA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PNGA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PNME-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PNME
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PNSY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PNSY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PNWK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PNWK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PNYQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PNYQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PPAV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PPAV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PPEN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PPEN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PQAG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PQAG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PQDI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PQDI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PQGF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PQGF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PQNQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PQNQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PQTC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PQTC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PSMT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PSMT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PSNI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PSNI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PSRD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PSRD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PSTF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PSTF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PSYD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PSYD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PTIM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PTIM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PTIW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PTIW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PVCG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PVCG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PVVC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PVVC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PWKD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PWKD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PWQK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PWQK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PWSK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PWSK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PWTI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PWTI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PYIY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PYIY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PYLP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PYLP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PYLV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PYLV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PYME-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PYME
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-PYRP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/PYRP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QANN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QANN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QCAC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QCAC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QCSD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QCSD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QDEN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QDEN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QDMI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QDMI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QDMK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QDMK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QERE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QERE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QEVF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QEVF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QFEA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QFEA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QFPP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QFPP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QGSS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QGSS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QGST-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QGST
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QHKR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QHKR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QHNC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QHNC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QHYQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QHYQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QIEQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QIEQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QKFW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QKFW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QKHP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QKHP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QKIC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QKIC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QKWL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QKWL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QLCY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QLCY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QLVD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QLVD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QMDY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QMDY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QPCS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QPCS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QPSF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QPSF
+    gene: nuc
+    seq_length: 54
   trellis-18aa-QQCE-phylo:
     dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QQCE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QRRC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QRRC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QSAV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QSAV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QSSE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QSSE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QTWT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QTWT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QVDR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QVDR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QVEH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QVEH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QVIM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QVIM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QVPW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QVPW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QVVS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QVVS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QWDG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QWDG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QWMR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QWMR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QWVL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QWVL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-QWVY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/QWVY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RAFN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RAFN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RCEE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RCEE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RCKN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RCKN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RCTT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RCTT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RDGA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RDGA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RDRK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RDRK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RDYY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RDYY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-REFP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/REFP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-REWM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/REWM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RFEC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RFEC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RFRA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RFRA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RFWS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RFWS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RGHP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RGHP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RGTI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RGTI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RHCR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RHCR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RHEL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RHEL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RHFW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RHFW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RHRV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RHRV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RHTN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RHTN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RHVI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RHVI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RIDR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RIDR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RINK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RINK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RIRM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RIRM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RISH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RISH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RLHI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RLHI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RLNW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RLNW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RMCW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RMCW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RMGS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RMGS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RNCC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RNCC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RNCI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RNCI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RNCS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RNCS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RNFF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RNFF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RNKI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RNKI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RNTR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RNTR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RPKM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RPKM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RPPC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RPPC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RPRS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RPRS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RRET-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RRET
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RRIG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RRIG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RRIK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RRIK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RRIT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RRIT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RSMD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RSMD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RSRS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RSRS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RSWS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RSWS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RTDH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RTDH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RTHE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RTHE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RTKG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RTKG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RTNE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RTNE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RTSC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RTSC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RTTF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RTTF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RVCA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RVCA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RVGF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RVGF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RVKI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RVKI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RVSV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RVSV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RVYP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RVYP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RWSE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RWSE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-RYTP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/RYTP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SAEL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SAEL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SATI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SATI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SCHE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SCHE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SCRA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SCRA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SCVQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SCVQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SDKE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SDKE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SDRC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SDRC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SEGW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SEGW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SEHS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SEHS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SEMG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SEMG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SETV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SETV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SFLQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SFLQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SFSF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SFSF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SFSR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SFSR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SFST-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SFST
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SGDM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SGDM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SGKE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SGKE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SHAC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SHAC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SHFS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SHFS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SHLM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SHLM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SIHS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SIHS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SIMH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SIMH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SIQP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SIQP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SISL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SISL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SIWP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SIWP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SKQV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SKQV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SKRG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SKRG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SKYC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SKYC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SMDY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SMDY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SMLE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SMLE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SMWK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SMWK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SNPT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SNPT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SPCG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SPCG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SPDA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SPDA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SPKT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SPKT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SPLI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SPLI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SPWV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SPWV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SQAY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SQAY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SQDR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SQDR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SQEH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SQEH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SRQL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SRQL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SRWE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SRWE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SSMG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SSMG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SSPC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SSPC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SSSQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SSSQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-STKT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/STKT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SVAN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SVAN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SVWG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SVWG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SWDY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SWDY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SYNP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SYNP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-SYQV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/SYQV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TAQD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TAQD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TCCG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TCCG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TCHQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TCHQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TCKN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TCKN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TCVG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TCVG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TDIG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TDIG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TDKD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TDKD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TDNL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TDNL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TEAW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TEAW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TEES-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TEES
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TEGE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TEGE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TETA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TETA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TETW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TETW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TFIM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TFIM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TFKW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TFKW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TFRG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TFRG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-THKH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/THKH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-THYM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/THYM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TIDW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TIDW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TIHC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TIHC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TISN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TISN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TIVG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TIVG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TKDS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TKDS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TKGA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TKGA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TMHM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TMHM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TPPW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TPPW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TPYT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TPYT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TQDR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TQDR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TQTT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TQTT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TRCE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TRCE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TRIL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TRIL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TRNV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TRNV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TRSF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TRSF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TRWV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TRWV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TSAK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TSAK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TSPG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TSPG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TSYW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TSYW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TTLM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TTLM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TTTW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TTTW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TTVP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TTVP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TTYD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TTYD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TVFV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TVFV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TVHH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TVHH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TVTG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TVTG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TWEY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TWEY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TWLC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TWLC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TYDE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TYDE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-TYDT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/TYDT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VAFF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VAFF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VARH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VARH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VCIL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VCIL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VCLN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VCLN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VDPI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VDPI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VDYQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VDYQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VEQC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VEQC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VERE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VERE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VEWN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VEWN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VFFF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VFFF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VFGH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VFGH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VFGY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VFGY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VFNL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VFNL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VFSN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VFSN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VHHC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VHHC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VHWT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VHWT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VLNH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VLNH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VLPP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VLPP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VLYS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VLYS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VMRL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VMRL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VNCS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VNCS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VNDR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VNDR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VNKD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VNKD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VNRI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VNRI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VPDD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VPDD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VPIK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VPIK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VQHF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VQHF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VRDV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VRDV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VREE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VREE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VRPV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VRPV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VSFH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VSFH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VSFT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VSFT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VSRY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VSRY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VSYV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VSYV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VTGP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VTGP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VWHM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VWHM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-VYVL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/VYVL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WAAS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WAAS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WAEF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WAEF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WAGK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WAGK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WAKT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WAKT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WALF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WALF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WAPF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WAPF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WCHE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WCHE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WCSV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WCSV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WDGC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WDGC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WDHQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WDHQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WDNS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WDNS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WDYP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WDYP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WEAK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WEAK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WELQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WELQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WETA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WETA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WETY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WETY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WFKD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WFKD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WFKT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WFKT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WFMS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WFMS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WGCH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WGCH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WGGR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WGGR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WGKQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WGKQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WGYW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WGYW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WHCS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WHCS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WHFN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WHFN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WHVV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WHVV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WKET-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WKET
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WKGY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WKGY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WKIH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WKIH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WKLP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WKLP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WKWI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WKWI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WKYC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WKYC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WLSI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WLSI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WMES-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WMES
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WMML-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WMML
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WMVD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WMVD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WNCA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WNCA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WNPH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WNPH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WNTA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WNTA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WNYA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WNYA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WPIL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WPIL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WPKF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WPKF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WPLK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WPLK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WQED-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WQED
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WQSN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WQSN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WQSR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WQSR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WRHN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WRHN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WRKK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WRKK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WSFQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WSFQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WVQI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WVQI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WVYW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WVYW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WWCG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WWCG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WWNE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WWNE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WWNS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WWNS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WWRF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WWRF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WWSD-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WWSD
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WYCI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WYCI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WYNQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WYNQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-WYYN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/WYYN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YAID-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YAID
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YCQW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YCQW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YDGM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YDGM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YDRF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YDRF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YEDW-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YEDW
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YEIF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YEIF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YEKP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YEKP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YELM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YELM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YFFA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YFFA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YFGK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YFGK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YFGT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YFGT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YFHK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YFHK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YGAH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YGAH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YGHV-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YGHV
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YHCI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YHCI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YHDE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YHDE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YHDL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YHDL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YHFY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YHFY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YHMM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YHMM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YIVN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YIVN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YLGM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YLGM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YLHK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YLHK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YMMR-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YMMR
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YMPP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YMPP
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YNEA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YNEA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YNFG-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YNFG
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YNKH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YNKH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YNRL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YNRL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YPVH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YPVH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YQKK-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YQKK
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YRAT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YRAT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YRDC-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YRDC
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YRFN-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YRFN
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YRPH-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YRPH
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YSDT-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YSDT
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YSFS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YSFS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YSHY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YSHY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YSMM-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YSMM
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YTEA-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YTEA
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YTLQ-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YTLQ
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YVAF-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YVAF
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YVFY-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YVFY
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YVLE-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YVLE
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YVNI-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YVNI
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YVTL-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YVTL
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YWDS-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YWDS
+    gene: nuc
+    seq_length: 54
+  trellis-18aa-YWPP-phylo:
+    dataset: https://nextstrain.org/groups/trajectories-private/trellis/18aa/YWPP
     gene: nuc
     seq_length: 54
