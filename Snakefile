@@ -93,14 +93,29 @@ USHER_ANALYSES = [a for a in ANALYSES if is_usher_dataset(a)]
 AUSPICE_ANALYSES = [a for a in ANALYSES if not is_usher_dataset(a)]
 RDRP_ANALYSES = [a for a in ANALYSES if re.match(r'^rdrp-[a-z]+-xs$', a)]
 
+# Gate which trajectory pipelines (forwards, pairwise, or both) are required
+# by the default consumer rules (all, results, upload, upload_rdrp).
+TRAJECTORY_MODE = config.get("trajectory_mode", "both")
+if TRAJECTORY_MODE not in ("forwards", "pairwise", "both"):
+    raise ValueError(
+        f"trajectory_mode must be 'forwards', 'pairwise', or 'both'; got {TRAJECTORY_MODE!r}"
+    )
+
+def trajectory_targets(analyses):
+    targets = []
+    if TRAJECTORY_MODE in ("forwards", "both"):
+        targets += expand("results/{analysis}/.trajectories.done", analysis=analyses)
+    if TRAJECTORY_MODE in ("pairwise", "both"):
+        targets += expand("results/{analysis}/.pairwise.done", analysis=analyses)
+    return targets
+
 rule all:
     input:
         # Auspice datasets have metadata and labeled JSON, UShER datasets don't
         expand("data/{analysis}/metadata.tsv", analysis=AUSPICE_ANALYSES),
         expand("data/{analysis}/auspice.json", analysis=AUSPICE_ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
-        expand("results/{analysis}/.trajectories.done", analysis=ANALYSES),
-        expand("results/{analysis}/.pairwise.done", analysis=ANALYSES),
+        trajectory_targets(ANALYSES),
 
 rule results:
     input:
@@ -108,8 +123,7 @@ rule results:
         expand("data/{analysis}/metadata.tsv", analysis=AUSPICE_ANALYSES),
         expand("data/{analysis}/auspice.json", analysis=AUSPICE_ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
-        expand("results/{analysis}/.trajectories.done", analysis=ANALYSES),
-        expand("results/{analysis}/.pairwise.done", analysis=ANALYSES),
+        trajectory_targets(ANALYSES),
 
 rule download_auspice_json:
     wildcard_constraints:
@@ -395,8 +409,7 @@ rule usher_provision_alignment_branches:
 
 rule upload:
     input:
-        expand("results/{analysis}/.trajectories.done", analysis=ANALYSES),
-        expand("results/{analysis}/.pairwise.done", analysis=ANALYSES)
+        trajectory_targets(ANALYSES)
     params:
         analyses = ANALYSES,
         s3_prefix = config.get("s3_prefix", "trajectories")
@@ -410,8 +423,7 @@ rule upload:
 
 rule upload_rdrp:
     input:
-        expand("results/{analysis}/.trajectories.done", analysis=RDRP_ANALYSES),
-        expand("results/{analysis}/.pairwise.done", analysis=RDRP_ANALYSES)
+        trajectory_targets(RDRP_ANALYSES)
     params:
         analyses = RDRP_ANALYSES,
         s3_prefix = config.get("s3_prefix", "trajectories")
