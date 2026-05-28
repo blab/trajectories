@@ -434,3 +434,28 @@ rule upload_rdrp:
             --prefix {params.s3_prefix} \
             --analyses {params.analyses}
         """
+
+rule pooled:
+    output:
+        directory("results/pooled")
+    params:
+        source_prefix = config.get("s3_prefix", "trajectories"),
+        shard_size = config.get("pooled_shard_size", 10000)
+    shell:
+        """
+        python scripts/build_pooled.py \
+            --source-prefix {params.source_prefix} \
+            --output-dir {output} \
+            --shard-size {params.shard_size}
+        """
+
+rule upload_pooled:
+    input:
+        "results/pooled"
+    params:
+        source_prefix = config.get("s3_prefix", "trajectories")
+    shell:
+        """
+        aws s3 sync {input}/ \
+            s3://${{S3_BUCKET}}/{params.source_prefix}/pooled/
+        """

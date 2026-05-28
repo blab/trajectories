@@ -138,6 +138,28 @@ snakemake --configfile defaults/viral.yaml --cores 1 -p upload
 
 This uploads `results/` to `s3://{bucket}/{s3_prefix}/`, where `s3_prefix` defaults to `trajectories` (set in `defaults/config.yaml`) and can be overridden per dataset config (e.g. `defaults/trellis.yaml` sets `s3_prefix: trellis-trajectories`). Requires `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` environment variables to be set.
 
+## Pooled rollup
+
+After granular per-dataset shards are uploaded to S3, the `pooled` target combines every per-source shard under `s3://{bucket}/{s3_prefix}/` (excluding any existing `pooled/` subdir) into a single set of evenly-sized pooled shards for training:
+
+```
+snakemake --configfile defaults/trellis.yaml --cores 1 -p pooled
+snakemake --configfile defaults/trellis.yaml --cores 1 -p upload_pooled
+```
+
+Train/test labels come from each source shard's filename (`forwards-train-NNN.tar.zst` → train, `forwards-test-NNN.tar.zst` → test); no re-splitting happens at rollup time. Pooled tar member names are prefixed with the source subpath (flattened with hyphens) so a trajectory originally at `trellis-18aa-AAEC/forwards-train-000.tar.zst::TIP_0042.fasta` becomes `trellis-18aa-AAEC-TIP_0042.fasta` in the pooled tarball. FASTA file contents — including headers — are passed through byte-for-byte.
+
+For one-off invocations or rolling up a sub-prefix:
+
+```
+python scripts/build_pooled.py \
+    --source-prefix trellis-trajectories \
+    --output-dir results/pooled \
+    --shard-size 10000
+```
+
+The script writes a `metadata.json` next to the shards capturing per-split trajectory/frame/base counts and the list of source keys consumed.
+
 # Outputs
 
 ## Intermediate data files
