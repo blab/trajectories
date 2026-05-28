@@ -39,23 +39,23 @@ On Linux, miniconda installs to `~/miniconda3/` instead of `/opt/homebrew/Caskro
 
 # Workflow
 
-Before executing the workflow, please run `nextstrain login https://nextstrain.org` to access `trajectories-private` datasets in config.yaml, 
-or alternatively, remove these datasets from the config.
+Before executing the workflow, please run `nextstrain login https://nextstrain.org` to access `trajectories-private` datasets, or alternatively, remove those datasets from your chosen config.
 
-The workflow is managed through Snakemake with two main targets:
+`defaults/config.yaml` holds only system-wide settings (`s3_prefix`, `trajectory_mode`) and no analyses. Every invocation must explicitly select a dataset config via `--configfile`:
 
 ```
-snakemake --cores 1 -p results   # Generate trajectory shards
-snakemake --cores 1 -p upload    # Upload results to S3
+snakemake --configfile defaults/viral.yaml --cores 1 -p results   # Generate trajectory shards
+snakemake --configfile defaults/viral.yaml --cores 1 -p upload    # Upload results to S3
 ```
 
-Running `snakemake` with no target defaults to `results`. With no `--configfile` flag, only the base datasets in `defaults/config.yaml` are loaded (cytb-xs, n450-xs, flu-h3-xs, rdrp-*, spike-lg). Additional datasets (bac120 phyla, trellis, odb-fungi) live in separate config files and are opt-in.
+Running `snakemake` with no target defaults to `results`. Running with no `--configfile` is a no-op (no analyses defined).
 
 ## Dataset config files
 
-Pre-defined dataset bundles live in `defaults/`. Select one with `--configfile`:
+Pre-defined dataset bundles live in `defaults/`. Pick one with `--configfile`:
 
 ```
+snakemake --configfile defaults/viral.yaml --cores 1 -p results
 snakemake --configfile defaults/bac120-cyano.yaml --cores 1 -p results
 snakemake --configfile defaults/trellis.yaml --cores 1 -p results
 snakemake --configfile defaults/odb-fungi.yaml --cores 1 -p results
@@ -65,34 +65,33 @@ Multiple `--configfile` flags can be stacked; later files override earlier keys.
 
 ## Dataset-specific outputs
 
-To provision specific datasets, use the `target_analyses` config:
+To narrow to specific datasets within a config, use `target_analyses`:
 ```
-# Provision cytb-xs dataset only
-snakemake --cores 1 -p results --config target_analyses='["cytb-xs"]'
+# Provision n450-xs only from viral.yaml
+snakemake --configfile defaults/viral.yaml --cores 1 -p results --config target_analyses='["n450-xs"]'
 
 # Provision multiple datasets
-snakemake --cores 1 -p results --config target_analyses='["cytb-xs","n450-xs"]'
+snakemake --configfile defaults/viral.yaml --cores 1 -p results --config target_analyses='["n450-xs","flu-h3-xs"]'
 ```
 
 ## Available datasets
 
-The following datasets are pre-configured and can be used with the above commands:
+**Viral datasets** (`defaults/viral.yaml`):
 
-- `cytb-xs`: [Mammalian cytochrome B sequences](https://nextstrain.org/groups/trajectories/cytb-xs) (5059 sequences x 1140 nucleotides)
 - `n450-xs`: [Measles N450 sequences](https://nextstrain.org/groups/trajectories/n450-xs) (2429 sequences x 450 nucleotides)
-- `spike-lg`: SARS-CoV-2 full spike from [Viridian](https://www.nature.com/articles/s41592-025-02947-1) global tree (~4.5M sequences x 2055 nucleotides)
 - `flu-h3-xs`: [H3N2 HA1 sequences](https://nextstrain.org/groups/trajectories/flu-h3-xs) (10,263 sequences x 987 nucleotides)
+- `spike-lg`: SARS-CoV-2 full spike from [Viridian](https://www.nature.com/articles/s41592-025-02947-1) global tree (~4.5M sequences x 2055 nucleotides)
 
-**RdRp datasets (local):**
+**RdRp datasets** (`defaults/viral.yaml`):
 - `rdrp-paramyxoviridae-xs`: Paramyxoviridae L Domain V (3,985 sequences x 1,653 nucleotides)
 - `rdrp-flaviviridae-xs`: Flaviviridae NS5 RdRp (4,785 sequences x 1,884 nucleotides)
 - `rdrp-picornaviridae-xs`: Picornaviridae 3D polymerase (2,627 sequences x 1,386 nucleotides)
 
 **RdRp subtrees (opt-in):**
 
-Subtree datasets are auto-discovered from `../rdrp/phylogenetic/auspice/*/subtrees/` but must be explicitly enabled:
+Subtree datasets are auto-discovered from `../rdrp/phylogenetic/auspice/*/subtrees/` but must be explicitly enabled (and depend on the rdrp parents in `defaults/viral.yaml`):
 ```bash
-snakemake --cores 8 -p results --config include_subtrees=true
+snakemake --configfile defaults/viral.yaml --cores 8 -p results --config include_subtrees=true
 ```
 This adds datasets like `rdrp-paramyxoviridae-xs_001`, `rdrp-flaviviridae-xs_001`, etc.
 
@@ -134,7 +133,7 @@ The workflow automatically splits tips into train and test sets by marking entir
 The `upload` target uploads trajectory shards to S3:
 
 ```
-snakemake --cores 1 -p upload
+snakemake --configfile defaults/viral.yaml --cores 1 -p upload
 ```
 
 This uploads `results/` to `s3://{bucket}/{s3_prefix}/`, where `s3_prefix` defaults to `trajectories` (set in `defaults/config.yaml`) and can be overridden per dataset config (e.g. `defaults/trellis.yaml` sets `s3_prefix: trellis-trajectories`). Requires `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` environment variables to be set.
@@ -156,16 +155,16 @@ The main output is sharded tar.zst archives in `results/{dataset}/`:
 
 ```
 results/
-├── cytb-xs/
+├── n450-xs/
 │   ├── forwards-train-000.tar.zst
 │   ├── forwards-test-000.tar.zst
 │   ├── pairwise-train-000.tar.zst
 │   ├── pairwise-train-001.tar.zst
 │   ├── ...
 │   └── pairwise-test-000.tar.zst
-├── cytb-xs/
+├── flu-h3-xs/
 │   └── ...
-└── n450-xs/
+└── spike-lg/
     └── ...
 ```
 
@@ -175,16 +174,16 @@ To inspect shard contents:
 
 ```bash
 # List files in a shard
-zstd -d -c results/cytb-xs/forwards-train-000.tar.zst | tar -tf -
+zstd -d -c results/n450-xs/forwards-train-000.tar.zst | tar -tf -
 
 # View first trajectory
-zstd -d -c results/cytb-xs/forwards-train-000.tar.zst | tar -xOf - | head -50
+zstd -d -c results/n450-xs/forwards-train-000.tar.zst | tar -xOf - | head -50
 
 # Extract a specific file
-zstd -d -c results/cytb-xs/forwards-train-000.tar.zst | tar -xOf - SomeFile.fasta
+zstd -d -c results/n450-xs/forwards-train-000.tar.zst | tar -xOf - SomeFile.fasta
 
 # Extract all files to current directory
-zstd -d -c results/cytb-xs/forwards-train-000.tar.zst | tar -xf -
+zstd -d -c results/n450-xs/forwards-train-000.tar.zst | tar -xf -
 ```
 
 See [notes/data_format.md](notes/data_format.md) for a detailed worked example with a small tree illustrating both trajectory formats.
@@ -227,9 +226,9 @@ A consolidated `results/summary.json` file contains statistics for all processed
 
 ```json
 {
-  "cytb-xs": {
+  "n450-xs": {
     "git_commit": "d7c62d4",
-    "url": "nextstrain.org/groups/trajectories/cytb-xs",
+    "url": "nextstrain.org/groups/trajectories/n450-xs",
     "num_tips": 10195,
     "num_nodes": 19960,
     "alignment_length": 2055,
@@ -248,8 +247,8 @@ A consolidated `results/summary.json` file contains statistics for all processed
     "pairwise_train_hamming": { "min": 0, "max": 80, "mean": 35.2 },
     "pairwise_test_hamming": { "min": 0, "max": 45, "mean": 12.3 }
   },
-  "cytb-xs": { ... },
-  "n450-xs": { ... }
+  "flu-h3-xs": { ... },
+  "spike-lg": { ... }
 }
 ```
 

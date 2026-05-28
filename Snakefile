@@ -78,7 +78,7 @@ ANALYSES = config.get("target_analyses", list(config["analysis"].keys()))
 
 # Constrain {analysis} wildcard to valid analysis names only
 wildcard_constraints:
-    analysis = "|".join(config["analysis"].keys())
+    analysis = "|".join(config["analysis"].keys()) or "NOMATCH"
 
 # Separate wildcard constraints for UShER vs Auspice datasets
 # This ensures rules only match the appropriate dataset types

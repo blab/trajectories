@@ -1,44 +1,4 @@
 s3_prefix: trajectories
 trajectory_mode: both
 
-analysis:
-  cytb-xs:
-    dataset: https://nextstrain.org/groups/trajectories/cytb-xs
-    gene: nuc
-    trim_begin: 1
-    trim_end: 1140
-    seq_length: 1140
-  n450-xs:
-    dataset: https://nextstrain.org/groups/trajectories/n450-xs
-    gene: nuc
-    seq_length: 450
-  flu-h3-xs:
-    dataset: https://nextstrain.org/groups/trajectories/flu-h3-xs
-    gene: nuc
-    trim_begin: 49
-    trim_end: 1035
-    seq_length: 987 # HA1
-  rdrp-paramyxoviridae-xs:
-    dataset: https://nextstrain.org/groups/trajectories-private/rdrp-paramyxoviridae-xs
-    gene: nuc
-    seq_length: 1653
-  rdrp-flaviviridae-xs:
-    dataset: https://nextstrain.org/groups/trajectories-private/rdrp-flaviviridae-xs
-    gene: nuc
-    seq_length: 1884
-  rdrp-picornaviridae-xs:
-    dataset: https://nextstrain.org/groups/trajectories-private/rdrp-picornaviridae-xs
-    gene: nuc
-    seq_length: 1386
-  spike-lg:
-    usher_pb: "https://ndownloader.figshare.com/files/49691037"
-    gene: nuc
-    trim_begin: 21563
-    trim_end: 23617
-    seq_length: 2055 # spike S1
-    # subsample: 10000 # Include this line for testing purposes, the full dataset is 8M samples
-    seed: 42
-    test_proportion: 0.1
-    pairwise_train_limit: 10000000
-    pairwise_test_limit: 1000000
-  # Subtrees auto-discovered from ../rdrp/phylogenetic/auspice/*/subtrees/
+analysis: {}
