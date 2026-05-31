@@ -493,9 +493,10 @@ rule jsonl_mode_split:
     """Convert all {mode}-{split} shards for one analysis to a single JSONL.
 
     Drives the per-shard parallel conversion via scripts/shards_to_jsonl.sh,
-    which mirrors the resumable logic from pegasus-evals/trajectories_to_jsonl.sh
+    which mirrors the resumable logic from the upstream pegasus-evals helper
     (per-shard .jsonl cache under results/{analysis}/jsonl/shards/, atomic
-    .partial -> .jsonl renames, skip-if-exists on rerun).
+    .partial -> .jsonl renames, skip-if-exists on rerun). The actual FASTA ->
+    json_sdiff conversion is done by scripts/fasta_to_jsonl.py (vendored).
     """
     wildcard_constraints:
         mode = "forwards|pairwise",
@@ -508,11 +509,8 @@ rule jsonl_mode_split:
         analysis_dir = "results/{analysis}",
         shards_dir = "results/{analysis}/jsonl/shards",
         script = "scripts/shards_to_jsonl.sh",
+        fasta_to_jsonl = "scripts/fasta_to_jsonl.py",
         py = lambda wc: _ds_setting("jsonl", "python", wc.analysis, "python"),
-        fasta_to_jsonl = lambda wc: _ds_setting(
-            "jsonl", "fasta_to_jsonl_script", wc.analysis,
-            "/home/ubuntu/pegasus-evals/scripts/fasta_to_jsonl.py",
-        ),
         parallel = lambda wc: _ds_setting("jsonl", "parallel", wc.analysis, 16),
         max_raw_len = lambda wc: _ds_setting("jsonl", "max_raw_len", wc.analysis, 14000),
         max_len = lambda wc: _ds_setting("jsonl", "max_len", wc.analysis, "") or "",
@@ -555,7 +553,7 @@ rule jsonl_combined:
 
 
 rule clean_jsonl:
-    """Filter a JSONL through pegasus-datasets clean.py thresholds.
+    """Filter a JSONL through scripts/clean_lib.py thresholds.
 
     Operates on any of {forwards,pairwise,combined}_{train,test}.jsonl.
     Emits the filtered JSONL alongside a per-file manifest CSV with drop
@@ -571,9 +569,6 @@ rule clean_jsonl:
         manifest = "results/{analysis}/jsonl_clean/{kind}_{split}.manifest.csv",
     params:
         py = lambda wc: _ds_setting("clean", "python", wc.analysis, "python"),
-        datasets_root = lambda wc: _ds_setting(
-            "clean", "datasets_root", wc.analysis, "/home/ubuntu/datasets",
-        ),
         max_hunk_len = lambda wc: _ds_setting("clean", "max_hunk_len", wc.analysis, 100),
         gap_allele_frac = lambda wc: _ds_setting("clean", "gap_allele_frac", wc.analysis, 0.7),
         ref_gap_frac = lambda wc: _ds_setting("clean", "ref_gap_frac", wc.analysis, 0.3),
@@ -594,7 +589,6 @@ rule clean_jsonl:
         {params.py} scripts/run_clean.py \
             --input {input.jsonl:q} \
             --output {output.jsonl:q} \
-            --datasets-root {params.datasets_root:q} \
             --max-hunk-len {params.max_hunk_len} \
             --gap-allele-frac {params.gap_allele_frac} \
             --ref-gap-frac {params.ref_gap_frac} \

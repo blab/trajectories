@@ -1,36 +1,21 @@
 #!/usr/bin/env python3
-"""Thin invoker for pegasus-datasets `clean` filter.
+"""CLI wrapper around scripts/clean_lib.py for the `clean_jsonl` Snakefile rule.
 
-Loads ``clean.py`` from a configurable location and runs ``run_clean`` against
-a single input JSONL with the thresholds passed on the CLI. Used by the
-`clean_jsonl` rule in the Snakefile so the cleaning step does not require
-pegasus-datasets to be installed as a package -- only the source path must be
-resolvable.
-
-The default datasets root matches the layout on this machine
-(/home/ubuntu/datasets); override via --datasets-root or the
-DATASETS_SRC environment variable.
+Imports the vendored ``clean_lib`` module (sibling file in scripts/) and runs
+``run_clean`` against a single input JSONL with the thresholds passed on the
+CLI.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 from pathlib import Path
 
-
-def _load_clean(datasets_root: Path):
-    src_dir = datasets_root / "src"
-    if not src_dir.is_dir():
-        sys.exit(f"clean.py source dir not found: {src_dir}")
-    sys.path.insert(0, str(src_dir))
-    try:
-        from clean import CleanConfig, run_clean  # type: ignore
-    except ImportError as e:
-        sys.exit(f"Failed to import clean from {src_dir}: {e}")
-    return CleanConfig, run_clean
+# clean_lib.py is a sibling of this file under scripts/.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from clean_lib import CleanConfig, run_clean  # type: ignore  # noqa: E402
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -38,12 +23,6 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--input", type=Path, required=True)
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--manifest", type=Path, default=None)
-    p.add_argument(
-        "--datasets-root",
-        type=Path,
-        default=Path(os.environ.get("DATASETS_SRC", "/home/ubuntu/datasets")),
-        help="Root of the pegasus-datasets repo (contains src/clean.py)",
-    )
     p.add_argument("--max-hunk-len", type=int, default=100)
     p.add_argument("--gap-allele-frac", type=float, default=0.7)
     p.add_argument("--ref-gap-frac", type=float, default=0.3)
@@ -51,8 +30,6 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--parallel", type=int, default=8)
     p.add_argument("--chunk-size", type=int, default=2000)
     args = p.parse_args(argv)
-
-    CleanConfig, run_clean = _load_clean(args.datasets_root)
 
     cfg = CleanConfig(
         input_path=args.input,

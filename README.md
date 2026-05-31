@@ -168,9 +168,9 @@ snakemake --configfile defaults/viral.yaml --cores 8 -p jsonl
 snakemake --configfile defaults/viral.yaml --cores 8 -p clean
 ```
 
-`jsonl` wraps the same `fasta_to_jsonl.py` converter used by pegasus-evals,
-applying it in parallel across every `{mode}-{split}-NNN.tar.zst` shard. Outputs
-land under `results/{analysis}/jsonl/`:
+`jsonl` runs `scripts/fasta_to_jsonl.py` (vendored from pegasus-evals) in
+parallel across every `{mode}-{split}-NNN.tar.zst` shard. Outputs land under
+`results/{analysis}/jsonl/`:
 
 ```
 results/n450-xs/jsonl/
@@ -183,13 +183,14 @@ results/n450-xs/jsonl/
 └── combined_test.jsonl
 ```
 
-Per-shard outputs in `shards/` are reused on rerun, matching the resumable
-behaviour of `pegasus-evals/scripts/trajectories_to_jsonl.sh`.
+Per-shard outputs in `shards/` are reused on rerun (resumable: re-running skips
+shards whose final `.jsonl` already exists; delete `shards/` to force a redo).
 
-`clean` invokes `clean.py` from `/home/ubuntu/datasets` to apply four
-record-level filters (`max_hunk_len`, `gap_allele_frac`, `ref_gap_frac`,
-`mut_density`). Outputs land under `results/{analysis}/jsonl_clean/` with one
-`.manifest.csv` per filtered file capturing drop counts by reason.
+`clean` runs `scripts/clean_lib.py` (vendored from pegasus-datasets) via
+`scripts/run_clean.py` to apply four record-level filters (`max_hunk_len`,
+`gap_allele_frac`, `ref_gap_frac`, `mut_density`). Outputs land under
+`results/{analysis}/jsonl_clean/` with one `.manifest.csv` per filtered file
+capturing drop counts by reason.
 
 Defaults live in `defaults/config.yaml` under the `jsonl:` and `clean:` keys.
 Per-dataset overrides go under `analysis.{name}.jsonl` / `analysis.{name}.clean`:
