@@ -1,0 +1,24 @@
+[project]
+name = "trajectories"
+version = "0.1.0"
+description = "Provision evolutionary sequence trajectories from Nextstrain trees."
+readme = "README.md"
+license = { file = "LICENSE.md" }
+requires-python = ">=3.10"
+dependencies = [
+    "biopython",
+    "boto3",
+    "nextstrain-augur",
+    "numpy",
+    "pulp<3.0",
+    "requests",
+    "snakemake",
+    "tqdm",
+    "zstandard",
+]
+
+# This project ships pipeline scripts invoked by the Snakefile, not an importable
+# package — uv should manage the dependency env without trying to build/install
+# the project itself.
+[tool.uv]
+package = false

@@ -14,6 +14,10 @@ plans/
 .snakemake/
 .snakemake_timestamp
 
+# From uv / local Python envs
+.venv/
+.venv-*/
+
 # Sensitive environment variables
 environment*
 

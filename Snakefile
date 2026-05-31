@@ -407,6 +407,206 @@ rule usher_provision_alignment_branches:
 # End of UShER-specific rules
 # ============================================================================
 
+# ============================================================================
+# Downstream: FASTA trajectory shards -> json_sdiff JSONL -> cleaned JSONL
+# ============================================================================
+
+# Resolve a (possibly per-analysis-overridden) setting from the top-level
+# `jsonl:` / `clean:` config blocks.
+def _ds_setting(section, key, analysis, default=None):
+    base = config.get(section, {}) or {}
+    per_ds = (
+        config.get("analysis", {})
+        .get(analysis, {})
+        .get(section, {})
+        or {}
+    )
+    if key in per_ds:
+        return per_ds[key]
+    return base.get(key, default)
+
+
+# Which (mode, split) pairs are produced for the configured trajectory_mode.
+def _jsonl_mode_splits():
+    pairs = []
+    if TRAJECTORY_MODE in ("forwards", "both"):
+        pairs += [("forwards", "train"), ("forwards", "test")]
+    if TRAJECTORY_MODE in ("pairwise", "both"):
+        pairs += [("pairwise", "train"), ("pairwise", "test")]
+    return pairs
+
+
+def _jsonl_targets(analyses):
+    targets = []
+    for analysis in analyses:
+        for mode, split in _jsonl_mode_splits():
+            targets.append(f"results/{analysis}/jsonl/{mode}_{split}.jsonl")
+        # Always emit the combined files when both modes are produced.
+        if TRAJECTORY_MODE == "both":
+            targets += [
+                f"results/{analysis}/jsonl/combined_train.jsonl",
+                f"results/{analysis}/jsonl/combined_test.jsonl",
+            ]
+    return targets
+
+
+def _clean_kinds():
+    kinds = []
+    if TRAJECTORY_MODE in ("forwards", "both"):
+        kinds.append("forwards")
+    if TRAJECTORY_MODE in ("pairwise", "both"):
+        kinds.append("pairwise")
+    if TRAJECTORY_MODE == "both":
+        kinds.append("combined")
+    return kinds
+
+
+def _clean_targets(analyses):
+    targets = []
+    for analysis in analyses:
+        for kind in _clean_kinds():
+            for split in ("train", "test"):
+                targets.append(f"results/{analysis}/jsonl_clean/{kind}_{split}.jsonl")
+    return targets
+
+
+def _mode_done(analysis, mode):
+    """The .done sentinel produced by the upstream trajectory rule for this mode."""
+    return (
+        f"results/{analysis}/.trajectories.done"
+        if mode == "forwards"
+        else f"results/{analysis}/.pairwise.done"
+    )
+
+
+# Top-level aggregate targets — invoked as `snakemake jsonl` / `snakemake clean`.
+rule jsonl:
+    input:
+        _jsonl_targets(ANALYSES)
+
+rule clean:
+    input:
+        _clean_targets(ANALYSES)
+
+
+rule jsonl_mode_split:
+    """Convert all {mode}-{split} shards for one analysis to a single JSONL.
+
+    Drives the per-shard parallel conversion via scripts/shards_to_jsonl.sh,
+    which mirrors the resumable logic from pegasus-evals/trajectories_to_jsonl.sh
+    (per-shard .jsonl cache under results/{analysis}/jsonl/shards/, atomic
+    .partial -> .jsonl renames, skip-if-exists on rerun).
+    """
+    wildcard_constraints:
+        mode = "forwards|pairwise",
+        split = "train|test",
+    input:
+        done = lambda wc: _mode_done(wc.analysis, wc.mode),
+    output:
+        jsonl = "results/{analysis}/jsonl/{mode}_{split}.jsonl",
+    params:
+        analysis_dir = "results/{analysis}",
+        shards_dir = "results/{analysis}/jsonl/shards",
+        script = "scripts/shards_to_jsonl.sh",
+        py = lambda wc: _ds_setting("jsonl", "python", wc.analysis, "python"),
+        fasta_to_jsonl = lambda wc: _ds_setting(
+            "jsonl", "fasta_to_jsonl_script", wc.analysis,
+            "/home/ubuntu/pegasus-evals/scripts/fasta_to_jsonl.py",
+        ),
+        parallel = lambda wc: _ds_setting("jsonl", "parallel", wc.analysis, 16),
+        max_raw_len = lambda wc: _ds_setting("jsonl", "max_raw_len", wc.analysis, 14000),
+        max_len = lambda wc: _ds_setting("jsonl", "max_len", wc.analysis, "") or "",
+        context_size = lambda wc: _ds_setting("jsonl", "context_size", wc.analysis, 16),
+        noprompt = lambda wc: "1" if _ds_setting("jsonl", "noprompt", wc.analysis, True) else "0",
+    shell:
+        """
+        ANALYSIS_DIR={params.analysis_dir:q} \
+        MODE={wildcards.mode} \
+        SPLIT={wildcards.split} \
+        OUT_JSONL={output.jsonl:q} \
+        SHARDS_DIR={params.shards_dir:q} \
+        PY={params.py:q} \
+        FASTA_TO_JSONL={params.fasta_to_jsonl:q} \
+        PARALLEL={params.parallel} \
+        MAX_RAW_LEN={params.max_raw_len} \
+        MAX_LEN={params.max_len:q} \
+        CONTEXT_SIZE={params.context_size} \
+        NOPROMPT={params.noprompt} \
+            bash {params.script:q}
+        """
+
+
+rule jsonl_combined:
+    """Concatenate forwards + pairwise JSONL for one split.
+
+    Only meaningful when both modes are produced (trajectory_mode == 'both').
+    """
+    wildcard_constraints:
+        split = "train|test",
+    input:
+        forwards = "results/{analysis}/jsonl/forwards_{split}.jsonl",
+        pairwise = "results/{analysis}/jsonl/pairwise_{split}.jsonl",
+    output:
+        combined = "results/{analysis}/jsonl/combined_{split}.jsonl",
+    shell:
+        """
+        cat {input.forwards:q} {input.pairwise:q} > {output.combined:q}
+        """
+
+
+rule clean_jsonl:
+    """Filter a JSONL through pegasus-datasets clean.py thresholds.
+
+    Operates on any of {forwards,pairwise,combined}_{train,test}.jsonl.
+    Emits the filtered JSONL alongside a per-file manifest CSV with drop
+    counts by reason (when clean.emit_manifest is true).
+    """
+    wildcard_constraints:
+        kind = "forwards|pairwise|combined",
+        split = "train|test",
+    input:
+        jsonl = "results/{analysis}/jsonl/{kind}_{split}.jsonl",
+    output:
+        jsonl = "results/{analysis}/jsonl_clean/{kind}_{split}.jsonl",
+        manifest = "results/{analysis}/jsonl_clean/{kind}_{split}.manifest.csv",
+    params:
+        py = lambda wc: _ds_setting("clean", "python", wc.analysis, "python"),
+        datasets_root = lambda wc: _ds_setting(
+            "clean", "datasets_root", wc.analysis, "/home/ubuntu/datasets",
+        ),
+        max_hunk_len = lambda wc: _ds_setting("clean", "max_hunk_len", wc.analysis, 100),
+        gap_allele_frac = lambda wc: _ds_setting("clean", "gap_allele_frac", wc.analysis, 0.7),
+        ref_gap_frac = lambda wc: _ds_setting("clean", "ref_gap_frac", wc.analysis, 0.3),
+        mut_density = lambda wc: _ds_setting("clean", "mut_density", wc.analysis, 0.5),
+        parallel = lambda wc: _ds_setting("clean", "parallel", wc.analysis, 8),
+        chunk_size = lambda wc: _ds_setting("clean", "chunk_size", wc.analysis, 2000),
+        emit_manifest = lambda wc: bool(_ds_setting("clean", "emit_manifest", wc.analysis, True)),
+    shell:
+        """
+        mkdir -p $(dirname {output.jsonl:q})
+        manifest_arg=""
+        if [ "{params.emit_manifest}" = "True" ]; then
+            manifest_arg="--manifest {output.manifest:q}"
+        else
+            # Always touch the manifest path so Snakemake sees the declared output.
+            : > {output.manifest:q}
+        fi
+        {params.py} scripts/run_clean.py \
+            --input {input.jsonl:q} \
+            --output {output.jsonl:q} \
+            --datasets-root {params.datasets_root:q} \
+            --max-hunk-len {params.max_hunk_len} \
+            --gap-allele-frac {params.gap_allele_frac} \
+            --ref-gap-frac {params.ref_gap_frac} \
+            --mut-density {params.mut_density} \
+            --parallel {params.parallel} \
+            --chunk-size {params.chunk_size} \
+            $manifest_arg
+        """
+
+
+# ============================================================================
+
 rule upload:
     input:
         trajectory_targets(ANALYSES)

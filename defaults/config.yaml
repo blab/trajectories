@@ -1,4 +1,35 @@
 s3_prefix: trajectories
 trajectory_mode: both
 
+# Downstream FASTA -> json_sdiff JSONL conversion.
+# Used by `rule jsonl`; per-dataset overrides go under analysis.{name}.jsonl.
+jsonl:
+  # Standalone converter from pegasus-evals (no package install required).
+  fasta_to_jsonl_script: /home/ubuntu/pegasus-evals/scripts/fasta_to_jsonl.py
+  # Python interpreter used to run the converter (must have numpy installed).
+  python: /home/ubuntu/pegasus-evals/.venv/bin/python
+  # Hand-off to fasta_to_jsonl.py:
+  max_raw_len: 14000
+  max_len: ""        # empty -> no length cap (matches fasta_to_jsonl.py default)
+  context_size: 16
+  noprompt: true
+  # Per-shard parallelism inside one (analysis, mode, split) tuple.
+  parallel: 16
+
+# Downstream JSONL quality filter (clean.py from /home/ubuntu/datasets).
+# Used by `rule clean`; per-dataset overrides go under analysis.{name}.clean.
+clean:
+  # Root of the pegasus-datasets repo (must contain src/clean.py).
+  datasets_root: /home/ubuntu/datasets
+  # Python interpreter used to run scripts/run_clean.py.
+  python: python
+  # Thresholds (match clean.py defaults).
+  max_hunk_len: 100
+  gap_allele_frac: 0.7
+  ref_gap_frac: 0.3
+  mut_density: 0.5
+  parallel: 8
+  chunk_size: 2000
+  emit_manifest: true
+
 analysis: {}

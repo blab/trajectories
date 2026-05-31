@@ -4,7 +4,20 @@ This is a simple repo to provision evolutionary sequence trajectories from Nexts
 
 # Installation
 
-Install various dependencies with pip:
+The project ships a `pyproject.toml` + `uv.lock` for [uv](https://docs.astral.sh/uv/),
+and a `requirements.txt` for plain pip. Pick one.
+
+**With uv (recommended):**
+
+```
+uv sync                       # creates .venv and installs all locked deps
+uv run snakemake --help       # run any command in the env without activating
+```
+
+`uv sync` is reproducible — it installs exactly the versions in `uv.lock`. To
+refresh the lockfile after editing `pyproject.toml`, run `uv lock`.
+
+**With pip:**
 
 ```
 pip install -r requirements.txt
@@ -47,6 +60,10 @@ Before executing the workflow, please run `nextstrain login https://nextstrain.o
 snakemake --configfile defaults/viral.yaml --cores 1 -p results   # Generate trajectory shards
 snakemake --configfile defaults/viral.yaml --cores 1 -p upload    # Upload results to S3
 ```
+
+If you set up the env with `uv sync`, prefix any of the snakemake commands in
+this README with `uv run` (e.g. `uv run snakemake --configfile ... results`) —
+or activate the venv with `source .venv/bin/activate` and use the bare commands.
 
 Running `snakemake` with no target defaults to `results`. Running with no `--configfile` is a no-op (no analyses defined).
 
@@ -137,6 +154,61 @@ snakemake --configfile defaults/viral.yaml --cores 1 -p upload
 ```
 
 This uploads `results/` to `s3://{bucket}/{s3_prefix}/`, where `s3_prefix` defaults to `trajectories` (set in `defaults/config.yaml`) and can be overridden per dataset config (e.g. `defaults/trellis.yaml` sets `s3_prefix: trellis-trajectories`). Requires `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` environment variables to be set.
+
+## Downstream: JSONL conversion and cleaning
+
+Two optional downstream stages turn the trajectory shards into json_sdiff JSONL
+files for model training, and then apply quality filters.
+
+```bash
+# 1. Convert per-(mode,split) shards to JSONL
+snakemake --configfile defaults/viral.yaml --cores 8 -p jsonl
+
+# 2. Filter the JSONL by quality thresholds
+snakemake --configfile defaults/viral.yaml --cores 8 -p clean
+```
+
+`jsonl` wraps the same `fasta_to_jsonl.py` converter used by pegasus-evals,
+applying it in parallel across every `{mode}-{split}-NNN.tar.zst` shard. Outputs
+land under `results/{analysis}/jsonl/`:
+
+```
+results/n450-xs/jsonl/
+├── shards/                         # per-shard resume cache
+├── forwards_train.jsonl
+├── forwards_test.jsonl
+├── pairwise_train.jsonl
+├── pairwise_test.jsonl
+├── combined_train.jsonl            # forwards + pairwise (when trajectory_mode=both)
+└── combined_test.jsonl
+```
+
+Per-shard outputs in `shards/` are reused on rerun, matching the resumable
+behaviour of `pegasus-evals/scripts/trajectories_to_jsonl.sh`.
+
+`clean` invokes `clean.py` from `/home/ubuntu/datasets` to apply four
+record-level filters (`max_hunk_len`, `gap_allele_frac`, `ref_gap_frac`,
+`mut_density`). Outputs land under `results/{analysis}/jsonl_clean/` with one
+`.manifest.csv` per filtered file capturing drop counts by reason.
+
+Defaults live in `defaults/config.yaml` under the `jsonl:` and `clean:` keys.
+Per-dataset overrides go under `analysis.{name}.jsonl` / `analysis.{name}.clean`:
+
+```yaml
+analysis:
+  n450-xs:
+    dataset: https://nextstrain.org/groups/trajectories/n450-xs
+    gene: nuc
+    seq_length: 450
+    jsonl:
+      max_raw_len: 8000
+      context_size: 12
+    clean:
+      mut_density: 0.3
+```
+
+Both targets respect `target_analyses` and `trajectory_mode` exactly like
+`results`.
 
 ## Pooled rollup
 
