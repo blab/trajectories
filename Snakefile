@@ -1,13 +1,6 @@
 configfile: "defaults/config.yaml"
 
-# Additional dataset configs (bac120-*.yaml, trellis.yaml, odb-fungi.yaml)
-# are opt-in via --configfile defaults/{name}.yaml on the command line.
-
-# Auto-discover rdrp subtrees (only if include_subtrees=true)
-import glob
 import os
-import re
-import shutil
 
 
 def _file_gb(path):
@@ -44,34 +37,6 @@ def _alignment_mem_gb(analysis):
     peak_bytes = 3 * n_nodes_est * seq_length
     return max(1, int(peak_bytes / 1024**3) + 1)
 
-# Helper function to detect UShER datasets
-def is_usher_dataset(analysis_name):
-    """Check if a dataset uses UShER protobuf format instead of Auspice JSON."""
-    return "usher_pb" in config["analysis"].get(analysis_name, {})
-
-if config.get("include_subtrees", False):
-    RDRP_BASE = "../rdrp/phylogenetic/auspice"
-    RDRP_FAMILIES = {
-        "paramyxoviridae": 1653,
-        "flaviviridae": 1884,
-        "picornaviridae": 1386,
-    }
-
-    for family, seq_length in RDRP_FAMILIES.items():
-        subtree_pattern = f"{RDRP_BASE}/{family}/subtrees/{family}_*.json"
-        for json_path in sorted(glob.glob(subtree_pattern)):
-            # Extract subtree ID (e.g., "001" from "paramyxoviridae_001.json")
-            filename = os.path.basename(json_path)
-            subtree_id = filename.replace(f"{family}_", "").replace(".json", "")
-            analysis_name = f"rdrp-{family}-xs_{subtree_id}"
-
-            # Skip if already in config (allows manual overrides)
-            if analysis_name not in config["analysis"]:
-                config["analysis"][analysis_name] = {
-                    "dataset": json_path,
-                    "gene": "nuc",
-                    "seq_length": seq_length,
-                }
 
 # Get all analyses from config, or use target_analyses if specified on command line
 ANALYSES = config.get("target_analyses", list(config["analysis"].keys()))
@@ -80,21 +45,8 @@ ANALYSES = config.get("target_analyses", list(config["analysis"].keys()))
 wildcard_constraints:
     analysis = "|".join(config["analysis"].keys()) or "NOMATCH"
 
-# Separate wildcard constraints for UShER vs Auspice datasets
-# This ensures rules only match the appropriate dataset types
-def _usher_analyses():
-    return [a for a in config["analysis"].keys() if "usher_pb" in config["analysis"][a]]
-
-def _auspice_analyses():
-    return [a for a in config["analysis"].keys() if "usher_pb" not in config["analysis"][a]]
-
-# Split analyses into UShER and non-UShER for different rule requirements
-USHER_ANALYSES = [a for a in ANALYSES if is_usher_dataset(a)]
-AUSPICE_ANALYSES = [a for a in ANALYSES if not is_usher_dataset(a)]
-RDRP_ANALYSES = [a for a in ANALYSES if re.match(r'^rdrp-[a-z]+-xs$', a)]
-
 # Gate which trajectory pipelines (forwards, pairwise, or both) are required
-# by the default consumer rules (all, results, upload, upload_rdrp).
+# by the default consumer rules (all, results).
 TRAJECTORY_MODE = config.get("trajectory_mode", "both")
 if TRAJECTORY_MODE not in ("forwards", "pairwise", "both"):
     raise ValueError(
@@ -111,23 +63,19 @@ def trajectory_targets(analyses):
 
 rule all:
     input:
-        # Auspice datasets have metadata and labeled JSON, UShER datasets don't
-        expand("data/{analysis}/metadata.tsv", analysis=AUSPICE_ANALYSES),
-        expand("data/{analysis}/auspice.json", analysis=AUSPICE_ANALYSES),
+        expand("data/{analysis}/metadata.tsv", analysis=ANALYSES),
+        expand("data/{analysis}/auspice.json", analysis=ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
         trajectory_targets(ANALYSES),
 
 rule results:
     input:
-        # Auspice datasets have metadata and labeled JSON, UShER datasets don't
-        expand("data/{analysis}/metadata.tsv", analysis=AUSPICE_ANALYSES),
-        expand("data/{analysis}/auspice.json", analysis=AUSPICE_ANALYSES),
+        expand("data/{analysis}/metadata.tsv", analysis=ANALYSES),
+        expand("data/{analysis}/auspice.json", analysis=ANALYSES),
         expand("data/{analysis}/branches.tsv", analysis=ANALYSES),
         trajectory_targets(ANALYSES),
 
 rule download_auspice_json:
-    wildcard_constraints:
-        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     output:
         tree = "data/{analysis}/auspice_raw.json"
     params:
@@ -148,8 +96,6 @@ rule download_auspice_json:
         """
 
 rule provision_alignment:
-    wildcard_constraints:
-        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     input:
         auspice = "data/{analysis}/auspice_raw.json"
     output:
@@ -176,8 +122,6 @@ rule provision_alignment:
         """
 
 rule provision_metadata:
-    wildcard_constraints:
-        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     input:
         auspice = "data/{analysis}/auspice_raw.json"
     output:
@@ -192,8 +136,6 @@ rule provision_metadata:
         """
 
 rule provision_branches:
-    wildcard_constraints:
-        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     input:
         auspice = "data/{analysis}/auspice_raw.json",
         alignment = "data/{analysis}/alignment.fasta"
@@ -209,24 +151,9 @@ rule provision_branches:
             --output {output.branches:q}
         """
 
-rule provision_colors:
-    wildcard_constraints:
-        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
-    input:
-        auspice = "data/{analysis}/auspice_raw.json"
-    output:
-        colors = "data/{analysis}/colors.json"
-    shell:
-        """
-        python scripts/colors.py \
-            --json {input.auspice:q} \
-            --output {output.colors:q}
-        """
-
 rule train_test_split:
     """
-    Unified train/test split for both Auspice and UShER datasets.
-    Works on branches_raw.tsv and outputs branches.tsv with train_test labels.
+    Split branches into train/test by clade selection, output branches.tsv.
     """
     input:
         branches_raw = "data/{analysis}/branches_raw.tsv"
@@ -254,8 +181,6 @@ rule label_auspice_json:
     """
     Add train/test labels to Auspice JSON for visualization.
     """
-    wildcard_constraints:
-        analysis = "|".join(_auspice_analyses()) if _auspice_analyses() else "NOMATCH"
     input:
         auspice_raw = "data/{analysis}/auspice_raw.json",
         branches = "data/{analysis}/branches.tsv"
@@ -271,19 +196,6 @@ rule label_auspice_json:
             --output {output.auspice:q}
         """
 
-rule sample:
-    input:
-        alignment = "data/{analysis}/alignment.fasta"
-    output:
-        sampled = "data/{analysis}/sample.fasta"
-    shell:
-        """
-        python scripts/sample.py \
-            --input {input.alignment:q} \
-            --output {output.sampled:q} \
-            --fraction 0.2
-        """
-
 rule trajectories:
     input:
         branches = "data/{analysis}/branches.tsv",
@@ -295,7 +207,7 @@ rule trajectories:
     params:
         output_dir = "results/{analysis}",
         summary = "results/summary.json",
-        url = lambda wildcards: config["analysis"][wildcards.analysis].get("dataset", config["analysis"][wildcards.analysis].get("usher_pb", "")),
+        url = lambda wildcards: config["analysis"][wildcards.analysis]["dataset"],
         shard_size = lambda wildcards: config["analysis"][wildcards.analysis].get("shard_size", 10000),
         seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42)
     shell:
@@ -327,7 +239,7 @@ rule pairwise:
         shard_size = lambda wildcards: config["analysis"][wildcards.analysis].get("shard_size", 10000),
         seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42),
         summary = "results/summary.json",
-        url = lambda wildcards: config["analysis"][wildcards.analysis].get("dataset", config["analysis"][wildcards.analysis].get("usher_pb", ""))
+        url = lambda wildcards: config["analysis"][wildcards.analysis]["dataset"]
     shell:
         """
         python scripts/pairwise_trajectory.py \
@@ -342,120 +254,4 @@ rule pairwise:
             --dataset {wildcards.analysis} \
             --url {params.url:q}
         touch {output.done}
-        """
-
-# ============================================================================
-# UShER-specific rules for processing mutation-annotated trees (protobuf)
-# ============================================================================
-
-rule download_usher_pb:
-    """Download UShER protobuf file from UCSC."""
-    wildcard_constraints:
-        analysis = "|".join(_usher_analyses()) if _usher_analyses() else "NOMATCH"
-    output:
-        pb = "data/{analysis}/tree.pb.gz"
-    params:
-        url = lambda wildcards: config["analysis"][wildcards.analysis]["usher_pb"]
-    shell:
-        """
-        mkdir -p data/{wildcards.analysis}
-        curl -L -o {output.pb:q} {params.url:q}
-        """
-
-rule usher_provision_alignment_branches:
-    """
-    Extract tree and mutations from UShER protobuf, reconstruct sequences.
-
-    This rule:
-    1. Runs matUtils extract to get tree.nwk and mutations
-    2. Fetches SARS-CoV-2 reference from NCBI
-    3. Reconstructs sequences by applying mutations from root
-    4. Outputs alignment.fasta (trimmed) and branches_raw.tsv
-    """
-    wildcard_constraints:
-        analysis = "|".join(_usher_analyses()) if _usher_analyses() else "NOMATCH"
-    input:
-        pb = "data/{analysis}/tree.pb.gz"
-    output:
-        alignment = "data/{analysis}/alignment.fasta",
-        branches_raw = "data/{analysis}/branches_raw.tsv",
-        tree = "data/{analysis}/tree.nwk"
-    params:
-        subsample = lambda wildcards: config["analysis"][wildcards.analysis].get("subsample"),
-        seed = lambda wildcards: config["analysis"][wildcards.analysis].get("seed", 42),
-        trim_begin = lambda wildcards: config["analysis"][wildcards.analysis].get("trim_begin"),
-        trim_end = lambda wildcards: config["analysis"][wildcards.analysis].get("trim_end"),
-        subsample_arg = lambda wildcards: f"--subsample {config['analysis'][wildcards.analysis]['subsample']}" if config['analysis'][wildcards.analysis].get('subsample') else "",
-        trim_begin_arg = lambda wildcards: f"--trim-begin {config['analysis'][wildcards.analysis]['trim_begin']}" if config['analysis'][wildcards.analysis].get('trim_begin') else "",
-        trim_end_arg = lambda wildcards: f"--trim-end {config['analysis'][wildcards.analysis]['trim_end']}" if config['analysis'][wildcards.analysis].get('trim_end') else "",
-        reference_cache = "data/{analysis}/reference.fasta"
-    shell:
-        """
-        python scripts/usher_provision_alignment_branches.py \
-            --pb {input.pb:q} \
-            --output-fasta {output.alignment:q} \
-            --output-branches {output.branches_raw:q} \
-            --output-tree {output.tree:q} \
-            --reference-cache {params.reference_cache:q} \
-            --seed {params.seed} \
-            {params.subsample_arg} \
-            {params.trim_begin_arg} \
-            {params.trim_end_arg}
-        """
-
-# ============================================================================
-# End of UShER-specific rules
-# ============================================================================
-
-rule upload:
-    input:
-        trajectory_targets(ANALYSES)
-    params:
-        analyses = ANALYSES,
-        s3_prefix = config.get("s3_prefix", "trajectories")
-    shell:
-        """
-        python scripts/upload-to-s3.py \
-            --upload-dir results \
-            --prefix {params.s3_prefix} \
-            --analyses {params.analyses}
-        """
-
-rule upload_rdrp:
-    input:
-        trajectory_targets(RDRP_ANALYSES)
-    params:
-        analyses = RDRP_ANALYSES,
-        s3_prefix = config.get("s3_prefix", "trajectories")
-    shell:
-        """
-        python scripts/upload-to-s3.py \
-            --upload-dir results \
-            --prefix {params.s3_prefix} \
-            --analyses {params.analyses}
-        """
-
-rule pooled:
-    output:
-        directory("results/pooled")
-    params:
-        source_prefix = config.get("s3_prefix", "trajectories"),
-        shard_size = config.get("pooled_shard_size", 10000)
-    shell:
-        """
-        python scripts/build_pooled.py \
-            --source-prefix {params.source_prefix} \
-            --output-dir {output} \
-            --shard-size {params.shard_size}
-        """
-
-rule upload_pooled:
-    input:
-        "results/pooled"
-    params:
-        source_prefix = config.get("s3_prefix", "trajectories")
-    shell:
-        """
-        aws s3 sync {input}/ \
-            s3://${{S3_BUCKET}}/{params.source_prefix}/pooled/
         """

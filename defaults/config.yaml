@@ -1,4 +1,25 @@
-s3_prefix: trajectories
 trajectory_mode: both
 
-analysis: {}
+analysis:
+  flu-h3-xs:
+    dataset: https://nextstrain.org/groups/trajectories/flu-h3-xs
+    gene: nuc
+    trim_begin: 49
+    trim_end: 1035
+    seq_length: 987 # HA1
+  cytb-xs:
+    dataset: https://nextstrain.org/groups/trajectories/cytb-xs
+    gene: nuc
+    trim_begin: 1
+    trim_end: 1140
+    seq_length: 1140
+  spike-sm:
+    dataset: https://nextstrain.org/groups/trajectories/spike-sm
+    gene: nuc
+    trim_begin: 21563
+    trim_end: 23617
+    seq_length: 2055 # spike S1
+  trellis-18aa-KEVT:
+    dataset: https://nextstrain.org/groups/trajectories/trellis/18aa/KEVT
+    gene: nuc
+    seq_length: 54
