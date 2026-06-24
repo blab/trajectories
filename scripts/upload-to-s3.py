@@ -75,6 +75,11 @@ def main():
         "--analyses", nargs="*", default=None,
         help="Explicit list of analysis names to upload (takes precedence over --filter)"
     )
+    parser.add_argument(
+        "--branches-dir", default="data",
+        help="Directory holding {analysis}/branches.tsv to upload alongside the shards "
+             "(the tree edge-list + train/test split; trajectories->tree is not invertible)"
+    )
     args = parser.parse_args()
 
     # Check required environment variables
@@ -130,6 +135,8 @@ def main():
     total_files = 0
     for dataset in datasets_to_upload:
         total_files += count_files(os.path.join(upload_dir, dataset))
+        if os.path.isfile(os.path.join(args.branches_dir, dataset, "branches.tsv")):
+            total_files += 1
     # Also count root-level files (like summary.json) unless using --filter
     if not filter_pattern:
         for f in os.listdir(upload_dir):
@@ -164,6 +171,16 @@ def main():
                     s3_key = f"{s3_analysis_prefix}/{relative_to_dataset}"
                     s3.upload_file(local_path, bucket, s3_key)
                     pbar.update(1)
+
+            # Upload branches.tsv (parent/child/hamming + train_test) from the data
+            # dir into the same prefix. The trajectories are a lossy, truncated sample
+            # of this tree (trajectories->tree is not invertible), so shipping the
+            # edge-list lets consumers recover the full tree + the exact train/test split.
+            branches_path = os.path.join(args.branches_dir, dataset, "branches.tsv")
+            if os.path.isfile(branches_path):
+                s3_analysis_prefix = get_s3_prefix_for_analysis(dataset, args.prefix)
+                s3.upload_file(branches_path, bucket, f"{s3_analysis_prefix}/branches.tsv")
+                pbar.update(1)
 
     print(f"Done! Uploaded to s3://{bucket}/{args.prefix}/")
 

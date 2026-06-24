@@ -417,6 +417,7 @@ rule upload:
         """
         python scripts/upload-to-s3.py \
             --upload-dir results \
+            --branches-dir data \
             --prefix {params.s3_prefix} \
             --analyses {params.analyses}
         """
@@ -431,6 +432,7 @@ rule upload_rdrp:
         """
         python scripts/upload-to-s3.py \
             --upload-dir results \
+            --branches-dir data \
             --prefix {params.s3_prefix} \
             --analyses {params.analyses}
         """
